@@ -434,14 +434,14 @@ a.cardlist__item:hover .v{color:var(--brand-dark)}
   </section>
 
   <!-- ============ RESOURCES ============ -->
- const RESOURCES = [
-  {
-    type:  "Tool",
-    title: "Section 89(1) relief calculator",
-    note:  "Relief on salary arrears or advance across the relevant years, with the Form 10E Annexure I working. Auto slab computation or manual tax entry, Excel import. Runs entirely in your browser — nothing is uploaded.",
-    link:  "tools/section-89-relief.html"
-  }
-];
+  <section class="section section--tint" id="resources">
+    <div class="wrap reveal">
+      <p class="eyebrow">Resources</p>
+      <h2>Tools, checklists and reference material</h2>
+      <p class="lede">Calculators and reference sheets built in-house, free to use. Add each item to the <code>RESOURCES</code> list in the page source.</p>
+      <div class="sheet sheet--two" id="resourceSheet"></div>
+    </div>
+  </section>
 
   <!-- ============ CONTACT ============ -->
   <section class="section" id="contact">
@@ -609,13 +609,12 @@ const ARTICLES = [
              e.g. "tools/tax-computation.html" or "downloads/tp-checklist.pdf"
    ========================================================================== */
 const RESOURCES = [
-  // Paste an entry like this for each tool or download, e.g.:
-  // {
-  //   type:  "Tool",
-  //   title: "Section 89(1) relief calculator",
-  //   note:  "Relief across financial years with Form 10E Annexure I output. Runs in your browser.",
-  //   link:  "tools/section-89-relief.html"
-  // }
+  {
+    type:  "Tool",
+    title: "Section 89(1) relief calculator",
+    note:  "Relief on salary arrears or advance across the relevant years, with the Form 10E Annexure I working. Auto slab computation or manual tax entry, and Excel import. Runs entirely in your browser - nothing is uploaded.",
+    link:  "tools/section-89-relief.html"
+  }
 ];
 
 /* ============================================================================
