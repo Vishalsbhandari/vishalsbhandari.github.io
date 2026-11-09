@@ -382,32 +382,15 @@ a.cardlist__item:hover .v{color:var(--brand-dark)}
               </div>
             </div>
 
-            <div class="row2">
-              <div class="field">
-                <label for="f_purpose">Reason for writing</label>
-                <select id="f_purpose" name="purpose">
-                  <option>General enquiry</option>
-                  <option>Question on an article or a tool</option>
-                  <option>Training or speaking invitation</option>
-                  <option>Feedback on a tool</option>
-                  <option>Ring me back</option>
-                </select>
-              </div>
-              <div class="field">
-                <label for="f_service">Topic</label>
-                <select id="f_service" name="service">
-                  <option>Not topic-specific</option>
-                  <option>Direct taxation</option>
-                  <option>International taxation</option>
-                  <option>Transfer pricing</option>
-                  <option>Audit &amp; assurance</option>
-                  <option>GST</option>
-                  <option>Foreign subsidiary compliance</option>
-                  <option>Virtual CFO and MIS</option>
-                  <option>Litigation and representation</option>
-                  <option>Training</option>
-                </select>
-              </div>
+            <div class="field">
+              <label for="f_purpose">Reason for writing</label>
+              <select id="f_purpose" name="purpose">
+                <option>General enquiry</option>
+                <option>Question on an article or a tool</option>
+                <option>Training or speaking invitation</option>
+                <option>Feedback on a tool</option>
+                <option>Ring me back</option>
+              </select>
             </div>
 
             <div class="row2" id="callbackFields">
@@ -590,7 +573,6 @@ const CONFIG = {
     email:   "entry.0000000003",
     phone:   "entry.0000000004",
     purpose: "entry.0000000005",
-    service: "entry.0000000006",
     date:    "entry.0000000007",
     slot:    "entry.0000000008",
     message: "entry.0000000009"
@@ -714,7 +696,6 @@ function readForm () {
     email:   val('f_email'),
     phone:   val('f_phone'),
     purpose: val('f_purpose'),
-    service: val('f_service'),
     date:    callbackEl.hidden ? '' : val('f_date'),
     slot:    callbackEl.hidden ? '' : val('f_slot'),
     message: val('f_msg')
@@ -742,7 +723,6 @@ function sendByEmail (d) {
     'Email: ' + d.email,
     'Phone: ' + d.phone,
     'Purpose: ' + d.purpose,
-    'Topic: ' + d.service,
     d.date ? 'Preferred date: ' + d.date : null,
     d.slot ? 'Preferred time: ' + d.slot + ' IST' : null,
     '',
