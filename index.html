@@ -172,6 +172,12 @@ a.cell .stat{color:var(--brand)}
 /* ============================================================
    ARTICLES
    ============================================================ */
+.artgroup{margin-top:2.25rem}
+.artgroup__head{display:flex;align-items:baseline;gap:.9rem;font-family:var(--mono);font-size:.68rem;font-weight:500;
+  letter-spacing:.14em;text-transform:uppercase;color:var(--gold-text,#7D6028);margin:0 0 .85rem;padding-bottom:.55rem;
+  border-bottom:1px solid var(--rule)}
+.artgroup__head span{margin-left:auto;color:var(--slate);letter-spacing:.08em;font-size:.62rem}
+.artgroup .sheet{margin-top:0}
 .art{background:var(--card);padding:1.7rem 1.5rem;text-decoration:none;color:inherit;display:flex;flex-direction:column;transition:background .2s ease}
 .art:hover{background:var(--tint)}
 .art__meta{font-family:var(--mono);font-size:.64rem;letter-spacing:.1em;text-transform:uppercase;color:var(--slate);margin-bottom:.6rem;display:flex;gap:.75rem;flex-wrap:wrap}
@@ -241,7 +247,7 @@ a.cardlist__item:hover .v{color:var(--brand-dark)}
 .foot__grid{display:flex;flex-wrap:wrap;gap:1.5rem;justify-content:space-between;align-items:flex-start}
 .foot p{margin:0;font-size:.8rem;color:var(--ink-2);max-width:58ch}
 .foot a{color:var(--brand)}
-.foot .disc{font-size:.74rem;margin-top:1.5rem;padding-top:1.25rem;border-top:1px solid var(--rule);width:100%;color:#5A6680}
+.foot .disc{font-size:.76rem;line-height:1.75;margin-top:1.5rem;padding-top:1.25rem;border-top:1px solid var(--rule);flex:0 0 100%;width:100%;max-width:none;text-align:left;color:#5A6680}
 
 .wa{
   position:fixed;right:1rem;bottom:1rem;z-index:90;
@@ -296,69 +302,26 @@ a.cardlist__item:hover .v{color:var(--brand-dark)}
 
 <main id="main">
 
-  <!-- ============ HERO ============ -->
-  <section class="hero wrap" id="top">
-    <div class="hero__grid">
-      <div>
-        <p class="eyebrow">Hyderabad, India</p>
-        <h1>Tax, audit and <em>cross-border</em> compliance for businesses in India.</h1>
-        <p class="hero__sub">A Chartered Accountant working in audit and advisory at Hyderabad, across direct and indirect taxation, statutory and tax audit, transfer pricing and cross-border compliance. This site carries notes on statutory change and the compliance tools built along the way.</p>
-        <a class="btn" href="#contact">Get in touch</a>
-      </div>
-
-      <div class="ledger" role="group" aria-label="Ways to get in touch">
-        <div class="ledger__head">
-          <strong>Get in touch</strong>
-          <span>Mon–Sat · 10:00–19:00 IST</span>
-        </div>
-        <a class="ledger__row" href="#contact">
-          <span class="rk">01</span>
-          <span class="rt"><b>Send a note</b><small>A reply follows within one working day</small></span>
-          <span class="ra" aria-hidden="true">→</span>
-        </a>
-        <a class="ledger__row" href="tel:+917702172167">
-          <span class="rk">02</span>
-          <span class="rt"><b>Telephone</b><small>+91 77021 72167</small></span>
-          <span class="ra" aria-hidden="true">→</span>
-        </a>
-        <a class="ledger__row" href="mailto:Vishal.bhandari@mail.ca.in">
-          <span class="rk">03</span>
-          <span class="rt"><b>Write an email</b><small>Vishal.bhandari@mail.ca.in</small></span>
-          <span class="ra" aria-hidden="true">→</span>
-        </a>
-        <a class="ledger__row" href="https://wa.me/917702172167" target="_blank" rel="noopener">
-          <span class="rk">04</span>
-          <span class="rt"><b>Message on WhatsApp</b><small>@cavishalsbhandari</small></span>
-          <span class="ra" aria-hidden="true">→</span>
-        </a>
-        <a class="ledger__row" href="https://www.linkedin.com/in/cavishalb" target="_blank" rel="noopener">
-          <span class="rk">05</span>
-          <span class="rt"><b>Connect on LinkedIn</b><small>linkedin.com/in/cavishalb</small></span>
-          <span class="ra" aria-hidden="true">→</span>
-        </a>
-      </div>
-    </div>
-  </section>
-
   <!-- ============ ABOUT ============ -->
-  <section class="section" id="about">
+  <section class="section section--open" id="about">
     <div class="wrap reveal">
+      <p class="eyebrow">Hyderabad, India</p>
+      <h1>Vishal Bhandari</h1>
+      <p class="lede" style="margin-bottom:2.5rem">Chartered Accountant · Manager, Audit and Advisory</p>
       <div class="two">
         <div>
-          <p class="eyebrow">About</p>
-          <h2>Vishal Bhandari</h2>
           <p>A Chartered Accountant based in Hyderabad, working in audit and advisory. He is Manager, Audit and Advisory at SVRJ &amp; Co LLP, where his work spans statutory, tax and internal audit, direct and indirect taxation, transfer pricing, and compliance for foreign-owned Indian subsidiaries.</p>
           <p>Day to day that covers income tax and GST compliance and advisory, audit planning and execution, transfer pricing documentation and reporting, FEMA and foreign subsidiary filings, and virtual CFO support spanning monthly closing, MIS and financial statements. A substantial part of the work is litigation support — drafting replies to notices, appeals and written submissions, and assisting in representation before assessing officers and appellate authorities in income tax and GST matters.</p>
-          <p>He has worked with PwC Acceleration Centers, largely on US-based audit engagements, and with JSS Pro and R C Maheshwari &amp; Associates, having completed his articleship with Phafat &amp; Rathi between 2015 and 2018. That combination of large-firm audit discipline and hands-on compliance work shapes how he approaches a file: scoped before it starts, supported by working papers, and documented so that positions hold up if a matter is later picked up in assessment or appeal.</p>
+          <p>He has worked with PwC Acceleration Centers, largely on US-based audit engagements, and with JSS Pro and R C Maheshwari &amp; Associates, having completed his articleship with Phafat &amp; Rathi, Chartered Accountants, in 2018. That combination of large-firm audit discipline and hands-on compliance work shapes how he approaches a file: scoped before it starts, supported by working papers, and documented so that positions hold up if a matter is later picked up in assessment or appeal.</p>
           <p>Alongside his engagements he conducts in-house programmes for finance teams and sessions for professionals on taxation and audit topics, and builds the compliance tools published under <a href="#resources" style="color:var(--brand)">Resources</a> — calculators, reconciliation utilities and reference tools he uses in his own work and shares freely. He holds the ICAI Certificate Course on Artificial Intelligence for Chartered Accountants.</p>
           <p>Notes on statutory change are posted under <a href="#articles" style="color:var(--brand)">Articles</a> and on <a href="https://www.linkedin.com/in/cavishalb" target="_blank" rel="noopener" style="color:var(--brand)">LinkedIn</a>.</p>
         </div>
         <div>
           <ul class="facts">
             <li><span class="k">Role</span><span class="v">Manager, Audit and Advisory<br>SVRJ &amp; Co LLP</span></li>
-            <li><span class="k">Based in</span><span class="v">Begumpet, Hyderabad</span></li>
+            <li><span class="k">Based in</span><span class="v">Hyderabad</span></li>
             <li><span class="k">Focus areas</span><span class="v">Direct and international taxation · GST · Transfer pricing · Audit and assurance · Foreign subsidiary compliance · Virtual CFO · Litigation support · Training</span></li>
-            <li><span class="k">Previously</span><span class="v">PwC Acceleration Centers · JSS Pro · R C Maheshwari &amp; Associates · Phafat &amp; Rathi (articleship)</span></li>
+            <li><span class="k">Previously</span><span class="v">PwC Acceleration Centers · JSS Pro · R C Maheshwari &amp; Associates · Phafat &amp; Rathi, Chartered Accountants</span></li>
             <li><span class="k">Languages</span><span class="v">English, Hindi, Telugu</span></li>
             <li><span class="k">Certification</span><span class="v">ICAI Certificate Course on Artificial Intelligence for CAs</span></li>
           </ul>
@@ -372,7 +335,7 @@ a.cardlist__item:hover .v{color:var(--brand-dark)}
     <div class="wrap reveal">
       <p class="eyebrow">Articles</p>
       <h2>Written work</h2>
-      <p class="lede">Longer pieces on taxation, audit and cross-border compliance. Add each one to the <code>ARTICLES</code> list in the page source.</p>
+      <p class="lede">Notes on statutory change and longer pieces on taxation, audit and cross-border compliance.</p>
       <div class="sheet sheet--two" id="articleSheet"></div>
     </div>
   </section>
@@ -382,7 +345,7 @@ a.cardlist__item:hover .v{color:var(--brand-dark)}
     <div class="wrap reveal">
       <p class="eyebrow">Resources</p>
       <h2>Tools, checklists and reference material</h2>
-      <p class="lede">Calculators and reference sheets built in-house, free to use. Add each item to the <code>RESOURCES</code> list in the page source.</p>
+      <p class="lede">Calculators and reference tools built for day-to-day compliance work, free to use. Each runs entirely in your browser — nothing is uploaded.</p>
       <div class="sheet sheet--two" id="resourceSheet"></div>
     </div>
   </section>
@@ -392,7 +355,7 @@ a.cardlist__item:hover .v{color:var(--brand-dark)}
     <div class="wrap reveal">
       <p class="eyebrow">Contact</p>
       <h2>Get in touch</h2>
-      <p class="lede">For questions on the articles or the tools published here, training and speaking invitations, or anything else you would like to raise — a reply follows within one working day. If a call suits better, pick a day and a time window.</p>
+      <p class="lede">For questions on the articles or the tools published here, training and speaking invitations, or anything else you would like to raise — a reply follows within one working day. If a call suits better, pick a day and a time window and a number to reach you on.</p>
 
       <div class="contact__grid" style="margin-top:2.25rem">
         <div>
@@ -480,10 +443,6 @@ a.cardlist__item:hover .v{color:var(--brand-dark)}
               <span class="k">Email</span>
               <span class="v">Vishal.bhandari@mail.ca.in</span>
             </a>
-            <a class="cardlist__item" href="tel:+917702172167">
-              <span class="k">Telephone</span>
-              <span class="v">+91 77021 72167</span>
-            </a>
             <a class="cardlist__item" href="https://wa.me/917702172167" target="_blank" rel="noopener">
               <span class="k">WhatsApp</span>
               <span class="v">@cavishalsbhandari</span>
@@ -492,14 +451,6 @@ a.cardlist__item:hover .v{color:var(--brand-dark)}
               <span class="k">LinkedIn</span>
               <span class="v">linkedin.com/in/cavishalb</span>
             </a>
-            <a class="cardlist__item" href="https://www.google.com/maps/search/?api=1&amp;query=Tirumala+Heights+Begumpet+Hyderabad+500016" target="_blank" rel="noopener">
-              <span class="k">Office</span>
-              <span class="v">4th Floor, Tirumala Heights,<br>Begumpet, Hyderabad 500016<br>Telangana, India</span>
-            </a>
-            <div>
-              <span class="k">Office hours</span>
-              <span class="v">Monday to Saturday<br>10:00 – 19:00 IST</span>
-            </div>
           </div>
         </aside>
       </div>
@@ -513,9 +464,7 @@ a.cardlist__item:hover .v{color:var(--brand-dark)}
       <span class="brand__name">CA Vishal Bhandari</span><br>
       <span class="brand__desc">Assurance · Taxation · Cross-border advisory</span>
     </div>
-    <p>4th Floor, Tirumala Heights, Begumpet, Hyderabad 500016<br>
-      <a href="mailto:Vishal.bhandari@mail.ca.in">Vishal.bhandari@mail.ca.in</a> · <a href="tel:+917702172167">+91 77021 72167</a><br>
-      <a href="https://www.linkedin.com/in/cavishalb" target="_blank" rel="noopener">LinkedIn</a> · <a href="https://wa.me/917702172167" target="_blank" rel="noopener">WhatsApp @cavishalsbhandari</a></p>
+    <p><a href="#about">About</a> · <a href="#articles">Articles</a> · <a href="#resources">Resources</a> · <a href="#contact">Contact</a></p>
     <p class="disc">This website is a personal professional site. It is intended to share notes on statutory change and freely available compliance tools. It is not an advertisement or a solicitation of work, and nothing on it constitutes professional advice. Any information here is general in nature and should not be acted upon without advice specific to your facts. © <span id="yr">2026</span> CA Vishal Bhandari. All rights reserved.</p>
   </div>
 </footer>
@@ -538,10 +487,42 @@ a.cardlist__item:hover .v{color:var(--brand-dark)}
    ========================================================================== */
 const ARTICLES = [
   {
+    date:    "2026-09-09",
+    topic:   "International Taxation",
+    title:   "FAST-DS 2026: two routes, and why the cheaper one is easy to miss",
+    summary: "The disclosure scheme under Chapter IV of the Finance Act, 2026 closes on 31 December. Which route applies turns on provenance, not size \u2014 and it is a cliff, not a slab.",
+    mins:    5,
+    link:    "posts/fast-ds-2026-foreign-assets-disclosure.html"
+  },
+  {
+    date:    "2026-09-09",
+    topic:   "GST",
+    title:   "If your supplier does not pay the tax, you lose the credit",
+    summary: "Bhandari Scrap Traders v. Union of India \u2014 the Supreme Court upholds section 16(2)(c), declines to read it down, and narrows the ground that earlier High Court authority covered.",
+    mins:    5,
+    link:    "posts/supreme-court-section-16-2-c-itc.html"
+  },
+  {
+    date:    "2026-04-09",
+    topic:   "GST",
+    title:   "Section 9(4) of the CGST Act: where reverse charge still bites",
+    summary: "Often remembered as the provision that was withdrawn, section 9(4) was substituted rather than removed. For promoters buying from unregistered suppliers it remains live.",
+    mins:    4,
+    link:    "posts/section-9-4-cgst-reverse-charge-promoters.html"
+  },
+  {
+    date:    "2026-02-09",
+    topic:   "Labour Law",
+    title:   "India's new Labour Codes: four changes worth planning for",
+    summary: "A unified wage definition, social security for gig workers, gratuity after one year for fixed-term employees, and more flexible working arrangements.",
+    mins:    3,
+    link:    "posts/new-labour-codes-what-changes.html"
+  },
+  {
     date:    "2026-08-15",
     topic:   "Greetings",
     title:   "Happy Independence Day",
-    summary: "India marks its 80th Independence Day. Greetings to clients, colleagues and friends.",
+    summary: "India marks its 80th Independence Day. Greetings to colleagues, friends and everyone reading.",
     mins:    1,
     link:    "posts/independence-day-2026.html"
   }
@@ -556,9 +537,39 @@ const ARTICLES = [
 const RESOURCES = [
   {
     type:  "Tool",
+    title: "Act and Rules — full text, side by side",
+    note:  "The Income-tax Act, 2025 and Rules, 2026 in full, each beside its 1961 or 1962 counterpart. Search by number, heading or any words in the text. Works offline once loaded.",
+    link:  "tools/act-rules-reader.html"
+  },
+  {
+    type:  "Tool",
+    title: "TDS and TCS reference",
+    note:  "Every TDS and TCS entry under sections 392 to 394 of the Income-tax Act, 2025 — payment codes, thresholds and old-section mapping — with calculators for tax, interest and late fees.",
+    link:  "tools/tds-tcs-reference.html"
+  },
+  {
+    type:  "Tool",
+    title: "Income tax computation",
+    note:  "Computation under both regimes covering house property, business on regular books or presumptive basis, capital gains, deductions, loss set-off and interest. Exports to PDF and Excel.",
+    link:  "tools/income-tax-computation.html"
+  },
+  {
+    type:  "Tool",
+    title: "Schedule II depreciation",
+    note:  "Depreciation on the Schedule II Part C useful lives, with an audit layer flagging lives that depart from the schedule and variances against the books. Excel import and export.",
+    link:  "tools/schedule-ii-depreciation.html"
+  },
+  {
+    type:  "Tool",
     title: "Section 89(1) relief calculator",
-    note:  "Relief on salary arrears or advance across the relevant years, with the Form 10E Annexure I working. Auto slab computation or manual tax entry, and Excel import. Runs entirely in your browser - nothing is uploaded.",
+    note:  "Relief on salary arrears or advance across the relevant years, with the Form 10E Annexure I working. Auto slab computation or manual tax entry, and Excel import.",
     link:  "tools/section-89-relief.html"
+  },
+  {
+    type:  "Reference",
+    title: "Forms mapping — 2025 Act and 1961 Act",
+    note:  "All 212 official form mappings with full titles — which form replaces which, searchable from either side. Built from CBDT's comparison dataset.",
+    link:  "tools/forms-mapping.html"
   }
 ];
 
@@ -618,7 +629,7 @@ function niceDate (iso) {
   return String(d.getDate()).padStart(2,'0') + ' ' + m[d.getMonth()] + ' ' + d.getFullYear();
 }
 
-/* ---------- render articles ---------- */
+/* ---------- render articles, grouped by topic ---------- */
 (function renderArticles () {
   const host = document.getElementById('articleSheet');
   if (!ARTICLES.length) {
@@ -626,16 +637,39 @@ function niceDate (iso) {
     host.innerHTML = '<p class="empty">Articles will be published here.</p>';
     return;
   }
-  host.innerHTML = ARTICLES.map(a => {
+  const card = a => {
     const inner =
       '<span class="art__meta"><em>' + esc(a.topic) + '</em><span>' + niceDate(a.date) + '</span>' +
         (a.mins ? '<span>' + esc(a.mins) + ' min read</span>' : '') + '</span>' +
       '<h3>' + esc(a.title) + '</h3>' +
       (a.summary ? '<p>' + esc(a.summary) + '</p>' : '') +
-      '<span class="art__go">' + (a.link ? 'Read the article →' : 'Coming soon') + '</span>';
+      '<span class="art__go">' + (a.link ? 'Read the article \u2192' : 'Coming soon') + '</span>';
     return a.link
       ? '<a class="art" href="' + esc(a.link) + '">' + inner + '</a>'
       : '<article class="art">' + inner + '</article>';
+  };
+
+  // group by topic; newest article decides a group's position, "Greetings" always last
+  const groups = new Map();
+  for (const a of ARTICLES) {
+    const k = a.topic || 'Other';
+    if (!groups.has(k)) groups.set(k, []);
+    groups.get(k).push(a);
+  }
+  const ordered = [...groups.entries()].sort((x, y) => {
+    const last = g => /greeting/i.test(g) ? 1 : 0;
+    if (last(x[0]) !== last(y[0])) return last(x[0]) - last(y[0]);
+    const newest = g => g.reduce((m, a) => a.date > m ? a.date : m, '');
+    return newest(y[1]).localeCompare(newest(x[1]));
+  });
+
+  host.className = '';
+  host.innerHTML = ordered.map(([topic, list]) => {
+    list.sort((a, b) => (b.date || '').localeCompare(a.date || ''));
+    return '<div class="artgroup">' +
+      '<h3 class="artgroup__head">' + esc(topic) +
+        '<span>' + list.length + ' ' + (list.length === 1 ? 'piece' : 'pieces') + '</span></h3>' +
+      '<div class="sheet sheet--two">' + list.map(card).join('') + '</div></div>';
   }).join('');
 })();
 
@@ -742,7 +776,7 @@ submitBtn.addEventListener('click', async () => {
       document.getElementById(id).value = '';
     });
   } catch (err) {
-    show('err', 'That didn\u2019t go through. Email Vishal.bhandari@mail.ca.in or call +91 77021 72167 instead.');
+    show('err', 'That didn\u2019t go through. Please email Vishal.bhandari@mail.ca.in instead.');
   } finally {
     submitBtn.disabled = false;
     submitBtn.textContent = 'Send note';
