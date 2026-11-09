@@ -1,0 +1,1345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='30' fill='%2325487D' stroke='%23D7B165' stroke-width='3'/%3E%3Ctext x='32' y='43' font-family='Georgia,serif' font-style='italic' font-weight='bold' font-size='28' fill='%23D7B165' text-anchor='middle'%3EVB%3C/text%3E%3C/svg%3E">
+<title>TDS / TCS Reference &amp; Calculator — CA Vishal Bhandari</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600&family=Archivo:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap');
+
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --navy:#14213D;--navy2:#1E3254;--teal:#25487D;--teal2:#3F66A0;
+  --sky:#E8EFF8;--mint:#D3DEEE;--cream:#FAF7F0;--white:#ffffff;
+  --border:#E8E0D0;--txt:#14213D;--muted:#4A5775;--light:#5A6680;
+  --green-bg:#E8EFF8;--green-txt:#25487D;
+  --amber-bg:#FBF3E0;--amber-txt:#7D6028;
+  --blue-bg:#EBEEF4;--blue-txt:#3F4E6B;
+  --red-bg:#FAEEF0;--red-txt:#A6465E;
+  --purple-bg:#F2EADF;--purple-txt:#6B5230;
+  --gold:#D7B165;--gold-bg:#FBF3E0;
+  --sidebar-w:296px;--header-h:60px;--tab-h:46px;
+}
+body{font-family:'Archivo',system-ui,-apple-system,sans-serif;background:var(--cream);color:var(--txt);font-size:13.5px;line-height:1.58;height:100vh;overflow:hidden;display:flex;flex-direction:column}
+
+/* ── TOPBAR ── */
+.topbar{height:var(--header-h);background:var(--navy);display:flex;align-items:center;padding:0 18px;gap:12px;flex-shrink:0;z-index:60;box-shadow:0 2px 12px rgba(20,33,61,.25)}
+.brand{display:flex;flex-direction:column;line-height:1.2}
+.tbmark{flex:none;border-radius:50%;display:block}
+  .brand-main{font-family:'Newsreader',Georgia,serif;font-size:1.05rem;color:#F2EEE4;letter-spacing:.2px}
+.brand-sub{font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:.6rem;color:#A9B6CB;letter-spacing:.12em;text-transform:uppercase}
+.topbar-div{width:1px;height:28px;background:rgba(255,255,255,.12);margin:0 4px}
+.topbar-title{font-size:.8rem;color:#a0c4bc;white-space:nowrap}
+.topbar-spacer{flex:1}
+.search-wrap{position:relative;flex-shrink:0}
+.search-wrap svg{position:absolute;left:9px;top:50%;transform:translateY(-50%);color:var(--light);pointer-events:none}
+#gSearch{width:200px;padding:6px 10px 6px 30px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);border-radius:7px;color:#F2EEE4;font-size:.78rem;font-family:'Archivo',system-ui,-apple-system,sans-serif;outline:none;transition:.2s}
+#gSearch::placeholder{color:#5a8a84}
+#gSearch:focus{background:rgba(255,255,255,.13);border-color:var(--teal2)}
+.tbtn{display:inline-flex;align-items:center;gap:5px;padding:6px 12px;border-radius:7px;font-family:'Archivo',system-ui,-apple-system,sans-serif;font-size:.74rem;font-weight:500;cursor:pointer;border:none;white-space:nowrap;text-decoration:none;transition:.18s}
+.tbtn-teal{background:var(--teal);color:#fff}.tbtn-teal:hover{background:var(--teal2)}
+.tbtn-out{background:transparent;border:1px solid rgba(255,255,255,.18);color:#c8e0db}.tbtn-out:hover{background:rgba(255,255,255,.08)}
+
+/* ── MODULE TABS ── */
+.module-tabs{height:var(--tab-h);background:var(--navy2);display:flex;align-items:flex-end;padding:0 18px;gap:2px;flex-shrink:0;border-bottom:2px solid var(--teal)}
+.mtab{padding:8px 18px 10px;font-size:.78rem;font-weight:500;color:#7aaba3;cursor:pointer;border-radius:8px 8px 0 0;transition:.15s;border:1px solid transparent;border-bottom:none;white-space:nowrap}
+.mtab:hover{color:#b8ddd8;background:rgba(255,255,255,.05)}
+.mtab.active{background:var(--cream);color:var(--teal);border-color:var(--border);font-weight:600}
+
+/* ── APP BODY ── */
+.app-body{display:flex;flex:1;overflow:hidden}
+.module-view{display:none;width:100%;overflow:hidden}
+.module-view.active{display:flex}
+
+/* ── SIDEBAR ── */
+.sidebar{width:var(--sidebar-w);background:var(--white);border-right:1px solid var(--border);display:flex;flex-direction:column;flex-shrink:0;overflow:hidden}
+.sb-head{padding:12px 14px 10px;border-bottom:1px solid var(--border);background:var(--sky);flex-shrink:0}
+.sb-head h3{font-size:.68rem;font-weight:600;text-transform:uppercase;letter-spacing:.8px;color:var(--teal);margin-bottom:8px}
+.cat-pills{display:flex;flex-wrap:wrap;gap:4px}
+.cpill{padding:3px 9px;border-radius:20px;font-size:.67rem;font-weight:500;cursor:pointer;border:1px solid var(--border);background:var(--white);color:var(--muted);transition:.14s}
+.cpill:hover{border-color:var(--teal);color:var(--teal)}
+.cpill.active{background:var(--teal);color:#fff;border-color:var(--teal)}
+.sec-list{flex:1;overflow-y:auto;padding:6px}
+.sec-list::-webkit-scrollbar{width:3px}.sec-list::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
+.sitem{padding:9px 11px;border-radius:7px;cursor:pointer;margin-bottom:2px;transition:.14s;border:1px solid transparent}
+.sitem:hover{background:var(--sky)}
+.sitem.active{background:var(--mint);border-color:var(--teal)}
+.sitem.hidden-item{display:none}
+.si-badge{font-size:.65rem;font-weight:600;padding:1px 7px;border-radius:4px;display:inline-block;margin-bottom:2px}
+.si-badge-tds{background:var(--green-bg);color:var(--green-txt)}
+.si-badge-tcs{background:var(--purple-bg);color:var(--purple-txt)}
+.si-ttl{font-size:.82rem;font-weight:500;color:var(--txt);line-height:1.3}
+.si-old{font-size:.67rem;color:var(--light);margin-top:1px}
+.si-rate{font-size:.67rem;font-weight:600;color:var(--teal);margin-top:2px}
+.no-res{padding:16px;color:var(--muted);font-size:.78rem;text-align:center;display:none}
+
+/* ── DETAIL PANEL ── */
+.detail-panel{flex:1;overflow-y:auto;background:var(--cream);padding:24px 28px 40px}
+.detail-panel::-webkit-scrollbar{width:4px}.detail-panel::-webkit-scrollbar-thumb{background:var(--border);border-radius:4px}
+.empty-state{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;text-align:center;color:var(--light)}
+.empty-state svg{margin-bottom:14px;opacity:.35}
+.empty-state h3{font-size:1rem;color:var(--muted);font-family:'Newsreader',Georgia,serif}
+.empty-state p{font-size:.78rem;margin-top:5px}
+.dc{display:none}.dc.active{display:block}
+
+/* detail pieces */
+.dh{background:var(--white);border:1px solid var(--border);border-radius:10px;padding:18px 22px;margin-bottom:16px;display:flex;align-items:flex-start;justify-content:space-between;gap:14px}
+.dh-left{flex:1}
+.dh-title{font-family:'Newsreader',Georgia,serif;font-size:1.3rem;color:var(--navy);margin-bottom:8px;line-height:1.2}
+.dh-badges{display:flex;gap:7px;flex-wrap:wrap}
+.badge{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:20px;font-size:.69rem;font-weight:600}
+.b-new{background:var(--green-bg);color:var(--green-txt)}
+.b-old{background:var(--amber-bg);color:var(--amber-txt)}
+.b-rate{background:var(--blue-bg);color:var(--blue-txt)}
+.b-code{background:var(--purple-bg);color:var(--purple-txt)}
+.b-tcs{background:#F2EADF;color:#6B5230}
+.dh-right{display:flex;flex-direction:column;gap:7px;align-items:flex-end}
+.alink{display:inline-flex;align-items:center;gap:5px;font-size:.7rem;color:var(--teal);text-decoration:none;border:1px solid var(--mint);background:var(--sky);padding:4px 10px;border-radius:6px;transition:.14s;white-space:nowrap}
+.alink:hover{background:var(--mint);border-color:var(--teal)}
+.notice{background:var(--amber-bg);border-left:3px solid #e8a020;border-radius:0 7px 7px 0;padding:9px 14px;margin-bottom:16px;font-size:.78rem;color:var(--amber-txt);line-height:1.6}
+.notice strong{color:#5a3000}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.dcard{background:var(--white);border:1px solid var(--border);border-radius:9px;overflow:hidden;margin-bottom:0}
+.dcard-lbl{background:var(--sky);padding:7px 14px;font-size:.67rem;font-weight:600;text-transform:uppercase;letter-spacing:.7px;color:var(--teal);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:6px}
+.dcard-body{padding:11px 14px;font-size:.83rem;color:var(--txt);line-height:1.65}
+.mt12{margin-top:12px}
+.t-pill{display:inline-block;background:var(--green-bg);color:var(--green-txt);font-weight:700;font-size:.78rem;padding:2px 10px;border-radius:20px;margin:2px 3px 2px 0}
+.t-nil{display:inline-block;background:var(--red-bg);color:var(--red-txt);font-weight:700;font-size:.78rem;padding:2px 10px;border-radius:20px}
+.rtable{width:100%;border-collapse:collapse;font-size:.8rem}
+.rtable th{background:var(--sky);padding:5px 11px;text-align:left;font-weight:600;color:var(--teal);font-size:.67rem;text-transform:uppercase;letter-spacing:.5px}
+.rtable td{padding:6px 11px;border-bottom:1px solid #f0f0f0}
+.rtable tr:last-child td{border-bottom:none}
+.rtable tr:nth-child(even) td{background:#fafafa}
+.plist{padding-left:0;list-style:none}
+.plist li{padding:4px 0 4px 16px;position:relative;border-bottom:1px solid #f2f2f2;font-size:.82rem}
+.plist li:last-child{border-bottom:none}
+.plist li::before{content:'';position:absolute;left:4px;top:12px;width:5px;height:5px;background:var(--teal);border-radius:50%}
+.plist li strong{color:var(--navy)}
+.inferred-note{font-size:.7rem;background:#fff8e1;border:1px solid #ffe082;border-radius:5px;padding:4px 10px;color:#6d4c00;display:inline-flex;align-items:center;gap:5px}
+
+/* ══ CALCULATOR MODULE ══ */
+.calc-wrap{flex:1;overflow-y:auto;padding:28px 36px;background:var(--cream)}
+.calc-wrap::-webkit-scrollbar{width:4px}.calc-wrap::-webkit-scrollbar-thumb{background:var(--border)}
+.calc-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;max-width:960px}
+.calc-card{background:var(--white);border:1px solid var(--border);border-radius:12px;overflow:hidden}
+.cc-head{background:linear-gradient(90deg,var(--navy) 0%,var(--navy2) 100%);padding:14px 20px;display:flex;align-items:center;gap:10px}
+.cc-head svg{color:var(--teal2)}
+.cc-head h3{font-family:'Newsreader',Georgia,serif;font-size:1rem;color:#F2EEE4}
+.cc-head span{font-size:.7rem;color:#A9B6CB;margin-left:auto}
+.cc-body{padding:20px}
+.frow{display:flex;flex-direction:column;gap:4px;margin-bottom:14px}
+.frow label{font-size:.74rem;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.5px}
+.finp{padding:8px 12px;border:1.5px solid var(--border);border-radius:8px;font-family:'Archivo',system-ui,-apple-system,sans-serif;font-size:.88rem;color:var(--txt);background:var(--white);outline:none;transition:.2s;width:100%}
+.finp:focus{border-color:var(--teal);box-shadow:0 0 0 3px rgba(46,125,110,.1)}
+select.finp{cursor:pointer}
+.calc-btn{width:100%;padding:10px;background:var(--teal);color:#fff;border:none;border-radius:8px;font-family:'Archivo',system-ui,-apple-system,sans-serif;font-size:.88rem;font-weight:600;cursor:pointer;transition:.18s;margin-top:4px}
+.calc-btn:hover{background:var(--teal2)}
+.result-box{background:linear-gradient(135deg,var(--sky) 0%,#f0faf7 100%);border:1px solid var(--mint);border-radius:10px;padding:16px 18px;margin-top:16px;display:none}
+.result-box.show{display:block}
+.res-row{display:flex;justify-content:space-between;align-items:center;padding:5px 0;border-bottom:1px solid rgba(46,125,110,.1);font-size:.84rem}
+.res-row:last-child{border-bottom:none;font-weight:700;font-size:.9rem;color:var(--navy);padding-top:8px}
+.res-lbl{color:var(--muted)}
+.res-val{font-weight:600;color:var(--navy)}
+.res-val.red{color:#c0392b}.res-val.green{color:#1a6b46}.res-val.blue{color:#25487D}
+.warn-box{background:var(--amber-bg);border:1px solid #ffe082;border-radius:8px;padding:10px 14px;margin-top:10px;font-size:.78rem;color:var(--amber-txt);display:none}
+.warn-box.show{display:block}
+.calc-full{grid-column:1/-1}
+
+/* ── FOOTER BRAND ── */
+.foot-brand{background:var(--navy);padding:8px 18px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;border-top:1px solid rgba(255,255,255,.06)}
+.foot-left{font-size:.68rem;color:#5a8a84;line-height:1.6}
+.foot-left strong{color:#8abcb4}
+.foot-right{font-size:.65rem;color:#3a6a64;text-align:right}
+
+/* ── PRINT ── */
+@media print{
+  body{overflow:visible;height:auto}
+  .topbar .tbtn,.topbar .search-wrap,.module-tabs,.foot-brand{display:none}
+  .module-view{display:flex !important}
+  .app-body{flex-direction:column;overflow:visible}
+  .sidebar{max-height:none;overflow:visible;width:100%;border-right:none;border-bottom:1px solid #ccc}
+  .sec-list{overflow:visible;max-height:none}
+  .detail-panel{overflow:visible;padding:12px}
+  .dc{display:block !important}
+  .empty-state,.dh-right{display:none}
+  .calc-wrap{display:none}
+}
+@media(max-width:760px){
+  :root{--sidebar-w:100%}
+  .app-body{flex-direction:column}
+  .sidebar{max-height:200px}
+  .topbar-title,.topbar-div{display:none}
+  #gSearch{width:150px}
+  .two-col,.calc-grid{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<!-- ═══ TOPBAR ═══ -->
+<div class="topbar">
+  <svg class="tbmark" width="34" height="34" viewBox="30 30 140 140" aria-hidden="true">
+        <defs><linearGradient id="vbgoldR" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#F7E6AE"/><stop offset="0.5" stop-color="#D7B165"/><stop offset="1" stop-color="#A47A2C"/></linearGradient></defs>
+        <circle cx="100" cy="100" r="68" fill="#25487D" stroke="url(#vbgoldR)" stroke-width="2.4"/>
+        <circle cx="100" cy="100" r="61" fill="none" stroke="#D7B165" stroke-width="0.8" stroke-dasharray="1.5 3.5"/>
+        <path d="M70.8115 125.495 64.5415 75.5H75.4315L79.5895 115.826L102.9865 75.5H103.1515L74.17750000000001 125.495ZM59.9215 75.632V75.5H83.0215V75.632ZM94.9015 75.632V75.5H109.42150000000001V75.632Z M99.6535 125.0V124.868H105.6265L117.1105 75.632H111.2035V75.5H131.6635Q140.1445 75.5 144.154 77.8925Q148.1635 80.285 148.1635 85.72999999999999Q148.1635 88.6835 146.6125 91.10075Q145.0615 93.518 142.405 95.30825Q139.7485 97.0985 136.37425000000002 98.17099999999999Q133.0 99.2435 129.3535 99.557Q133.66 99.689 137.10025000000002 100.7615Q140.5405 101.834 142.537 104.03675Q144.5335 106.23949999999999 144.5335 109.82Q144.5335 113.516 142.69375 116.35400000000001Q140.85399999999998 119.19200000000001 137.67775 121.1225Q134.5015 123.053 130.4755 124.0265Q126.4495 125.0 122.0935 125.0ZM115.8565 124.868H122.0935Q124.4695 124.868 126.50725 123.515Q128.54500000000002 122.162 130.07125000000002 119.79425Q131.5975 117.4265 132.4555 114.3575Q133.3135 111.2885 133.3135 107.84Q133.3135 104.90299999999999 132.505 103.1045Q131.69650000000001 101.306 130.162 100.481Q128.6275 99.656 126.4495 99.656H119.5525L119.5855 99.524H126.7135Q128.5945 99.524 130.50850000000003 98.36075Q132.4225 97.19749999999999 134.0395 95.07724999999999Q135.6565 92.957 136.63 90.07775Q137.6035 87.1985 137.6035 83.75Q137.6035 81.638 136.98475 79.78175Q136.36599999999999 77.9255 135.02125 76.77875Q133.6765 75.632 131.4985 75.632H127.34049999999999Z" fill="url(#vbgoldR)"/>
+      </svg>
+  <div class="brand">
+    <span class="brand-main">CA Vishal Bhandari</span>
+    <span class="brand-sub">Chartered Accountant · Hyderabad</span>
+  </div>
+  <div class="topbar-div"></div>
+  <span class="topbar-title">TDS / TCS Reference & Calculator — IT Act 2025</span>
+  <div class="topbar-spacer"></div>
+  <div class="search-wrap">
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+    <input type="text" id="gSearch" placeholder="Search section, keyword…" oninput="doSearch(this.value)">
+  </div>
+  <a href="https://www.incometaxindia.gov.in/documents/d/guest/income_tax_act_2025_as_amended_by_fa_act_2026-pdf" target="_blank" class="tbtn tbtn-out">
+    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+    IT Act 2025 PDF
+  </a>
+  <button class="tbtn tbtn-teal" onclick="printAll()">
+    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+    Download PDF
+  </button>
+</div>
+
+<!-- ═══ MODULE TABS ═══ -->
+<div class="module-tabs">
+  <div class="mtab active" onclick="switchModule('tds',this)">📘 TDS Sections (Sec. 392 &amp; 393)</div>
+  <div class="mtab" onclick="switchModule('tcs',this)">📗 TCS Sections (Sec. 394)</div>
+  <div class="mtab" onclick="switchModule('calc',this)">🧮 Calculator</div>
+</div>
+
+<!-- ═══ APP BODY ═══ -->
+<div class="app-body">
+
+  <!-- ══ TDS MODULE ══ -->
+  <div class="module-view active" id="mod-tds">
+    <div class="sidebar">
+      <div class="sb-head">
+        <h3>Select TDS Section</h3>
+        <div class="cat-pills" id="tds-cats">
+          <span class="cpill active" onclick="filterCat('tds','all',this)">All</span>
+          <span class="cpill" onclick="filterCat('tds','salary',this)">Salary</span>
+          <span class="cpill" onclick="filterCat('tds','interest',this)">Interest</span>
+          <span class="cpill" onclick="filterCat('tds','rent',this)">Rent</span>
+          <span class="cpill" onclick="filterCat('tds','contract',this)">Contract</span>
+          <span class="cpill" onclick="filterCat('tds','professional',this)">Professional</span>
+          <span class="cpill" onclick="filterCat('tds','dividend',this)">Dividend</span>
+          <span class="cpill" onclick="filterCat('tds','property',this)">Property</span>
+          <span class="cpill" onclick="filterCat('tds','other',this)">Other</span>
+          <span class="cpill" onclick="filterCat('tds','anyperson',this)">Any Person</span>
+        </div>
+      </div>
+      <div class="sec-list" id="tds-list"></div>
+      <div class="no-res" id="tds-nores">No sections match.</div>
+    </div>
+    <div class="detail-panel" id="tds-panel">
+      <div class="empty-state" id="tds-empty">
+        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+        <h3>Select a TDS section</h3><p>Choose from the left panel</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ TCS MODULE ══ -->
+  <div class="module-view" id="mod-tcs">
+    <div class="sidebar">
+      <div class="sb-head">
+        <h3>Select TCS Section</h3>
+        <div class="cat-pills" id="tcs-cats">
+          <span class="cpill active" onclick="filterCat('tcs','all',this)">All</span>
+          <span class="cpill" onclick="filterCat('tcs','goods',this)">Goods</span>
+          <span class="cpill" onclick="filterCat('tcs','luxury',this)">Luxury</span>
+          <span class="cpill" onclick="filterCat('tcs','forest',this)">Forest</span>
+          <span class="cpill" onclick="filterCat('tcs','vehicle',this)">Vehicle</span>
+          <span class="cpill" onclick="filterCat('tcs','lrs',this)">LRS/Tour</span>
+          <span class="cpill" onclick="filterCat('tcs','other',this)">Other</span>
+        </div>
+      </div>
+      <div class="sec-list" id="tcs-list"></div>
+      <div class="no-res" id="tcs-nores">No sections match.</div>
+    </div>
+    <div class="detail-panel" id="tcs-panel">
+      <div class="empty-state" id="tcs-empty">
+        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+        <h3>Select a TCS section</h3><p>Choose from the left panel</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ CALCULATOR MODULE ══ -->
+  <div class="module-view" id="mod-calc">
+    <div class="calc-wrap">
+      <div class="calc-grid">
+
+        <!-- TDS Calculator -->
+        <div class="calc-card">
+          <div class="cc-head">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+            <h3>TDS Calculator</h3><span>IT Act 2025</span>
+          </div>
+          <div class="cc-body">
+            <div class="frow">
+              <label>Payment Nature</label>
+              <select class="finp" id="c-nat" onchange="updateRate()">
+                <option value="">-- Select --</option>
+                <option value="1,0">Salary (slab rate) [Code 1001-1003]</option>
+                <option value="10,50000">EPF Withdrawal [Code 1004]</option>
+                <option value="2,20000">Insurance Commission – Individual [Code 1005]</option>
+                <option value="10,20000">Insurance Commission – Others [Code 1005]</option>
+                <option value="2,20000">Other Commission/Brokerage [Code 1006]</option>
+                <option value="2,600000">Rent – Plant/Machinery [Code 1008]</option>
+                <option value="10,600000">Rent – Land/Building [Code 1009]</option>
+                <option value="2,600000">Rent by Ind/HUF [Code 1007*]</option>
+                <option value="1,5000000">Purchase of Property [Code 1012]</option>
+                <option value="10,0">JDA Payment [Code 1011]</option>
+                <option value="10,500000">Compulsory Acquisition [Code 1012]</option>
+                <option value="10,10000">MF Unit Income [Code 1013]</option>
+                <option value="10,0">Business Trust Income [Code 1014-1016]</option>
+                <option value="10,0">Securitisation Trust – Resident [Code 1018]</option>
+                <option value="10,10000">Interest on Securities [Code 1019]</option>
+                <option value="10,100000">Interest – Senior Citizen Bank [Code 1020]</option>
+                <option value="10,50000">Interest – Others Bank [Code 1021]</option>
+                <option value="10,10000">Interest – Other Payers [Code 1022]</option>
+                <option value="1,30000">Contract – Ind/HUF [Code 1023]</option>
+                <option value="2,100000">Contract – Others [Code 1024]</option>
+                <option value="2,50000">Technical Services [Code 1026]</option>
+                <option value="10,50000">Professional Services [Code 1027]</option>
+                <option value="10,0">Director Fees [Code 1028]</option>
+                <option value="10,10000">Dividends [Code 1029]</option>
+                <option value="2,100000">Life Insurance Payout [Code 1030]</option>
+                <option value="0.1,5000000,5,excess">Purchase of Goods [Code 1031]</option>
+                <option value="10,20000">Benefit/Perquisite [Code 1033]</option>
+                <option value="0.1,500000,5,gross">E-Commerce [Code 1035]</option>
+                <option value="1,10000">VDA Transfer [Code 1037]</option>
+                <option value="10,20000">Partner Payments – Firm/LLP [Code 1067]</option>
+                <option value="30,10000">Lottery/Crossword/Prize – Cash [Code 1058]</option>
+                <option value="30,10000">Lottery/Crossword/Prize – In Kind [Code 1059]</option>
+                <option value="30,0">Online Games Winnings – Cash [Code 1060]</option>
+                <option value="30,10000">Online Games Winnings – In Kind [Code 1061]</option>
+                <option value="30,10000">Horse Race Winnings [Code 1062]</option>
+                <option value="2,20000">Lottery Ticket Commission [Code 1063]</option>
+                <option value="2,30000000">Cash Withdrawal – Co-op Society [Code 1064]</option>
+                <option value="2,10000000">Cash Withdrawal – Others [Code 1065]</option>
+                <option value="10,2500">NSS / 80CCA Withdrawal [Code 1066]</option>
+              </select>
+            </div>
+            <div class="frow">
+              <label>Applicable Rate (%)</label>
+              <input class="finp" type="number" id="c-rate" step="0.01" min="0" placeholder="Auto-filled or enter manually">
+            </div>
+            <div class="frow">
+              <label>Payment Amount (₹)</label>
+              <input class="finp" type="number" id="c-amt" placeholder="e.g. 500000" oninput="clearCalcResult('tds')">
+            </div>
+            <div class="frow">
+              <label>PAN Available?</label>
+              <select class="finp" id="c-pan">
+                <option value="yes">Yes – Normal rate applies</option>
+                <option value="no">No – Higher rate under Sec. 397(2)</option>
+              </select>
+            </div>
+            <button class="calc-btn" onclick="calcTDS()">Calculate TDS</button>
+            <div class="result-box" id="tds-result"></div>
+            <div class="warn-box" id="tds-warn"></div>
+          </div>
+        </div>
+
+        <!-- TCS Calculator -->
+        <div class="calc-card">
+          <div class="cc-head">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            <h3>TCS Calculator</h3><span>Sec. 394 | IT Act 2025</span>
+          </div>
+          <div class="cc-body">
+            <div class="frow">
+              <label>TCS Category</label>
+              <select class="finp" id="tc-nat" onchange="updateTCSRate()">
+                <option value="">-- Select --</option>
+                <option value="2,0">Alcoholic Liquor for Human Consumption [1068]</option>
+                <option value="2,0">Tendu Leaves [1069]</option>
+                <option value="2,0">Timber from Forest Lease [1070]</option>
+                <option value="2,0">Timber by any other mode [1071]</option>
+                <option value="2,0">Any other Forest Produce [1072]</option>
+                <option value="2,0">Scrap [1073]</option>
+                <option value="2,0">Minerals / Coal / Iron Ore [1074]</option>
+                <option value="1,1000000">Motor Vehicle above ₹10 Lakh [1075]</option>
+                <option value="1,1000000">Wrist Watches above ₹10 Lakh [1076]</option>
+                <option value="1,1000000">Art/Antiques/Paintings/Sculptures [1077]</option>
+                <option value="1,1000000">Collectibles (Coins/Stamps) [1078]</option>
+                <option value="1,1000000">Yachts/Helicopters/Rowing Boats [1079]</option>
+                <option value="1,1000000">Sunglasses above ₹10 Lakh [1080]</option>
+                <option value="1,1000000">Handbags/Purses above ₹10 Lakh [1081]</option>
+                <option value="1,1000000">Shoes above ₹10 Lakh [1082]</option>
+                <option value="1,1000000">Sportswear/Equipment above ₹10 Lakh [1083]</option>
+                <option value="1,1000000">Home Theatre Systems [1084]</option>
+                <option value="1,1000000">Horses for Racing/Polo [1085]</option>
+                <option value="2,0">Parking Lot Fees [1086]</option>
+                <option value="2,0">Toll Plaza Collections [1087]</option>
+                <option value="2,0">Mining/Quarrying [1088]</option>
+                <option value="2,700000">Overseas Tour Package [1089]</option>
+                <option value="2,0">LRS – Education (loan from fin. institution) [1090]</option>
+                <option value="2,700000">LRS – Education/Medical (own funds) [1091]</option>
+                <option value="2,700000">LRS – Other purposes [1092]</option>
+              </select>
+            </div>
+            <div class="frow">
+              <label>TCS Rate (%)</label>
+              <input class="finp" type="number" id="tc-rate" step="0.01" min="0" placeholder="Auto-filled">
+            </div>
+            <div class="frow">
+              <label>Sale/Collection Amount (₹)</label>
+              <input class="finp" type="number" id="tc-amt" placeholder="e.g. 1200000" oninput="clearCalcResult('tcs')">
+            </div>
+            <div class="frow">
+              <label>PAN of Buyer Available?</label>
+              <select class="finp" id="tc-pan">
+                <option value="yes">Yes – Normal rate</option>
+                <option value="no">No – Double the rate (or 5%, whichever higher)</option>
+              </select>
+            </div>
+            <button class="calc-btn" onclick="calcTCS()">Calculate TCS</button>
+            <div class="result-box" id="tcs-result"></div>
+            <div class="warn-box" id="tcs-warn"></div>
+          </div>
+        </div>
+
+        <!-- Interest on Late Deposit -->
+        <div class="calc-card">
+          <div class="cc-head">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            <h3>Interest on Late Deposit</h3><span>Sec. 401 / 402 (old Sec. 201/201A)</span>
+          </div>
+          <div class="cc-body">
+            <div class="frow">
+              <label>TDS/TCS Amount (₹)</label>
+              <input class="finp" type="number" id="i-amt" placeholder="e.g. 100000">
+            </div>
+            <div class="frow">
+              <label>Date of Deduction / Collection</label>
+              <input class="finp" type="date" id="i-deduct">
+            </div>
+            <div class="frow">
+              <label>Date of Actual Deposit</label>
+              <input class="finp" type="date" id="i-deposit">
+            </div>
+            <div class="frow">
+              <label>Type</label>
+              <select class="finp" id="i-type">
+                <option value="nodeduct">Not Deducted (1% per month from deductible date)</option>
+                <option value="deducted">Deducted but not Deposited (1.5% per month)</option>
+              </select>
+            </div>
+            <button class="calc-btn" onclick="calcInterest()">Calculate Interest</button>
+            <div class="result-box" id="int-result"></div>
+          </div>
+        </div>
+
+        <!-- Late Filing Fee -->
+        <div class="calc-card">
+          <div class="cc-head">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/></svg>
+            <h3>Late Filing Fee</h3><span>Sec. 403 (old Sec. 234E) — ₹200/day</span>
+          </div>
+          <div class="cc-body">
+            <div class="frow">
+              <label>Quarter</label>
+              <select class="finp" id="lf-qtr">
+                <option value="2026-07-31">Q1 (Apr–Jun) — Due: 31 Jul</option>
+                <option value="2026-10-31">Q2 (Jul–Sep) — Due: 31 Oct</option>
+                <option value="2027-01-31">Q3 (Oct–Dec) — Due: 31 Jan</option>
+                <option value="2027-05-31">Q4 (Jan–Mar) — Due: 31 May</option>
+              </select>
+            </div>
+            <div class="frow">
+              <label>Actual Date of Filing</label>
+              <input class="finp" type="date" id="lf-date">
+            </div>
+            <div class="frow">
+              <label>Total TDS/TCS in Return (₹)</label>
+              <input class="finp" type="number" id="lf-tds" placeholder="e.g. 500000">
+            </div>
+            <button class="calc-btn" onclick="calcLateFee()">Calculate Late Fee</button>
+            <div class="result-box" id="lf-result"></div>
+          </div>
+        </div>
+
+        <!-- Short Deduction Penalty -->
+        <div class="calc-card calc-full">
+          <div class="cc-head">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+            <h3>Non-Deduction / Short Deduction Penalty Summary</h3><span>Sec. 401–403 | IT Act 2025</span>
+          </div>
+          <div class="cc-body">
+            <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px">
+              <div>
+                <div class="frow"><label>Short Deducted Amount (₹)</label><input class="finp" type="number" id="sd-amt" placeholder="e.g. 50000"></div>
+                <div class="frow"><label>Date Should Have Been Deducted</label><input class="finp" type="date" id="sd-from"></div>
+                <div class="frow"><label>Date Actually Deducted (if any)</label><input class="finp" type="date" id="sd-to"></div>
+                <button class="calc-btn" onclick="calcShort()">Calculate Total Liability</button>
+              </div>
+              <div class="result-box show" id="sd-result" style="grid-column:2/-1;margin-top:0;align-self:start">
+                <div style="font-size:.78rem;color:var(--muted);margin-bottom:10px;font-weight:600">PENALTY SUMMARY (fill and calculate)</div>
+                <table style="width:100%;font-size:.82rem;border-collapse:collapse">
+                  <tr><td style="padding:4px 0;color:var(--muted)">TDS Short Deducted</td><td id="sd-r1" style="text-align:right;font-weight:600">—</td></tr>
+                  <tr><td style="padding:4px 0;color:var(--muted)">Interest @ 1% p.m.</td><td id="sd-r2" style="text-align:right;font-weight:600;color:#c0392b">—</td></tr>
+                  <tr><td style="padding:4px 0;color:var(--muted)">Penalty u/s 271C (equal to TDS)</td><td id="sd-r3" style="text-align:right;font-weight:600;color:#c0392b">—</td></tr>
+                  <tr><td style="padding:4px 0;color:var(--muted)">Disallowance of Expense (30%)</td><td id="sd-r4" style="text-align:right;font-weight:600;color:#c0392b">—</td></tr>
+                  <tr style="border-top:2px solid var(--border)"><td style="padding:6px 0;font-weight:700">Total Potential Exposure</td><td id="sd-r5" style="text-align:right;font-weight:700;font-size:.95rem;color:var(--navy)">—</td></tr>
+                </table>
+                <div style="font-size:.7rem;color:var(--muted);margin-top:8px">* Penalty u/s 271C is at AO's discretion. Expense disallowance is approx. (assuming 30% tax rate on underlying payment). This is an estimate — consult your advisor.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+</div><!-- /app-body -->
+
+<!-- ═══ FOOTER ═══ -->
+<div class="foot-brand">
+  <div class="foot-left">
+    Reference: IT Act 2025 (effective 01 April 2026) · Finance Act 2026 &nbsp;|&nbsp; Tax Year 2026-27
+  </div>
+  <div class="foot-right">
+    For professional reference only · Always verify with official CBDT notifications
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════════
+//  DATA — TDS SECTIONS (All 92 codes, Sec 392+393)
+// ═══════════════════════════════════════════════════════
+const TDS_DATA = [
+  // ── SALARY (392) ──
+  {id:'t1',cat:'salary',type:'tds',newSec:'Sec. 392',codes:'1001–1003',oldSec:'Sec. 192',title:'TDS on Salaries',rate:'Slab',kw:'salary wages employer employee 192 slab form 138 form 130',
+   newLink:'https://www.incometaxindia.gov.in/w/section-392-5',oldLink:'https://www.incometaxindia.gov.in/acts/income%20tax%20act,%201961/2023/ch17sec192.htm',
+   payer:'Any employer — individual, HUF, firm, company, AOP/BOI, government — paying salary to employees.',
+   payee:'Any employee (resident or non-resident) receiving taxable salary: wages, annuity, pension, gratuity, fees, perquisites, profit in lieu of salary.',
+   thresh:'<span class="t-pill">Basic exemption limit</span> ₹4,00,000 (new regime) / ₹2,50,000 (old regime)',
+   rates:[['Category','Rate'],['All employees','At applicable income-tax slab rates'],['Standard deduction (TY 2026-27)','₹75,000 (new regime)']],
+   prov:['TDS on <strong>estimated annual income</strong>, spread equally per month.',
+     'Employee submits <strong>Form 12BB</strong> for investments/deductions declaration.',
+     'Relief u/s 89 (arrear salary) factored in if declared.',
+     'Quarterly return: <strong>Form 138</strong> (old: Form 24Q); annual cert: <strong>Form 130</strong> (old: Form 16).',
+     '<strong>New Tax Regime</strong> is the default unless employee opts out.',
+     'No deduction if estimated annual salary is below basic exemption limit.']},
+  {id:'t2',cat:'salary',type:'tds',newSec:'Sec. 392(7)',codes:'1004',oldSec:'Sec. 192A',title:'EPF Premature Withdrawal',rate:'10%',kw:'EPF provident fund premature withdrawal 192A accumulated balance',
+   newLink:'https://www.incometaxindia.gov.in/w/section-392-5',oldLink:'https://www.incometaxindia.gov.in/acts/income%20tax%20act,%201961/2023/ch17sec192a.htm',
+   payer:'Trustees of EPF Scheme 1952 or recognised PF trustees paying accumulated balance.',
+   payee:'Employee receiving EPF balance before completing 5 years of continuous service.',
+   thresh:'<span class="t-pill">₹50,000</span>',
+   rates:[['Condition','Rate'],['PAN furnished, ≥₹50,000','10%'],['PAN not furnished','20% (MMR)'],['Amount < ₹50,000','Nil']],
+   prov:['TDS only on <strong>premature withdrawal</strong> — before 5 years of continuous service.',
+     'Service under previous employers also counted.',
+     'No TDS if termination due to ill health or employer\'s closure.',
+     'Transfer to another recognised PF is NOT withdrawal.',
+     'Form 15G/15H can be submitted to avoid TDS.']},
+  // ── COMMISSION (393-1) ──
+  {id:'t3',cat:'other',type:'tds',newSec:'Sec. 393(1) Sl.1(i)',codes:'1005',oldSec:'Sec. 194D',title:'Insurance Commission',rate:'2% (Ind) / 10% (Others)',kw:'commission insurance agent broker 194D',
+   newLink:'https://www.incometaxindia.gov.in/w/section-393-5',oldLink:'https://www.incometaxindia.gov.in/acts/income%20tax%20act,%201961/2023/ch17sec194d.htm',
+   payer:'Insurance company paying commission to insurance agents.',
+   payee:'Resident insurance agents receiving commission for procuring insurance business.',
+   thresh:'<span class="t-pill">₹20,000</span> per year',
+   rates:[['Payee Type','Rate'],['Individual agent','2%'],['Others (firm, company, etc.)','10%'],['PAN not furnished','20%']],
+   prov:['Rate changed under IT Act 2025: <strong>2% for individuals, 10% for others</strong> (old Sec. 194D was flat 5%).',
+     'Covers commission, remuneration, or reward paid to agents of insurance companies.',
+     'TDS at time of credit or payment, whichever earlier.']},
+  {id:'t4',cat:'other',type:'tds',newSec:'Sec. 393(1) Sl.1(ii)',codes:'1006',oldSec:'Sec. 194H',title:'Commission & Brokerage (Others)',rate:'2%',kw:'commission brokerage agent 194H real estate stock lottery',
+   newLink:'https://www.incometaxindia.gov.in/w/section-393-5',oldLink:'https://www.incometaxindia.gov.in/acts/income%20tax%20act,%201961/2023/ch17sec194h.htm',
+   payer:'Any person (other than Ind/HUF not liable to audit) paying commission or brokerage for services as intermediary.',
+   payee:'Resident agents/brokers: stock brokers, real estate agents, travel agents, lottery ticket sellers, etc.',
+   thresh:'<span class="t-pill">₹20,000</span> per year',
+   rates:[['Payee','Rate'],['All resident payees','2%'],['PAN not furnished','20%']],
+   prov:['Covers all commission and brokerage excluding insurance commission.',
+     'Discount in lieu of commission to dealers is also covered.',
+     'BSNL/MTNL PCO franchise payments excluded.',
+     'Principal-agent relationship essential for applicability.']},
+  // ── RENT (393-2) ──
+  {id:'t5',cat:'rent',type:'tds',newSec:'Sec. 393(1) Sl.2(i)',codes:'1007* (inferred)',oldSec:'Sec. 194IB',title:'Rent by Individual/HUF (Non-Audit)',rate:'2%',kw:'rent individual HUF 194IB residential non-audit',
+   newLink:'https://www.incometaxindia.gov.in/w/section-393-5',oldLink:'https://www.incometaxindia.gov.in/acts/income%20tax%20act,%201961/2023/ch17sec194ib.htm',
+   payer:'Individual or HUF NOT liable to tax audit paying rent for land/building exceeding ₹50,000/month.',
+   payee:'Resident owner receiving rent for land or building.',
+   thresh:'<span class="t-pill">₹50,000 per month</span>',
+   rates:[['Condition','Rate'],['PAN furnished','2% (reduced from 5% under old Act)'],['PAN not furnished','20%']],
+   prov:['<strong>Rate reduced from 5% to 2%</strong> under IT Act 2025.',
+     'TDS once a year at last month of year or tenancy (whichever earlier).',
+     'Tenant uses own PAN — no TAN needed. Deposit via Form 26QC.',
+     'Certificate in <strong>Form 131</strong> (old: Form 16C) within 15 days of filing Form 26QC.',
+     '⚠ Code 1007 is inferred — not yet formally confirmed by CBDT.']},
+  {id:'t6',cat:'rent',type:'tds',newSec:'Sec. 393(1) Sl.2(ii).D(a)',codes:'1008',oldSec:'Sec. 194I(a)',title:'Rent – Plant, Machinery, Equipment',rate:'2%',kw:'rent machinery equipment 194I specified person',
+   newLink:'https://www.incometaxindia.gov.in/w/section-393-5',oldLink:'https://www.incometaxindia.gov.in/acts/income%20tax%20act,%201961/2023/ch17sec194i.htm',
+   payer:'Any person (other than Ind/HUF not in audit) paying rent for plant, machinery, or equipment.',
+   payee:'Resident owner/lessor of plant, machinery, or equipment.',
+   thresh:'<span class="t-pill">₹50,000 per month</span> (₹6 lakh p.a.)',
+   rates:[['Asset','Rate'],['Plant/Machinery/Equipment','2%'],['PAN not furnished','20%']],
+   prov:['Monthly threshold of ₹50,000 applies; above this, TDS on entire amount.',
+     'Advance rent also subject to TDS.',
+     'Security deposit not subject to TDS unless adjustable against rent.',
+     'TDS at credit or payment, whichever earlier.']},
+  {id:'t7',cat:'rent',type:'tds',newSec:'Sec. 393(1) Sl.2(ii).D(b)',codes:'1009',oldSec:'Sec. 194I(b)',title:'Rent – Land, Building, Furniture',rate:'10%',kw:'rent land building furniture 194I specified person',
+   newLink:'https://www.incometaxindia.gov.in/w/section-393-5',oldLink:'https://www.incometaxindia.gov.in/acts/income%20tax%20act,%201961/2023/ch17sec194i.htm',
+   payer:'Any person (other than Ind/HUF not in audit) paying rent for land, building, or furniture/fittings.',
+   payee:'Resident owner/landlord of land, building (including factory building), furniture, or fittings.',
+   thresh:'<span class="t-pill">₹50,000 per month</span> (₹6 lakh p.a.)',
+   rates:[['Asset','Rate'],['Land/Building/Furniture/Fittings','10%'],['PAN not furnished','20%']],
+   prov:['Covers hotels, warehouses, service apartments, factory buildings.',
+     '"Rent" includes all payments for use — lease, sub-lease, licence, tenancy.',
+     'Co-owners: each co-owner\'s share considered separately.',
+     'Advance rent: TDS in year of payment.']},
+  // ── PROPERTY (393-3) ──
+  {id:'t8',cat:'property',type:'tds',newSec:'Sec. 393(1) Sl.3(i)',codes:'1010* (inferred)',oldSec:'Sec. 194IB (Ind/HUF rent — inferred)',title:'Rent by Ind/HUF — Property Purchase Link',rate:'—',kw:'property 194IB inferred code 1010',
+   newLink:'https://www.incometaxindia.gov.in/w/section-393-5',oldLink:'https://www.incometaxindia.gov.in/acts/income%20tax%20act,%201961/2023/ch17sec194ib.htm',
+   payer:'Inferred code — not yet formally confirmed by CBDT.',
+   payee:'Pending official CBDT notification.',
+   thresh:'<span class="t-nil">Pending — do not use until notified</span>',
+   rates:[['Status','Note'],['Code 1010','Inferred — not in official TDSMAN rate chart'],['Action','Wait for official CBDT notification']],
+   prov:['⚠ Code 1010 appears as a sequential gap in the CBDT forms but has <strong>NOT been officially assigned</strong>.',
+     'Do NOT use this code in TDS returns until formally notified.',
+     'Monitor TRACES portal and incometaxindia.gov.in for official assignment.']},
+  {id:'t9',cat:'property',type:'tds',newSec:'Sec. 393(1) Sl.3(i)',codes:'1012',oldSec:'Sec. 194IA',title:'Purchase of Immovable Property',rate:'1%',kw:'property purchase 194IA immovable buyer seller stamp duty NRI',
+   newLink:'https://www.incometaxindia.gov.in/w/section-393-5',oldLink:'https://www.incometaxindia.gov.in/acts/income%20tax%20act,%201961/2023/ch17sec194ia.htm',
+   payer:'Resident buyer of immovable property above ₹50 lakh. For NRI sellers: buyer uses PAN (not TAN) — Finance Act 2026 amendment.',
+   payee:'Resident (or NRI) seller of immovable property other than agricultural land.',
+   thresh:'<span class="t-pill">₹50,00,000</span> (₹50 Lakhs)',
+   rates:[['Basis','Rate'],['Higher of consideration or stamp duty value','1%'],['PAN not furnished','20%']],
+   prov:['TDS on each installment as and when paid.',
+     'Deposit via Form 26QB (challan-cum-return); certificate in <strong>Form 131</strong> (old: Form 16B).',
+     'Buyer uses own PAN — no TAN needed.',
+     '<strong>New (FA 2026):</strong> For NRI sellers — buyer uses PAN (not TAN).',
+     'Agricultural land is fully exempt regardless of consideration.']},
+  {id:'t10',cat:'property',type:'tds',newSec:'Sec. 393(1) Sl.3(ii)',codes:'1011',oldSec:'Sec. 194IC',title:'JDA / Development Agreement Payment',rate:'10%',kw:'JDA joint development agreement builder developer land owner 194IC',
+   newLink:'https://www.incometaxindia.gov.in/w/section-393-5',oldLink:'https://www.incometaxindia.gov.in/acts/income%20tax%20act,%201961/2023/ch17sec194ic.htm',
+   payer:'Developer/builder making cash consideration payment to land owner under a JDA.',
+   payee:'Resident land owner receiving monetary consideration under a registered JDA u/s 67(14).',
+   thresh:'<span class="t-nil">No threshold</span>',
+   rates:[['Condition','Rate'],['Cash consideration under JDA','10%'],['PAN not furnished','20%']],
+   prov:['Only monetary (cash) consideration covered — allotment of flats is NOT covered.',
+     'No threshold — every payment attracts TDS.',
+     'Capital gains arise in the year of completion/occupation certificate.',
+     'Lower/nil deduction certificate available under Sec. 395.']},
+  {id:'t10b',cat:'property',type:'tds',newSec:'Sec. 393(1) Sl.3(iii)',codes:'1012 (old: 194IA)',oldSec:'Sec. 194LA',title:'Compensation on Compulsory Acquisition',rate:'10%',kw:'compensation acquisition immovable property 194LA government compulsory',
+   newLink:'https://www.incometaxindia.gov.in/w/section-393-5',oldLink:'https://www.incometaxindia.gov.in/acts/income%20tax%20act,%201961/2023/ch17sec194la.htm',
+   payer:'Any person paying compensation for compulsory acquisition of immovable property (other than agricultural land).',
+   payee:'Resident owner of immovable property (other than agricultural land) acquired compulsorily.',
+   thresh:'<span class="t-pill">₹5,00,000</span>',
+   rates:[['Condition','Rate'],['PAN furnished','10%'],['PAN not furnished','20%']],
+   prov:['Interim compensation also subject to TDS.',
+     'Agricultural land is fully exempt.',
+     'Enhanced compensation awarded by court: TDS in year of receipt.',
+     'Lower/nil certificate available where capital gain is not chargeable.',
+     'Note: In the official TDSMAN chart this appears under Sl. No. 3(iii) mapped as 194IA — verify the exact code on TRACES portal.']},
+  // ── INVESTMENT (393-4) ──
+  {id:'t11',cat:'dividend',type:'tds',newSec:'Sec. 393(1) Sl.4(i)',codes:'1013',oldSec:'Sec. 194K',title:'Income from MF Units',rate:'10%',kw:'mutual fund units 194K UTI AMC income',
+   newLink:'https://www.incometaxindia.gov.in/w/section-393-5',oldLink:'https://www.incometaxindia.gov.in/acts/income%20tax%20act,%201961/2023/ch17sec194k.htm',
+   payer:'AMC / Fund Administrator / UTI paying income to unit holders of specified Mutual Funds.',
+   payee:'Resident unit holders receiving income (including dividend, capital gains distributions) from Mutual Funds.',
+   thresh:'<span class="t-pill">₹10,000</span> per year',
+   rates:[['Payee','Rate'],['Resident individuals/entities','10%'],['PAN not furnished','20%']],
+   prov:['Covers all income from MF units — dividend, interest, capital gains pass-through.',
+     'Form 15G/15H can be submitted to avoid TDS.',
+     'TDS at time of credit or payment.']},
+  {id:'t12',cat:'dividend',type:'tds',newSec:'Sec. 393(1) Sl.4(ii)',codes:'1014–1016',oldSec:'Sec. 194LBA',title:'Business Trust Income (REIT/InvIT)',rate:'10%',kw:'REIT InvIT business trust interest dividend rental 194LBA',
+   newLink:'https://www.incometaxindia.gov.in/w/section-393-5',oldLink:'https://www.incometaxindia.gov.in/acts/income%20tax%20act,%201961/2023/ch17sec194lba.htm',
+   payer:'Business Trust (REIT/InvIT) trustees distributing income to unit holders.',
+   payee:'Resident unit holders of REITs and InvITs.',
+   thresh:'<span class="t-nil">No threshold</span>',
+   rates:[['Code','Type','Rate'],['1014','Interest from Business Trust','10%'],['1015','Dividend from Business Trust','10%'],['1016','Rental income (REIT)','10%']],
+   prov:['Covers all three income streams: interest, dividend, and rental income.',
+     'TDS on entire amount credited/paid to unit holders.',
+     'Code 1016 specifically for REIT real estate rental pass-through.']},
+  {id:'t13',cat:'dividend',type:'tds',newSec:'Sec. 393(1) Sl.4(iii)',codes:'1017',oldSec:'Sec. 194LBB',title:'AIF Investment Fund Income',rate:'10%',kw:'AIF investment fund category I II 194LBB',
+   newLink:'https://www.incometaxindia.gov.in/w/section-393-5',oldLink:'https://www.incometaxindia.gov.in/acts/income%20tax%20act,%201961/2023/ch17sec194lbb.htm',
+   payer:'Fund Manager of AIF (Category I or II) distributing income to unitholders.',
+   payee:'Resident unit holders of AIF Category I or II (other than business income which passes through differently).',
+   thresh:'<span class="t-nil">No threshold</span>',
+   rates:[['Payee','Rate'],['Resident unitholders (non-exempt income)','10%'],['PAN not furnished','20%']],
+   prov:['Only non-exempt portion of income is subject to TDS.',
+     'Business income of AIF is passed through without TDS (taxed in investor hands directly).',
+     'Section 224 of IT Act 2025 defines eligible AIFs.']},
+  {id:'t14',cat:'dividend',type:'tds',newSec:'Sec. 393(1) Sl.4(iv)',codes:'1018',oldSec:'Sec. 194LBC',title:'Securitisation Trust Income',rate:'10%',kw:'securitisation trust 194LBC investor income',
+   newLink:'https://www.incometaxindia.gov.in/w/section-393-5',oldLink:'https://www.incometaxindia.gov.in/acts/income%20tax%20act,%201961/2023/ch17sec194lbc.htm',
+   payer:'Securitisation Trust (Section 221 of IT Act 2025) distributing income to resident investors.',
+   payee:'Resident investors in securitisation trusts.',
+   thresh:'<span class="t-nil">No threshold</span>',
+   rates:[['Payee','Rate'],['Resident investors (Code 1018)','10%'],['Non-resident company (Code 1049)','35%'],['Non-resident others (Code 1049)','30%']],
+   prov:['Rate is 10% for resident investors under Code 1018.',
+     'Non-resident investors covered under Code 1049 at higher rates (30%/35%).',
+     'Section 221 of IT Act 2025 defines securitisation trusts covered.',
+     'TDS at time of credit or payment.']},
+  // ── INTEREST (393-5) ──
+  {id:'t15',cat:'interest',type:'tds',newSec:'Sec. 393(1) Sl.5(i)',codes:'1019',oldSec:'Sec. 193',title:'Interest on Securities',rate:'10%',kw:'interest securities debentures bonds 193 government listed',
+   newLink:'https://www.incometaxindia.gov.in/w/section-393-5',oldLink:'https://www.incometaxindia.gov.in/acts/income%20tax%20act,%201961/2023/ch17sec193.htm',
+   payer:'Any person paying interest on debentures, bonds, or government securities listed on recognised stock exchange.',
+   payee:'Resident individuals or entities entitled to receive interest on listed securities.',
+   thresh:'<span class="t-pill">₹10,000</span> per year (₹5,000 for debentures)',
+   rates:[['Payee','Rate'],['Resident (PAN furnished)','10%'],['PAN not furnished','20%']],
+   prov:['Covers listed debentures, bonds, government securities.',
+     'No TDS for Central Govt., RBI, or certain statutory bodies.',
+     'Depository participant deducts TDS for dematerialised securities.',
+     'Form 15G/15H can be submitted.']},
+  {id:'t16',cat:'interest',type:'tds',newSec:'Sec. 393(1) Sl.5(ii).D(a)',codes:'1020',oldSec:'Sec. 194A',title:'Interest (Bank) – Senior Citizens',rate:'10%',kw:'interest bank deposit senior citizen 194A 60 years',
+   newLink:'https://www.incometaxindia.gov.in/w/section-393-5',oldLink:'https://www.incometaxindia.gov.in/acts/income%20tax%20act,%201961/2023/ch17sec194a.htm',
+   payer:'Bank / cooperative bank / post office paying interest to a senior citizen.',
+   payee:'Resident senior citizen (age 60 or above) receiving interest from bank, cooperative bank, or post office.',
+   thresh:'<span class="t-pill">₹1,00,000</span> per year',
+   rates:[['Payee','Rate'],['Senior Citizen (PAN furnished)','10%'],['PAN not furnished','20%']],
+   prov:['Threshold raised to ₹1 lakh for senior citizens (60+) — major relief.',
+     'All branches of same bank aggregated for threshold.',
+     'MACT interest to natural person: fully exempt from TDS under IT Act 2025.',
+     'Form 15G/15H available if income below taxable limit.']},
+  {id:'t17',cat:'interest',type:'tds',newSec:'Sec. 393(1) Sl.5(ii).D(b)',codes:'1021',oldSec:'Sec. 194A',title:'Interest (Bank) – Non-Senior Citizens',rate:'10%',kw:'interest bank FD deposit 194A savings cooperative',
+   newLink:'https://www.incometaxindia.gov.in/w/section-393-5',oldLink:'https://www.incometaxindia.gov.in/acts/income%20tax%20act,%201961/2023/ch17sec194a.htm',
+   payer:'Bank / cooperative bank / post office paying interest to a non-senior-citizen.',
+   payee:'Resident individual (below 60) receiving interest from bank, cooperative bank, or post office.',
+   thresh:'<span class="t-pill">₹50,000</span> per year',
+   rates:[['Payee','Rate'],['Resident (PAN furnished)','10%'],['PAN not furnished','20%']],
+   prov:['Threshold of ₹50,000 applicable across all accounts at same bank.',
+     'Covers FDs, RDs, savings account interest above threshold.',
+     'MACT interest: exempt under IT Act 2025.',
+     'Form 15G/15H available.']},
+  {id:'t18',cat:'interest',type:'tds',newSec:'Sec. 393(1) Sl.5(iii)',codes:'1022',oldSec:'Sec. 194A',title:'Interest – Other Payers (Non-Bank)',rate:'10%',kw:'interest NBFC company inter-corporate deposit 194A other payers',
+   newLink:'https://www.incometaxindia.gov.in/w/section-393-5',oldLink:'https://www.incometaxindia.gov.in/acts/income%20tax%20act,%201961/2023/ch17sec194a.htm',
+   payer:'Companies, NBFCs, firms, or any person (not bank/post office) paying interest on deposits, loans, or inter-corporate deposits.',
+   payee:'Resident individuals or entities receiving interest other than from banks or post offices.',
+   thresh:'<span class="t-pill">₹10,000</span> per year',
+   rates:[['Payee','Rate'],['Resident (PAN furnished)','10%'],['PAN not furnished','20%']],
+   prov:['Covers inter-corporate deposits, loans from companies, NBFC deposits.',
+     'Ind/HUF liable to tax audit must deduct where payee is not Ind/HUF.',
+     'Form 15G/15H available.']},
+  // ── CONTRACT (393-6) ──
+  {id:'t19',cat:'contract',type:'tds',newSec:'Sec. 393(1) Sl.6(i).D(a)',codes:'1023',oldSec:'Sec. 194C',title:'Contract Work – Individual/HUF Contractor',rate:'1%',kw:'contractor 194C work labour individual HUF manpower supply',
+   newLink:'https://www.incometaxindia.gov.in/w/section-393-5',oldLink:'https://www.incometaxindia.gov.in/acts/income%20tax%20act,%201961/2023/ch17sec194c.htm',
+   payer:'"Designated persons" — Govt., company, firm, trust, university, film producer, audit-liable Ind/HUF — making payments for any "work".',
+   payee:'Resident Individual or HUF contractor/sub-contractor carrying out work or supply of labour.',
+   thresh:'<span class="t-pill">₹30,000</span> per single contract OR <span class="t-pill">₹1,00,000</span> aggregate p.a.',
+   rates:[['Contractor type','Rate'],['Individual or HUF','1%'],['PAN not furnished','20%']],
+   prov:['<strong>New (IT 2025):</strong> Manpower supply explicitly included as "work".',
+     'Both thresholds (₹30k per invoice AND ₹1L annual) trigger TDS when breached.',
+     'Transport contractors: no TDS if they furnish PAN and declaration.',
+     'No TDS if contractor declares material from own stock.']},
+  {id:'t20',cat:'contract',type:'tds',newSec:'Sec. 393(1) Sl.6(i).D(b)',codes:'1024',oldSec:'Sec. 194C',title:'Contract Work – Company/Firm/Others',rate:'2%',kw:'contractor 194C company firm LLP work labour manpower',
+   newLink:'https://www.incometaxindia.gov.in/w/section-393-5',oldLink:'https://www.incometaxindia.gov.in/acts/income%20tax%20act,%201961/2023/ch17sec194c.htm',
+   payer:'Same as Code 1023 — "designated persons".',
+   payee:'Resident Company, Firm, LLP, AOP, or BOI contractor carrying out work or supply of labour.',
+   thresh:'<span class="t-pill">₹30,000</span> per invoice OR <span class="t-pill">₹1,00,000</span> aggregate p.a.',
+   rates:[['Contractor type','Rate'],['Company/Firm/LLP/AOP/BOI','2%'],['PAN not furnished','20%']],
+   prov:['Manpower supply services: explicitly covered — check all labour deployment contracts.',
+     'Sub-contractors: same 2% rate applicable.',
+     'Annual aggregate across all invoices to same contractor counts for ₹1L limit.']},
+  {id:'t21',cat:'contract',type:'tds',newSec:'Sec. 393(1) Sl.6(ii)',codes:'1025* (inferred)',oldSec:'Sec. 194M',title:'Contract/Commission/Fees by Ind/HUF (Non-Audit)',rate:'2%',kw:'194M individual HUF non-audit contract commission professional fees',
+   newLink:'https://www.incometaxindia.gov.in/w/section-393-5',oldLink:'https://www.incometaxindia.gov.in/acts/income%20tax%20act,%201961/2023/ch17sec194m.htm',
+   payer:'Individual or HUF NOT liable to tax audit, paying contract work, commission, or professional fees where 194C/H/J does not apply.',
+   payee:'Resident contractors, agents, or professionals receiving payments from non-audit Ind/HUF above ₹50 lakh.',
+   thresh:'<span class="t-pill">₹50,00,000</span> (₹50 Lakhs) per year',
+   rates:[['Payee','Rate'],['All resident payees','2%'],['PAN not furnished','20%']],
+   prov:['Applies when individual/HUF is not required to deduct TDS under 194C/H/J but makes large payments.',
+     'High threshold — only very large payments by non-audit individuals/HUFs covered.',
+     '⚠ Code 1025 is inferred — verify before use.']},
+  // ── PROFESSIONAL (393-6 iii) ──
+  {id:'t22',cat:'professional',type:'tds',newSec:'Sec. 393(1) Sl.6(iii).D(a)',codes:'1026',oldSec:'Sec. 194J(a)',title:'Technical Services / Call Centre',rate:'2%',kw:'technical services call centre 194J FTS',
+   newLink:'https://www.incometaxindia.gov.in/w/section-393-5',oldLink:'https://www.incometaxindia.gov.in/acts/income%20tax%20act,%201961/2023/ch17sec194j.htm',
+   payer:'Any person (other than Ind/HUF not in audit) paying for technical services, royalty on films, or call centre operations.',
+   payee:'Resident technical service providers, call centre operators, film royalty recipients.',
+   thresh:'<span class="t-pill">₹50,000</span> per year',
+   rates:[['Nature','Rate'],['Technical services (FTS)','2%'],['Royalty – cinematographic films','2%'],['Call centre operations','2%'],['PAN not furnished','20%']],
+   prov:['Technical services: managerial, technical, or consultancy skill — NOT construction/assembly projects.',
+     'Lower rate (2%) — verify nature of service carefully before applying.',
+     'Royalty on non-film content is at 10% under Code 1027.']},
+  {id:'t23',cat:'professional',type:'tds',newSec:'Sec. 393(1) Sl.6(iii).D(b)',codes:'1027',oldSec:'Sec. 194J(b)',title:'Professional Services / Royalty',rate:'10%',kw:'professional services doctor lawyer CA architect engineer royalty 194J',
+   newLink:'https://www.incometaxindia.gov.in/w/section-393-5',oldLink:'https://www.incometaxindia.gov.in/acts/income%20tax%20act,%201961/2023/ch17sec194j.htm',
+   payer:'Any person (other than Ind/HUF not in audit) paying professional fees, royalty, or non-compete fees.',
+   payee:'Resident professionals: doctors, lawyers, CAs/CS/CMA, architects, engineers, interior decorators, advertising agencies; royalty recipients; non-compete fee recipients.',
+   thresh:'<span class="t-pill">₹50,000</span> per year',
+   rates:[['Nature','Rate'],['Professional services (legal, medical, CA etc.)','10%'],['Royalty (not film)','10%'],['Non-compete fees','10%'],['PAN not furnished','20%']],
+   prov:['Professional services: legal, medical, engineering, CA/CS/CMA, advertising, interior decoration.',
+     'Royalty: patents, copyrights, trademarks, designs, software licences.',
+     'Non-compete fees: any payment for agreeing not to carry on business.',
+     '₹50,000 threshold applies separately per category.']},
+  {id:'t24',cat:'professional',type:'tds',newSec:'Sec. 393(1) Sl.6(iii).D(b)',codes:'1028',oldSec:'Sec. 194J',title:'Director Fees (Non-Salary)',rate:'10%',kw:'director fees commission remuneration non-salary 194J',
+   newLink:'https://www.incometaxindia.gov.in/w/section-393-5',oldLink:'https://www.incometaxindia.gov.in/acts/income%20tax%20act,%201961/2023/ch17sec194j.htm',
+   payer:'Any company or person paying director fees, commissions, or remuneration (other than salary).',
+   payee:'Resident company directors receiving sitting fees, commissions, or remuneration that is NOT treated as salary.',
+   thresh:'<span class="t-nil">No threshold</span> — even a single rupee attracts TDS',
+   rates:[['Nature','Rate'],['Director fees / commission (non-salary)','10%'],['PAN not furnished','20%']],
+   prov:['No threshold — TDS mandatory on every payment to director (non-salary).',
+     'Salary to directors (where employer-employee relationship): covered under Sec. 392.',
+     'Meeting fees, commissions, sitting fees: all covered here.']},
+  // ── DIVIDEND (393-7) ──
+  {id:'t25',cat:'dividend',type:'tds',newSec:'Sec. 393(1) Sl.7',codes:'1029',oldSec:'Sec. 194',title:'Dividends from Domestic Company',rate:'10%',kw:'dividend company 194 shareholder domestic',
+   newLink:'https://www.incometaxindia.gov.in/w/section-393-5',oldLink:'https://www.incometaxindia.gov.in/acts/income%20tax%20act,%201961/2023/ch17sec194.htm',
+   payer:'Principal officer of a domestic company paying dividends (including preference share dividends).',
+   payee:'Resident shareholders receiving dividends from domestic companies.',
+   thresh:'<span class="t-pill">₹10,000</span> per year (for individuals)',
+   rates:[['Payee','Rate'],['Resident individual/entity','10%'],['PAN not furnished','20%']],
+   prov:['DDT abolished from 01.04.2020 — dividends now taxable in shareholder hands.',
+     'Threshold ₹10,000 applies per individual shareholder per year.',
+     'No TDS on dividends to LIC, GIC, or insurers holding full beneficial interest.',
+     'Dividend reinvestment: TDS on deemed dividend amount.',
+     'Form 15G/15H (now Form 121) available.']},
+  // ── MISCELLANEOUS (393-8) ──
+  {id:'t26',cat:'other',type:'tds',newSec:'Sec. 393(1) Sl.8(i)',codes:'1030',oldSec:'Sec. 194DA',title:'Life Insurance Policy Payout',rate:'2%',kw:'life insurance maturity policy 194DA taxable component',
+   newLink:'https://www.incometaxindia.gov.in/w/section-393-5',oldLink:'https://www.incometaxindia.gov.in/acts/income%20tax%20act,%201961/2023/ch17sec194da.htm',
+   payer:'Insurance company paying maturity proceeds or surrender value under a life insurance policy.',
+   payee:'Resident policyholder receiving taxable component of insurance maturity proceeds.',
+   thresh:'<span class="t-pill">₹1,00,000</span> taxable component',
+   rates:[['Condition','Rate'],['On taxable component only (not full proceeds) — PAN furnished','2%'],['PAN not furnished','20%']],
+   prov:['TDS only on the <strong>taxable income component</strong> — not on the full maturity/surrender value.',
+     'Rate reduced from old 5% to <strong>2%</strong> under IT Act 2025.',
+     'Proceeds under Sec. 10(10D) exempt policies: no TDS.',
+     'TDS at time of payment.']},
+  {id:'t27',cat:'other',type:'tds',newSec:'Sec. 393(1) Sl.8(ii)',codes:'1031',oldSec:'Sec. 194Q',title:'Purchase of Goods (Buyer TDS)',rate:'0.1%',kw:'purchase goods buyer 194Q turnover 10 crore seller',
+   newLink:'https://www.incometaxindia.gov.in/w/section-393-5',oldLink:'https://www.incometaxindia.gov.in/acts/income%20tax%20act,%201961/2023/ch17sec194q.htm',
+   payer:'Buyer whose turnover exceeds ₹10 crore in the preceding year, purchasing goods from a resident seller.',
+   payee:'Resident seller receiving payment for goods from a high-turnover buyer.',
+   thresh:'<span class="t-pill">Excess over ₹50 lakh</span> per seller per year',
+   rates:[['Condition','Rate'],['PAN furnished (on excess over ₹50L)','0.1%'],['PAN not furnished','5%']],
+   prov:['Applies when buyer\'s turnover > ₹10 crore in preceding year.',
+     'Not applicable if seller collects TCS on the same transaction (to avoid double levy).',
+     'TDS @ 0.1% on excess of ₹50 lakh to same seller in a year.',
+     'Goods must be purchased from resident seller only.']},
+  {id:'t28',cat:'salary',type:'tds',newSec:'Sec. 393(1) Sl.8(iii)',codes:'1032',oldSec:'Sec. 194P',title:'Specified Senior Citizens (75+ Age)',rate:'Slab',kw:'senior citizen 75 years pension interest bank 194P ITR exempt',
+   newLink:'https://www.incometaxindia.gov.in/w/section-393-5',oldLink:'https://www.incometaxindia.gov.in/acts/income%20tax%20act,%201961/2023/ch17sec194p.htm',
+   payer:'Specified bank (as notified) where senior citizen holds pension account.',
+   payee:'Resident senior citizen aged 75 or above having only pension income and interest income from the same bank.',
+   thresh:'As per slab rates (above basic exemption limit)',
+   rates:[['Condition','Rate'],['Bank computes and deducts at slab rates','Slab']],
+   prov:['Bank computes income, deducts TDS, and issues certificate.',
+     'Senior citizen exempt from filing ITR if this provision applies.',
+     'Only pension + interest from the same bank — no other income sources.',
+     'Only specified (notified) banks.']},
+  {id:'t29',cat:'other',type:'tds',newSec:'Sec. 393(1) Sl.8(iv)',codes:'1033–1034',oldSec:'Sec. 194R',title:'Benefit / Perquisite in Business',rate:'10%',kw:'benefit perquisite business professional 194R pharma doctor dealer gift',
+   newLink:'https://www.incometaxindia.gov.in/w/section-393-5',oldLink:'https://www.incometaxindia.gov.in/acts/income%20tax%20act,%201961/2023/ch17sec194r.htm',
+   payer:'Any person providing benefit/perquisite (cash or in kind) from business/profession. Ind/HUF liable only if turnover > ₹1 crore (business) / ₹50 lakh (profession).',
+   payee:'Resident deriving benefit/perquisite in course of business or profession — gifts to doctors, dealer incentives, sponsored trips.',
+   thresh:'<span class="t-pill">₹20,000</span> aggregate per recipient per year',
+   rates:[['Code','Nature','Rate'],['1033','Benefit in cash','10%'],['1034','Benefit in kind (payer deposits tax first)','10%']],
+   prov:['TDS on FMV of benefit/perquisite.',
+     'In-kind benefit: payer deposits tax <strong>before</strong> releasing benefit.',
+     '<strong>CBDT circulars on Sec. 194R (Code 1033) are now binding.</strong>',
+     'Pharma gifts to doctors, dealer trips, sponsored events: all covered.']},
+  {id:'t30',cat:'other',type:'tds',newSec:'Sec. 393(1) Sl.8(v)',codes:'1035',oldSec:'Sec. 194O',title:'E-Commerce Transactions',rate:'0.1%',kw:'e-commerce digital platform 194O online seller amazon flipkart',
+   newLink:'https://www.incometaxindia.gov.in/w/section-393-5',oldLink:'https://www.incometaxindia.gov.in/acts/income%20tax%20act,%201961/2023/ch17sec194o.htm',
+   payer:'E-commerce operator (platform owner — Amazon, Flipkart, etc.) making payments to participants.',
+   payee:'Resident e-commerce participants (sellers) selling goods/services through digital platform.',
+   thresh:'<span class="t-pill">₹5,00,000</span> per year (for Ind/HUF sellers); <span class="t-nil">No threshold</span> for others',
+   rates:[['Condition','Rate'],['PAN furnished — on gross amount','0.1%'],['PAN not furnished (special rule)','5% (not 20%)']],
+   prov:['E-commerce operator is the deductor — not the buyer.',
+     'Rate is <strong>0.1%</strong> on gross sales/services amount — same as purchase of goods.',
+     'PAN not furnished: 5% applies (special exception — normal 20% rule does not apply here).',
+     'No TDS if Ind/HUF seller\'s gross sales are below ₹5 lakh and PAN/Aadhaar is furnished.']},
+  {id:'t31',cat:'other',type:'tds',newSec:'Sec. 393(1) Sl.8(vi)',codes:'1036*–1038',oldSec:'Sec. 194S',title:'Virtual Digital Assets (VDA/Crypto)',rate:'1%',kw:'VDA virtual digital asset cryptocurrency bitcoin NFT 194S',
+   newLink:'https://www.incometaxindia.gov.in/w/section-393-5',oldLink:'https://www.incometaxindia.gov.in/acts/income%20tax%20act,%201961/2023/ch17sec194s.htm',
+   payer:'Any person paying for VDA transfer. Ind/HUF (non-audit): threshold ₹50,000. Others: ₹10,000.',
+   payee:'Resident/non-resident transferring VDA — cryptocurrency, NFTs, or any CBDT-notified VDA.',
+   thresh:'<span class="t-pill">₹50,000</span> (Ind/HUF, non-audit) / <span class="t-pill">₹10,000</span> (others)',
+   rates:[['Code','Nature','Rate'],['1036*','VDA – Ind/HUF payer (inferred)','1%'],['1037','VDA – Other payers, cash','1%'],['1038','VDA – In-kind, payer deposits tax first','1%']],
+   prov:['TDS on <strong>gross consideration</strong> — not just profit.',
+     'Barter/swap of VDA: payer deposits cash TDS + transfers VDA.',
+     'Crypto exchange: TDS by exchange at time of crediting seller.',
+     '<strong>CBDT circulars on VDA now binding.</strong>',
+     'Seller taxed @ flat 30%; no loss set-off from other sources.']},
+  // ── ANY PERSON (393-3) ──
+  {id:'t32',cat:'anyperson',type:'tds',newSec:'Sec. 393(3) Sl.1',codes:'1058–1059',oldSec:'Sec. 194B',title:'Winnings – Lottery / Crossword / Card Games',rate:'30%',kw:'lottery prize winnings crossword card game gambling betting 194B',
+   newLink:'https://www.incometaxindia.gov.in/w/section-393-5',oldLink:'https://www.incometaxindia.gov.in/acts/income%20tax%20act,%201961/2023/ch17sec194b.htm',
+   payer:'Any person (organiser, platform, agent) paying prize money from lottery, crossword puzzles, card games, gambling, or betting.',
+   payee:'Any person (resident or non-resident) winning prize money from lottery, crossword, card games, gambling or betting.',
+   thresh:'<span class="t-pill">₹10,000</span> per prize/event',
+   rates:[['Code','Nature','Rate'],['1058','Cash winnings – Lottery/Crossword/Card Games/Gambling','30%'],['1059','Winnings in kind – payer deposits tax before releasing prize','30%']],
+   prov:['Flat 30% regardless of income level — no slab rate.',
+     'TDS on each winning above ₹10,000 per prize.',
+     'Code 1059: For in-kind winnings, payer deposits full tax amount before releasing prize.',
+     'Applies to both residents and non-residents.',
+     'Online gambling/card game winnings through platforms also covered (not skill-based gaming apps which use Code 1060–1061).']},
+  {id:'t33',cat:'anyperson',type:'tds',newSec:'Sec. 393(3) Sl.2',codes:'1060–1061',oldSec:'Sec. 194BA',title:'Winnings from Online Games',rate:'30%',kw:'online game winnings 194BA gaming app fantasy sports dream11',
+   newLink:'https://www.incometaxindia.gov.in/w/section-393-5',oldLink:'https://www.incometaxindia.gov.in/acts/income%20tax%20act,%201961/2023/ch17sec194ba.htm',
+   payer:'Online gaming platform / intermediary responsible for paying net winnings to players.',
+   payee:'Any person (resident or non-resident) receiving net winnings from online games — fantasy sports, gaming apps, prediction platforms.',
+   thresh:'<span class="t-nil">No threshold</span>',
+   rates:[['Code','Nature','Rate'],['1060','Net winnings – cash payment at withdrawal or year-end','30%'],['1061','Net winnings – in kind; payer deposits tax first','30%']],
+   prov:['TDS at time of withdrawal or at year-end (31 March), whichever is earlier.',
+     'No threshold — even a single rupee of net winnings attracts TDS.',
+     'Net winnings = Total withdrawals in year − Total deposits in year.',
+     'Platform responsible for computing and deducting TDS.',
+     'Introduced for skill-based gaming platforms like fantasy sports apps.']},
+  {id:'t32c',cat:'anyperson',type:'tds',newSec:'Sec. 393(3) Sl.3',codes:'1062',oldSec:'Sec. 194BB',title:'Winnings from Horse Race',rate:'30%',kw:'horse race winnings 194BB bookmaker racecourse',
+   newLink:'https://www.incometaxindia.gov.in/w/section-393-5',oldLink:'https://www.incometaxindia.gov.in/acts/income%20tax%20act,%201961/2023/ch17sec194bb.htm',
+   payer:'Bookmaker or person holding a licence for horse racing in India paying prize money.',
+   payee:'Any person (resident or non-resident) winning prize money from horse race events at licensed racecourses.',
+   thresh:'<span class="t-pill">₹10,000</span> per event',
+   rates:[['Code','Nature','Rate'],['1062','Cash winnings from horse race – per event above ₹10,000','30%']],
+   prov:['Flat 30% on each winning above ₹10,000 per event.',
+     'Applies to licensed bookmakers and racecourse authorities only.',
+     'Applies to both residents and non-residents.']},
+  {id:'t32d',cat:'anyperson',type:'tds',newSec:'Sec. 393(3) Sl.4',codes:'1063',oldSec:'Sec. 194G',title:'Lottery Ticket Commission / Stocking Prize',rate:'2%',kw:'lottery ticket commission prize stocking distributor 194G seller agent',
+   newLink:'https://www.incometaxindia.gov.in/w/section-393-5',oldLink:'https://www.incometaxindia.gov.in/acts/income%20tax%20act,%201961/2023/ch17sec194g.htm',
+   payer:'Any person responsible for paying commission, remuneration, or prize on lottery tickets to a stockist, distributor, buyer, or seller.',
+   payee:'Resident stockists, distributors, sellers, sub-agents, or buyers of lottery tickets receiving commission, remuneration, or stocking prize.',
+   thresh:'<span class="t-pill">₹20,000</span> per year',
+   rates:[['Code','Nature','Rate'],['1063','Commission/remuneration/prize on lottery tickets','2%'],['PAN not furnished','20%']],
+   prov:['TDS at time of credit or payment, whichever earlier.',
+     'Threshold of ₹20,000 applies to aggregate payments in the year.',
+     'Distinct from lottery winnings (Code 1058) — this is for the distribution chain, not the winner.']},
+  {id:'t32e',cat:'anyperson',type:'tds',newSec:'Sec. 393(3) Sl.6',codes:'1066',oldSec:'Sec. 194EE',title:'NSS / 80CCA Deposit Withdrawals',rate:'10%',kw:'NSS national savings scheme deposit 194EE post office withdrawal 80CCA',
+   newLink:'https://www.incometaxindia.gov.in/w/section-393-5',oldLink:'https://www.incometaxindia.gov.in/acts/income%20tax%20act,%201961/2023/ch17sec194ee.htm',
+   payer:'Post office or institution making payments under National Savings Scheme (NSS) u/s 80CCA(2)(a).',
+   payee:'Any resident depositor receiving withdrawal from National Savings Scheme.',
+   thresh:'<span class="t-pill">₹2,500</span> per payment',
+   rates:[['Code','Nature','Rate'],['1066','Payment under NSS / 80CCA on withdrawal','10%'],['PAN not furnished','20%']],
+   prov:['TDS on withdrawals from National Savings Scheme accounts where deduction was claimed under Sec. 80CCA.',
+     'Low threshold of ₹2,500.',
+     'Applies to payments to the depositor or legal heir of deceased depositor.',
+     'TDS at time of payment.']},
+  {id:'t34',cat:'anyperson',type:'tds',newSec:'Sec. 393(3) Sl.5',codes:'1064–1065',oldSec:'Sec. 194N',title:'Cash Withdrawals from Bank',rate:'2%',kw:'cash withdrawal bank cooperative 194N ATM cooperative society',
+   newLink:'https://www.incometaxindia.gov.in/w/section-393-5',oldLink:'https://www.incometaxindia.gov.in/acts/income%20tax%20act,%201961/2023/ch17sec194n.htm',
+   payer:'Bank, cooperative bank, or post office making cash payments from any account.',
+   payee:'Any person withdrawing cash exceeding the prescribed limits during a financial year.',
+   thresh:'<span class="t-pill">₹3 Crore</span> (Code 1064 — co-op society payee) / <span class="t-pill">₹1 Crore</span> (Code 1065 — others)',
+   rates:[['Code','Payee Type','Threshold','Rate'],['1064','Co-operative society receiving cash','Above ₹3 Crore','2%'],['1065','Any other person (individual, company, etc.)','Above ₹1 Crore','2%']],
+   prov:['<strong>Two separate codes:</strong> 1064 for co-operative society payees (higher threshold ₹3 Cr), 1065 for all others (₹1 Cr).',
+     'Threshold computed cumulatively across all accounts at same bank/PO for same PAN.',
+     'Exempt: Central/State Govt., banking companies, RBI, notified entities.',
+     '<strong>Note:</strong> Non-filer higher rate provisions (206AB/206CCA) have been <strong>deleted</strong> under IT Act 2025 — single flat rate of 2% applies.',
+     'TDS is a credit against payee\'s total tax liability.']},
+  {id:'t35',cat:'anyperson',type:'tds',newSec:'Sec. 393(3) Sl.10',codes:'1067',oldSec:'Sec. 194T',title:'Payments to Partners of Firm / LLP',rate:'10%',kw:'partner firm LLP remuneration salary interest capital 194T',
+   newLink:'https://www.incometaxindia.gov.in/w/section-393-5',oldLink:'https://www.incometaxindia.gov.in/acts/income%20tax%20act,%201961/2023/ch17sec194t.htm',
+   payer:'Any partnership firm or LLP paying salary, remuneration, commission, bonus, or interest on capital to its partners.',
+   payee:'Partners (resident or non-resident) of a firm or LLP receiving salary, remuneration, commission, bonus, or interest on capital.',
+   thresh:'<span class="t-pill">₹20,000</span> aggregate per partner per year',
+   rates:[['Payment Type','Rate'],['Salary / Remuneration / Commission / Bonus / Interest on Capital','10%'],['Share of profit of the firm','Nil — exempt in partner\'s hands']],
+   prov:['Share of profit is exempt from tax in partner\'s hands — NOT subject to TDS.',
+     'TDS at time of credit in firm\'s books or actual payment, whichever earlier.',
+     'LLPs are included — not just traditional partnership firms.',
+     'Highly relevant for CA firms, law firms, consulting firms, and all professional LLPs.',
+     'Effective from 01.04.2025; continuing under IT Act 2025 as Code 1067.']}
+];
+
+// ═══════════════════════════════════════════════════════
+//  DATA — TCS SECTIONS (Sec. 394, Codes 1068–1092)
+// ═══════════════════════════════════════════════════════
+const TCS_DATA = [
+  {id:'c1',cat:'goods',type:'tcs',newSec:'Sec. 394(1) Sl.1',codes:'1068',oldSec:'Sec. 206C(1)(i)',title:'Alcoholic Liquor for Human Consumption',rate:'2%',kw:'alcohol liquor 206C sale',
+   newLink:'https://www.incometaxindia.gov.in/w/section-394-5',oldLink:'https://www.incometaxindia.gov.in/acts/income%20tax%20act,%201961/2023/ch17sec206c.htm',
+   payer:'Seller of alcoholic liquor for human consumption (distillery, licensed dealer).',
+   payee:'Buyer of alcoholic liquor for human consumption.',
+   thresh:'<span class="t-nil">No threshold</span>',
+   rates:[['Condition','Rate'],['All sales','2% (increased from 1%)'],['PAN not furnished','4% (double the rate)']],
+   prov:['TCS rate increased from 1% to <strong>2%</strong> under Finance Act 2026.',
+     'TCS collected at time of sale/debit or receipt — whichever earlier.',
+     'Covers wholesale and retail sales.',
+     'Form 143 quarterly return (old: Form 27EQ).']},
+  {id:'c2',cat:'forest',type:'tcs',newSec:'Sec. 394(1) Sl.2',codes:'1069',oldSec:'Sec. 206C(1)(ii)',title:'Tendu Leaves',rate:'2%',kw:'tendu leaves forest produce 206C',
+   newLink:'https://www.incometaxindia.gov.in/w/section-394-5',oldLink:'https://www.incometaxindia.gov.in/acts/income%20tax%20act,%201961/2023/ch17sec206c.htm',
+   payer:'Government contractor/licensee buying or dealing in tendu leaves.',
+   payee:'Buyer acquiring tendu leaves.',
+   thresh:'<span class="t-nil">No threshold</span>',
+   rates:[['Condition','Rate'],['All purchases','2% (reduced from 5%)'],['PAN not furnished','5%']],
+   prov:['TCS rate reduced from 5% to <strong>2%</strong> under Finance Act 2026.',
+     'Collected at time of receipt or debit to buyer, whichever earlier.']},
+  {id:'c3',cat:'forest',type:'tcs',newSec:'Sec. 394(1) Sl.3',codes:'1070–1072',oldSec:'Sec. 206C(1)(iii)/(iv)',title:'Timber, Wood & Forest Produce',rate:'2%',kw:'timber forest produce wood logs 206C',
+   newLink:'https://www.incometaxindia.gov.in/w/section-394-5',oldLink:'https://www.incometaxindia.gov.in/acts/income%20tax%20act,%201961/2023/ch17sec206c.htm',
+   payer:'Forest contractor or licensee selling timber or other forest produce.',
+   payee:'Buyer of timber, wood, or other forest produce.',
+   thresh:'<span class="t-nil">No threshold</span>',
+   rates:[['Code','Type','Rate'],['1070','Timber from forest lease','2%'],['1071','Timber by any other mode','2%'],['1072','Any other forest produce (not timber/tendu)','2%']],
+   prov:['Three sub-codes based on mode of acquisition of timber.',
+     'Forest produce excludes tendu leaves (Code 1069) and timber.',
+     'TCS collected at time of sale or receipt.']},
+  {id:'c4',cat:'goods',type:'tcs',newSec:'Sec. 394(1) Sl.4',codes:'1073',oldSec:'Sec. 206C(1)(vi)',title:'Scrap',rate:'2%',kw:'scrap waste 206C manufacturing',
+   newLink:'https://www.incometaxindia.gov.in/w/section-394-5',oldLink:'https://www.incometaxindia.gov.in/acts/income%20tax%20act,%201961/2023/ch17sec206c.htm',
+   payer:'Seller of scrap (waste/refuse from manufacturing or mechanical work).',
+   payee:'Buyer of scrap materials.',
+   thresh:'<span class="t-nil">No threshold</span>',
+   rates:[['Condition','Rate'],['All scrap sales','2% (increased from 1%)'],['PAN not furnished','5%']],
+   prov:['Rate increased from 1% to <strong>2%</strong> under Finance Act 2026.',
+     '"Scrap" means waste and refuse material from manufacturing/mechanical working.',
+     'Widely applicable in manufacturing, recycling industries.']},
+  {id:'c5',cat:'goods',type:'tcs',newSec:'Sec. 394(1) Sl.5',codes:'1074',oldSec:'Sec. 206C(1)(vii)',title:'Minerals, Coal & Iron Ore',rate:'2%',kw:'minerals coal iron ore lignite 206C mining',
+   newLink:'https://www.incometaxindia.gov.in/w/section-394-5',oldLink:'https://www.incometaxindia.gov.in/acts/income%20tax%20act,%201961/2023/ch17sec206c.htm',
+   payer:'Seller of coal, lignite, iron ore, or other specified minerals.',
+   payee:'Buyer of coal, lignite, iron ore, or other specified minerals.',
+   thresh:'<span class="t-nil">No threshold</span>',
+   rates:[['Condition','Rate'],['All sales','2% (increased from 1%)'],['PAN not furnished','5%']],
+   prov:['Rate increased from 1% to <strong>2%</strong> under Finance Act 2026.',
+     'Covers coal, lignite, iron ore, and other notified minerals.',
+     'Widely applicable in mining, power, and steel sectors.']},
+  {id:'c6',cat:'vehicle',type:'tcs',newSec:'Sec. 394(1) Sl.6',codes:'1075',oldSec:'Sec. 206C(1F)',title:'Motor Vehicle above ₹10 Lakh',rate:'1%',kw:'motor vehicle car 206C 10 lakh automobile',
+   newLink:'https://www.incometaxindia.gov.in/w/section-394-5',oldLink:'https://www.incometaxindia.gov.in/acts/income%20tax%20act,%201961/2023/ch17sec206c.htm',
+   payer:'Seller (dealer/manufacturer) of any motor vehicle with sale value exceeding ₹10 lakh.',
+   payee:'Buyer of motor vehicle valued above ₹10 lakh.',
+   thresh:'<span class="t-pill">₹10,00,000</span> (per vehicle)',
+   rates:[['Condition','Rate'],['Motor vehicle > ₹10 lakh','1%'],['PAN not furnished','2%']],
+   prov:['TCS on entire sale consideration (not just the excess over ₹10L).',
+     'Collected at time of sale or receipt, whichever earlier.',
+     'Applies to all motor vehicles — cars, SUVs, electric vehicles above ₹10L.']},
+  {id:'c7',cat:'luxury',type:'tcs',newSec:'Sec. 394(1) Sl.7',codes:'1076–1085',oldSec:'Sec. 206C(1F) — notified goods',title:'Luxury Goods (New Finance Act 2026)',rate:'1%',kw:'luxury watch handbag shoes yacht helicopter art antique 1076 1077 1078 1079 1080 1081 1082 1083 1084 1085',
+   newLink:'https://www.incometaxindia.gov.in/w/section-394-5',oldLink:'https://www.incometaxindia.gov.in/acts/income%20tax%20act,%201961/2023/ch17sec206c.htm',
+   payer:'Retailers/sellers of luxury goods listed in the Finance Act 2026 — boutiques, dealers, auction houses.',
+   payee:'Buyer of luxury goods with individual transaction value exceeding ₹10 lakh.',
+   thresh:'<span class="t-pill">₹10,00,000</span> per item/transaction',
+   rates:[['Code','Item','Rate'],['1076','Wrist Watches','1%'],['1077','Art pieces, antiques, paintings, sculptures','1%'],['1078','Collectibles: coins, stamps','1%'],['1079','Yachts, helicopters, rowing boats','1%'],['1080','Sunglasses','1%'],['1081','Handbags and purses','1%'],['1082','Shoes and footwear','1%'],['1083','Sportswear and sports equipment','1%'],['1084','Home theatre systems','1%'],['1085','Horses (racing/polo)','1%']],
+   prov:['<strong>Entirely new provisions</strong> — no equivalent in IT Act 1961.',
+     'Introduced by Finance Act 2026 to track high-value luxury consumption.',
+     'TCS @ 1% on each item where individual transaction > ₹10 lakh.',
+     'Retailers must register as TCS collectors and file Form 143 quarterly.',
+     'Significant compliance impact on luxury goods industry.']},
+  {id:'c8',cat:'other',type:'tcs',newSec:'Sec. 394(1) Sl.8',codes:'1086–1088',oldSec:'Sec. 206C(1)(a)/(b)/(c)',title:'Parking Lots, Toll Plazas & Mining',rate:'2%',kw:'parking toll plaza mining quarry 206C licensor lessor',
+   newLink:'https://www.incometaxindia.gov.in/w/section-394-5',oldLink:'https://www.incometaxindia.gov.in/acts/income%20tax%20act,%201961/2023/ch17sec206c.htm',
+   payer:'Licensor or lessor of parking lots, toll plazas, mines, or quarries.',
+   payee:'Licensee/lessee using parking lot, toll plaza, mine, or quarry under licence.',
+   thresh:'<span class="t-nil">No threshold</span>',
+   rates:[['Code','Type','Rate'],['1086','Parking lot receipts','2%'],['1087','Toll plaza collections','2%'],['1088','Mining/quarrying of any mineral','2%']],
+   prov:['TCS collected at time of receipt by licensor.',
+     'Covers all forms of parking arrangements — surface, multi-level.',
+     'Mining: covers all minerals — coal, iron ore, other minerals.']},
+  {id:'c9',cat:'lrs',type:'tcs',newSec:'Sec. 394(2)',codes:'1089',oldSec:'Sec. 206C(1G)(b)',title:'Overseas Tour Package',rate:'2%',kw:'overseas tour package travel LRS liberalised remittance scheme',
+   newLink:'https://www.incometaxindia.gov.in/w/section-394-5',oldLink:'https://www.incometaxindia.gov.in/acts/income%20tax%20act,%201961/2023/ch17sec206c.htm',
+   payer:'Tour operator or travel agent selling overseas tour packages.',
+   payee:'Any individual purchasing an overseas tour package.',
+   thresh:'<span class="t-nil">No threshold</span> — flat 2% on the entire package',
+   rates:[['Condition','Rate'],['Flat 2% on the entire package amount','2% (no threshold; replaces the old 5%/20% slab)'],['PAN not furnished','5%']],
+   prov:['<strong>Simplified from old structure:</strong> Old rates were 5% (up to ₹10L) and 20% (above ₹10L) — now flat 2%.',
+     'The 20% rate (for amounts above ₹10L) is completely removed.',
+     'TCS collected at time of booking/payment.',
+     'Major compliance relief for travel agents and corporate travel.']},
+  {id:'c10',cat:'lrs',type:'tcs',newSec:'Sec. 394(2)',codes:'1090',oldSec:'Sec. 206C(1G)(a)(i)',title:'LRS – Education via Loan (Financial Institution)',rate:'Nil',kw:'LRS education loan financial institution foreign remittance',
+   newLink:'https://www.incometaxindia.gov.in/w/section-394-5',oldLink:'https://www.incometaxindia.gov.in/acts/income%20tax%20act,%201961/2023/ch17sec206c.htm',
+   payer:'Authorised dealer (bank) remitting funds abroad under LRS for education purposes, financed by a loan from a financial institution.',
+   payee:'Remitter sending money for foreign education (loan-financed).',
+   thresh:'<span class="t-nil">No threshold</span>',
+   rates:[['Condition','Rate'],['Education funded by loan from a specified financial institution','Nil'],['PAN not furnished','Not applicable \u2014 no collection arises']],
+   prov:['TCS collected by the authorised dealer (AD) bank at time of remittance.',
+     'Lower rate (2%) because funds are loan-backed — borrower already verified.',
+     'Covers tuition fees, living expenses sent abroad for education.']},
+  {id:'c11',cat:'lrs',type:'tcs',newSec:'Sec. 394(2)',codes:'1091',oldSec:'Sec. 206C(1G)(a)(ii)',title:'LRS – Education/Medical (Own Funds)',rate:'2%',kw:'LRS education medical foreign remittance own funds abroad',
+   newLink:'https://www.incometaxindia.gov.in/w/section-394-5',oldLink:'https://www.incometaxindia.gov.in/acts/income%20tax%20act,%201961/2023/ch17sec206c.htm',
+   payer:'Authorised dealer remitting funds for education or medical treatment abroad (own funds, not loan).',
+   payee:'Remitter sending money for education/medical treatment outside India.',
+   thresh:'<span class="t-pill">₹10,00,000</span> per year',
+   rates:[['Condition','Rate'],['On the amount exceeding ₹10,00,000','2%'],['PAN not furnished','5%']],
+   prov:['Rate reduced from 5% to <strong>2%</strong> under Finance Act 2026.',
+     'Only education and medical treatment purposes — Code 1092 for all other LRS.',
+     'Threshold of ₹10,00,000 applies cumulatively in a Tax Year.']},
+  {id:'c12',cat:'lrs',type:'tcs',newSec:'Sec. 394(2)',codes:'1092',oldSec:'Sec. 206C(1G)(c)',title:'LRS – Other Purposes (General)',rate:'20%',kw:'LRS other remittance foreign travel investment gifts 206C',
+   newLink:'https://www.incometaxindia.gov.in/w/section-394-5',oldLink:'https://www.incometaxindia.gov.in/acts/income%20tax%20act,%201961/2023/ch17sec206c.htm',
+   payer:'Authorised dealer remitting funds under LRS for purposes other than education, medical, or overseas tour packages.',
+   payee:'Remitter sending money abroad for investment, gifts, travel expenses (non-package), family maintenance, etc.',
+   thresh:'<span class="t-pill">₹10,00,000</span> per year',
+   rates:[['Condition','Rate'],['On the amount exceeding ₹10,00,000 — other LRS purposes','20%'],['PAN not furnished','20% (twice the rate, capped at 20%)']],
+   prov:['Rate reduced from 5% to <strong>2%</strong> under Finance Act 2026.',
+     'Covers all LRS remittances not covered by Codes 1089-1091.',
+     'LRS annual limit: USD 2,50,000 per resident individual per Tax Year.',
+     'AD bank collects TCS at the time of remittance.']}
+];
+
+// ═══════════════════════════════════════════
+//  STATE
+// ═══════════════════════════════════════════
+const state = {
+  tds:{activeId:null,cat:'all',q:''},
+  tcs:{activeId:null,cat:'all',q:''}
+};
+let activeModule = 'tds';
+
+// ═══════════════════════════════════════════
+//  MODULE SWITCH
+// ═══════════════════════════════════════════
+function switchModule(mod,btn){
+  activeModule=mod;
+  document.querySelectorAll('.mtab').forEach(t=>t.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.module-view').forEach(v=>v.classList.remove('active'));
+  document.getElementById('mod-'+mod).classList.add('active');
+}
+
+// ═══════════════════════════════════════════
+//  RENDER SIDEBAR
+// ═══════════════════════════════════════════
+function buildSidebar(type){
+  const data=type==='tds'?TDS_DATA:TCS_DATA;
+  const list=document.getElementById(type+'-list');
+  list.innerHTML='';
+  let shown=0;
+  const s=state[type];
+  data.forEach(d=>{
+    const catOk=s.cat==='all'||d.cat===s.cat;
+    const q=s.q.toLowerCase();
+    const srchOk=!q||d.title.toLowerCase().includes(q)||d.kw.toLowerCase().includes(q)||d.oldSec.toLowerCase().includes(q)||d.newSec.toLowerCase().includes(q)||d.codes.toLowerCase().includes(q);
+    const vis=catOk&&srchOk;
+    const el=document.createElement('div');
+    el.className='sitem'+(d.id===s.activeId?' active':'')+(vis?'':' hidden-item');
+    el.dataset.id=d.id;
+    el.innerHTML=`<span class="si-badge ${type==='tds'?'si-badge-tds':'si-badge-tcs'}">${d.codes}</span>
+<div class="si-ttl">${d.title}</div>
+<div class="si-old">Erstwhile: ${d.oldSec}</div>
+<div class="si-rate">${d.rate}</div>`;
+    el.onclick=()=>selectSection(type,d.id);
+    list.appendChild(el);
+    if(vis)shown++;
+  });
+  document.getElementById(type+'-nores').style.display=shown===0?'block':'none';
+}
+
+// ═══════════════════════════════════════════
+//  RENDER DETAIL
+// ═══════════════════════════════════════════
+function buildAllDetails(type){
+  const data=type==='tds'?TDS_DATA:TCS_DATA;
+  const panel=document.getElementById(type+'-panel');
+  data.forEach(d=>{
+    const div=document.createElement('div');
+    div.className='dc'; div.id='det_'+d.id;
+    let rRows='';
+    if(d.rates&&d.rates.length){
+      rRows=d.rates.map((r,i)=>i===0?`<tr>${r.map(h=>`<th>${h}</th>`).join('')}</tr>`:`<tr>${r.map(c=>`<td>${c}</td>`).join('')}</tr>`).join('');
+    }
+    const inferNote=d.codes.includes('*')?`<div class="inferred-note">⚠ Code(s) marked * are inferred (not yet formally confirmed by CBDT). Verify on TRACES portal before use.</div>`:'';
+    div.innerHTML=`
+<div class="dh">
+  <div class="dh-left">
+    <div class="dh-title">${d.title}</div>
+    <div class="dh-badges">
+      <span class="badge ${type==='tds'?'b-new':'b-tcs'}">${type.toUpperCase()} · ${d.newSec}</span>
+      <span class="badge b-code">Codes: ${d.codes}</span>
+      <span class="badge b-old">Erstwhile: ${d.oldSec}</span>
+      <span class="badge b-rate">Rate: ${d.rate}</span>
+    </div>
+    ${inferNote}
+  </div>
+  <div class="dh-right">
+    <a href="${d.newLink}" target="_blank" class="alink">
+      <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+      IT Act 2025
+    </a>
+    <a href="${d.oldLink}" target="_blank" class="alink">
+      <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+      IT Act 1961
+    </a>
+  </div>
+</div>
+<div class="two-col">
+  <div class="dcard"><div class="dcard-lbl">Payer</div><div class="dcard-body">${d.payer}</div></div>
+  <div class="dcard"><div class="dcard-lbl">Payee / ${type==='tcs'?'Buyer':'Payee'}</div><div class="dcard-body">${d.payee}</div></div>
+</div>
+<div class="two-col mt12">
+  <div class="dcard"><div class="dcard-lbl">Threshold</div><div class="dcard-body">${d.thresh}</div></div>
+  <div class="dcard"><div class="dcard-lbl">Rates</div><div class="dcard-body"><table class="rtable">${rRows}</table></div></div>
+</div>
+<div class="dcard mt12">
+  <div class="dcard-lbl">Key Provisions</div>
+  <div class="dcard-body"><ul class="plist">${d.prov.map(p=>`<li>${p}</li>`).join('')}</ul></div>
+</div>`;
+    panel.appendChild(div);
+  });
+}
+
+function selectSection(type,id){
+  state[type].activeId=id;
+  document.querySelectorAll(`#${type}-list .sitem`).forEach(e=>e.classList.toggle('active',e.dataset.id===id));
+  document.getElementById(type+'-empty').style.display='none';
+  document.getElementById(type+'-panel').querySelectorAll('.dc').forEach(e=>e.classList.remove('active'));
+  const t=document.getElementById('det_'+id);
+  if(t){t.classList.add('active');document.getElementById(type+'-panel').scrollTop=0}
+}
+
+function filterCat(type,cat,btn){
+  state[type].cat=cat;
+  document.querySelectorAll(`#${type}-cats .cpill`).forEach(p=>p.classList.remove('active'));
+  btn.classList.add('active');
+  buildSidebar(type);
+}
+
+function doSearch(val){
+  state[activeModule].q=val;
+  buildSidebar(activeModule);
+}
+
+// ═══════════════════════════════════════════
+//  CALCULATORS
+// ═══════════════════════════════════════════
+const fmt=n=>'₹'+Math.round(n).toLocaleString('en-IN');
+
+function updateRate(){
+  const v=document.getElementById('c-nat').value;
+  if(!v)return;
+  const rate=v.split(',')[0];
+  document.getElementById('c-rate').value=rate;
+  clearCalcResult('tds');
+}
+function updateTCSRate(){
+  const v=document.getElementById('tc-nat').value;
+  if(!v)return;
+  document.getElementById('tc-rate').value=v.split(',')[0];
+  clearCalcResult('tcs');
+}
+function clearCalcResult(t){document.getElementById(t==='tds'?'tds-result':'tcs-result').classList.remove('show')}
+
+function calcTDS(){
+  const nat=document.getElementById('c-nat').value;
+  let rate=parseFloat(document.getElementById('c-rate').value);
+  const amt=parseFloat(document.getElementById('c-amt').value);
+  const pan=document.getElementById('c-pan').value;
+  const rb=document.getElementById('tds-result');
+  const wb=document.getElementById('tds-warn');
+  if(!amt||isNaN(amt)){rb.innerHTML='<div style="color:#c0392b;font-size:.82rem">Please enter a valid payment amount.</div>';rb.classList.add('show');return}
+  if(!rate||isNaN(rate)){rb.innerHTML='<div style="color:#c0392b;font-size:.82rem">Please enter or select a rate.</div>';rb.classList.add('show');return}
+  let threshold=0, noPanFloor=20, basis='gross';
+  if(nat){const parts=nat.split(',');
+    threshold=parseFloat(parts[1]||0);
+    if(parts[2]) noPanFloor=parseFloat(parts[2]);
+    if(parts[3]) basis=parts[3];
+  }
+  let effectiveRate=rate;
+  // Sec. 397(2): highest of the specified rate and the floor (5% for Sl.8(ii)/8(v), else 20%)
+  if(pan==='no') effectiveRate=Math.max(noPanFloor,rate);
+  const taxable=(basis==='excess')?Math.max(0,amt-threshold):amt;
+  const tds=taxable*(effectiveRate/100);
+  const net=amt-tds;
+  rb.innerHTML=`
+<div class="res-row"><span class="res-lbl">Gross Payment Amount</span><span class="res-val">${fmt(amt)}</span></div>
+${threshold>0?`<div class="res-row"><span class="res-lbl">Exemption Threshold</span><span class="res-val">${fmt(threshold)}</span></div>`:''}
+${basis==='excess'?`<div class="res-row"><span class="res-lbl">Amount liable to TDS (excess over threshold)</span><span class="res-val">${fmt(taxable)}</span></div>`:''}
+<div class="res-row"><span class="res-lbl">Applicable TDS Rate</span><span class="res-val blue">${effectiveRate}%${pan==='no'?(noPanFloor===5?' (No PAN — 5% floor, Sec. 397(2))':' (No PAN — higher rate)'):''}</span></div>
+<div class="res-row"><span class="res-lbl">TDS Amount</span><span class="res-val red">${fmt(tds)}</span></div>
+<div class="res-row"><span class="res-lbl">Net Payable to Party</span><span class="res-val green">${fmt(net)}</span></div>`;
+  rb.classList.add('show');
+  if(threshold>0&&amt<=threshold){
+    wb.innerHTML=`⚠ Payment amount (${fmt(amt)}) is within the threshold limit (${fmt(threshold)}). TDS may not be deductible — verify.`;
+    wb.classList.add('show');
+  } else {wb.classList.remove('show')}
+}
+
+function calcTCS(){
+  const nat=document.getElementById('tc-nat').value;
+  let rate=parseFloat(document.getElementById('tc-rate').value);
+  const amt=parseFloat(document.getElementById('tc-amt').value);
+  const pan=document.getElementById('tc-pan').value;
+  const rb=document.getElementById('tcs-result');
+  const wb=document.getElementById('tcs-warn');
+  if(!amt||isNaN(amt)){rb.innerHTML='<div style="color:#c0392b;font-size:.82rem">Please enter a valid amount.</div>';rb.classList.add('show');return}
+  if(!rate||isNaN(rate)){rb.innerHTML='<div style="color:#c0392b;font-size:.82rem">Please select a TCS category.</div>';rb.classList.add('show');return}
+  let threshold=0;
+  if(nat){threshold=parseFloat(nat.split(',')[1]||0)}
+  let effectiveRate=rate;
+  if(pan==='no') effectiveRate=Math.min(Math.max(rate*2,5),20);
+  const tcs=amt*(effectiveRate/100);
+  const total=amt+tcs;
+  rb.innerHTML=`
+<div class="res-row"><span class="res-lbl">Sale/Collection Amount</span><span class="res-val">${fmt(amt)}</span></div>
+${threshold>0?`<div class="res-row"><span class="res-lbl">Threshold for TCS</span><span class="res-val">${fmt(threshold)}</span></div>`:''}
+<div class="res-row"><span class="res-lbl">TCS Rate</span><span class="res-val blue">${effectiveRate}%${pan==='no'?' (No PAN — higher rate)':''}</span></div>
+<div class="res-row"><span class="res-lbl">TCS Amount Collected</span><span class="res-val red">${fmt(tcs)}</span></div>
+<div class="res-row"><span class="res-lbl">Total Charge to Buyer</span><span class="res-val green">${fmt(total)}</span></div>`;
+  rb.classList.add('show');
+  if(threshold>0&&amt<=threshold){
+    wb.innerHTML=`⚠ Amount is within threshold (${fmt(threshold)}). TCS may not be applicable — verify.`;
+    wb.classList.add('show');
+  }else{wb.classList.remove('show')}
+}
+
+function calcInterest(){
+  const amt=parseFloat(document.getElementById('i-amt').value);
+  const d1=new Date(document.getElementById('i-deduct').value);
+  const d2=new Date(document.getElementById('i-deposit').value);
+  const type=document.getElementById('i-type').value;
+  const rb=document.getElementById('int-result');
+  if(!amt||isNaN(amt)||!document.getElementById('i-deduct').value||!document.getElementById('i-deposit').value){
+    rb.innerHTML='<div style="color:#c0392b;font-size:.82rem">Please fill all fields.</div>';rb.classList.add('show');return;
+  }
+  if(d2<=d1){rb.innerHTML='<div style="color:#c0392b;font-size:.82rem">Deposit date must be after deduction date.</div>';rb.classList.add('show');return;}
+  // months calculation (each part month counts as full month)
+  let months=0;
+  let cur=new Date(d1);
+  while(cur<d2){cur.setMonth(cur.getMonth()+1);months++;}
+  const rate=type==='nodeduct'?0.01:0.015;
+  const interest=Math.round(amt*rate*months);
+  rb.innerHTML=`
+<div class="res-row"><span class="res-lbl">TDS/TCS Amount</span><span class="res-val">${fmt(amt)}</span></div>
+<div class="res-row"><span class="res-lbl">Period (months, each part = full)</span><span class="res-val">${months} month${months>1?'s':''}</span></div>
+<div class="res-row"><span class="res-lbl">Rate</span><span class="res-val blue">${type==='nodeduct'?'1% per month (not deducted)':'1.5% per month (deducted, not deposited)'}</span></div>
+<div class="res-row"><span class="res-lbl">Interest Payable</span><span class="res-val red">${fmt(interest)}</span></div>
+<div class="res-row"><span class="res-lbl">Total Liability</span><span class="res-val">${fmt(amt+interest)}</span></div>`;
+  rb.classList.add('show');
+}
+
+function calcLateFee(){
+  const due=new Date(document.getElementById('lf-qtr').value);
+  const actual=new Date(document.getElementById('lf-date').value);
+  const tds=parseFloat(document.getElementById('lf-tds').value);
+  const rb=document.getElementById('lf-result');
+  if(!document.getElementById('lf-date').value||!tds||isNaN(tds)){
+    rb.innerHTML='<div style="color:#c0392b;font-size:.82rem">Please fill all fields.</div>';rb.classList.add('show');return;
+  }
+  if(actual<=due){rb.innerHTML='<div style="color:#34a853;font-size:.82rem">✅ Return filed on time. No late fee applicable.</div>';rb.classList.add('show');return;}
+  const days=Math.floor((actual-due)/(1000*60*60*24));
+  const rawFee=days*200;
+  const maxFee=tds; // late fee cannot exceed total TDS
+  const fee=Math.min(rawFee,maxFee);
+  rb.innerHTML=`
+<div class="res-row"><span class="res-lbl">Due Date</span><span class="res-val">${due.toLocaleDateString('en-IN')}</span></div>
+<div class="res-row"><span class="res-lbl">Date of Filing</span><span class="res-val">${actual.toLocaleDateString('en-IN')}</span></div>
+<div class="res-row"><span class="res-lbl">Days of Delay</span><span class="res-val">${days} day${days>1?'s':''}</span></div>
+<div class="res-row"><span class="res-lbl">Late Fee @ ₹200/day</span><span class="res-val red">${fmt(rawFee)}</span></div>
+<div class="res-row"><span class="res-lbl">Total TDS (Max cap)</span><span class="res-val">${fmt(tds)}</span></div>
+<div class="res-row"><span class="res-lbl">Late Fee Payable (capped at TDS)</span><span class="res-val red">${fmt(fee)}</span></div>`;
+  rb.classList.add('show');
+}
+
+function calcShort(){
+  const amt=parseFloat(document.getElementById('sd-amt').value);
+  const d1=new Date(document.getElementById('sd-from').value);
+  const d2=new Date(document.getElementById('sd-to').value);
+  if(!amt||isNaN(amt)||!document.getElementById('sd-from').value){
+    ['sd-r1','sd-r2','sd-r3','sd-r4','sd-r5'].forEach(id=>document.getElementById(id).textContent='Error');return;
+  }
+  let months=0;
+  if(document.getElementById('sd-to').value&&d2>d1){
+    let cur=new Date(d1);while(cur<d2){cur.setMonth(cur.getMonth()+1);months++;}
+  }
+  const interest=Math.round(amt*0.01*months);
+  const penalty=amt; // 271C = amount equal to TDS
+  const disallowance=Math.round(amt/0.3*0.3); // approximate
+  const total=amt+interest+penalty;
+  document.getElementById('sd-r1').textContent=fmt(amt);
+  document.getElementById('sd-r2').textContent=months>0?fmt(interest):'—';
+  document.getElementById('sd-r3').textContent=fmt(penalty);
+  document.getElementById('sd-r4').textContent=fmt(disallowance)+' (est.)';
+  document.getElementById('sd-r5').textContent=fmt(total+(months>0?0:0));
+}
+
+function printAll(){
+  document.querySelectorAll('.dc').forEach(e=>e.classList.add('active'));
+  document.getElementById('tds-empty').style.display='none';
+  document.getElementById('tcs-empty').style.display='none';
+  window.print();
+  setTimeout(()=>{
+    document.querySelectorAll('.dc').forEach(e=>e.classList.remove('active'));
+    ['tds','tcs'].forEach(t=>{
+      const sid=state[t].activeId;
+      if(sid){const el=document.getElementById('det_'+sid);if(el)el.classList.add('active');}
+      else{document.getElementById(t+'-empty').style.display='flex';}
+    });
+  },1200);
+}
+
+// ═══ INIT ═══
+buildAllDetails('tds');
+buildAllDetails('tcs');
+buildSidebar('tds');
+buildSidebar('tcs');
+// Default select first of each
+if(TDS_DATA.length) selectSection('tds',TDS_DATA[0].id);
+if(TCS_DATA.length) selectSection('tcs',TCS_DATA[0].id);
+// Set today's dates in calculator
+const today=new Date().toISOString().split('T')[0];
+['i-deposit','lf-date'].forEach(id=>{const el=document.getElementById(id);if(el)el.value=today;});
+</script>
+</body>
+</html>
