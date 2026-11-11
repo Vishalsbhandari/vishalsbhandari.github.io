@@ -1,0 +1,1123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='30' fill='%2325487D' stroke='%23D7B165' stroke-width='3'/%3E%3Ctext x='32' y='43' font-family='Georgia,serif' font-style='italic' font-weight='bold' font-size='28' fill='%23D7B165' text-anchor='middle'%3EVB%3C/text%3E%3C/svg%3E">
+<title>Schedule II Depreciation — Calculator &amp; Auditor</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600&family=Archivo:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<style>
+  :root{
+    --bg:#FAF7F0; --bg2:#F2EDE2; --surface:#ffffff; --surface2:#FAF7F0;
+    --border:#E8E0D0; --border-strong:#D8CBB2;
+    --ink:#14213D; --ink-soft:#4A5775; --ink-mute:#5A6680;
+    --primary:#25487D; --primary-d:#14213D; --primary-soft:#E8EFF8;
+    --gold:#D7B165; --gold-text:#7D6028;
+    --ok:#25487D; --ok-bg:#E8EFF8; --ok-bd:#D3DEEE;
+    --warn:#7D6028; --warn-bg:#FBF3E0; --warn-bd:#E3D2A8;
+    --err:#A6465E; --err-bg:#FAEEF0; --err-bd:#E8CBD3;
+    --info:#4A5775; --info-bg:#F1EEE6; --info-bd:#DFD7C6;
+    --shadow:0 1px 2px rgba(20,33,61,.04),0 6px 20px rgba(20,33,61,.07);
+    --radius:12px;
+    --mono:"IBM Plex Mono",ui-monospace,"Menlo","Consolas",monospace;
+    --sans:"Archivo",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+    --display:"Newsreader",Georgia,serif;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0}
+  body{
+    font-family:var(--sans); color:var(--ink);
+    background:linear-gradient(180deg,#FAF7F0 0%,#F3EEE3 100%);
+    font-size:14px; line-height:1.5; -webkit-font-smoothing:antialiased;
+    padding:0 0 80px;
+  }
+  .num{font-variant-numeric:tabular-nums; font-feature-settings:"tnum" 1}
+  h1,h2,h3{margin:0; font-weight:600; letter-spacing:-.01em}
+  .eyebrow{font-size:11px; letter-spacing:.14em; text-transform:uppercase; color:var(--ink-mute); font-weight:600}
+  a{color:var(--primary-d)}
+
+  /* header */
+  header{
+    background:linear-gradient(135deg,#FAF7F0 0%,#F2EDE2 100%);
+    border-bottom:1px solid var(--border);
+    padding:20px 26px 18px;
+  }
+  .hwrap{max-width:1500px; margin:0 auto; display:flex; flex-wrap:wrap; align-items:flex-end; gap:18px 30px}
+  .brand h1{font-size:22px;font-family:var(--display);font-weight:600;letter-spacing:-.01em}
+  .brand .sub{color:var(--ink-mute); font-family:var(--mono); font-size:11px; letter-spacing:.09em; text-transform:uppercase; margin-top:4px}
+  .brand .mark{display:flex; align-items:center; gap:11px}
+  .logo{width:38px; height:38px; border-radius:50%; box-shadow:var(--shadow); flex:none}
+  .logo svg{width:38px; height:38px; display:block}
+  .logo svg{width:19px;height:19px}
+  .settings{display:flex; flex-wrap:wrap; gap:14px 18px; margin-left:auto; align-items:flex-end}
+  .field{display:flex; flex-direction:column; gap:5px}
+  .field label{font-size:11px; letter-spacing:.06em; text-transform:uppercase; color:var(--ink-mute); font-weight:600}
+  input,select,button,textarea{font-family:inherit; font-size:14px; color:var(--ink)}
+  .settings input,.settings select{
+    background:var(--surface); border:1px solid var(--border-strong); border-radius:9px;
+    padding:7px 10px; min-width:92px; outline:none; transition:border-color .15s,box-shadow .15s;
+  }
+  .settings input:focus,.settings select:focus{border-color:var(--primary); box-shadow:0 0 0 3px var(--primary-soft)}
+
+  main{max-width:1500px; margin:0 auto; padding:0 26px}
+
+  /* toolbar */
+  .toolbar{display:flex; flex-wrap:wrap; gap:9px; align-items:center; margin:18px 0 6px}
+  .btn{
+    display:inline-flex; align-items:center; gap:7px; cursor:pointer; user-select:none;
+    background:var(--surface); border:1px solid var(--border-strong); color:var(--ink);
+    padding:8px 13px; border-radius:9px; font-weight:500; transition:.15s; box-shadow:var(--shadow);
+  }
+  .btn:hover{border-color:var(--primary); color:var(--primary-d)}
+  .btn svg{width:15px;height:15px}
+  .btn.primary{background:var(--primary); border-color:var(--primary); color:#fff}
+  .btn.primary:hover{background:var(--primary-d); color:#fff}
+  .btn.ghost{background:transparent; box-shadow:none; border-color:transparent; color:var(--ink-soft)}
+  .btn.ghost:hover{background:var(--surface); border-color:var(--border)}
+  .spacer{flex:1}
+  .hint{color:var(--ink-mute); font-size:12px}
+
+  /* summary strip */
+  .strip{
+    display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:1px;
+    background:var(--border); border:1px solid var(--border); border-radius:var(--radius);
+    overflow:hidden; margin:14px 0 4px; box-shadow:var(--shadow);
+  }
+  .cell{background:var(--surface); padding:13px 16px}
+  .cell .k{font-size:11px; letter-spacing:.05em; text-transform:uppercase; color:var(--ink-mute); font-weight:600}
+  .cell .v{font-size:19px; font-weight:600; margin-top:4px}
+  .cell .v small{font-size:12px; color:var(--ink-mute); font-weight:500}
+  .cell.flagcell .v{color:var(--warn)}
+  .cell.flagcell.clean .v{color:var(--ok)}
+
+  /* panels */
+  .panel{background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); box-shadow:var(--shadow); margin:16px 0}
+  .panel-h{display:flex; align-items:center; gap:10px; padding:13px 18px; cursor:pointer; border-bottom:1px solid transparent}
+  .panel-h.open{border-bottom-color:var(--border)}
+  .panel-h h2{font-size:14px}
+  .panel-h .count{font-size:12px; color:var(--ink-mute)}
+  .chev{margin-left:auto; transition:transform .2s; color:var(--ink-mute)}
+  .panel-h.open .chev{transform:rotate(90deg)}
+  .panel-b{display:none; padding:6px 18px 18px}
+  .panel-b.open{display:block}
+
+  /* reference table */
+  .reftools{display:flex; gap:10px; align-items:center; margin:10px 0 12px; flex-wrap:wrap}
+  .reftools input[type=text]{flex:1; min-width:200px; background:var(--surface2); border:1px solid var(--border-strong);
+    border-radius:9px; padding:8px 12px; outline:none}
+  .reftools input:focus{border-color:var(--primary); box-shadow:0 0 0 3px var(--primary-soft)}
+  .reftable{width:100%; border-collapse:collapse; font-size:13px}
+  .reftable th{text-align:left; color:var(--ink-mute); font-size:11px; letter-spacing:.05em; text-transform:uppercase;
+    padding:7px 10px; border-bottom:1px solid var(--border); position:sticky; top:0; background:var(--surface)}
+  .reftable td{padding:7px 10px; border-bottom:1px solid var(--surface2); vertical-align:top}
+  .reftable tr:hover td{background:var(--surface2)}
+  .refscroll{max-height:340px; overflow:auto; border:1px solid var(--border); border-radius:10px}
+  .grouprow td{background:var(--bg2)!important; font-weight:600; color:var(--primary-d); font-size:12px;
+    letter-spacing:.03em; text-transform:uppercase; position:sticky}
+  .tag{display:inline-block; font-size:10px; font-weight:600; padding:1px 6px; border-radius:20px; letter-spacing:.03em}
+  .tag.nesd{background:var(--info-bg); color:var(--info); border:1px solid var(--info-bd)}
+  .keycell{font-family:var(--mono); font-size:12px; color:var(--ink-soft); cursor:copy}
+  .keycell:hover{color:var(--primary-d); text-decoration:underline}
+
+  /* main grid */
+  .gridwrap{overflow:auto; border:1px solid var(--border); border-radius:var(--radius); box-shadow:var(--shadow); background:var(--surface)}
+  table.grid{border-collapse:separate; border-spacing:0; width:100%; min-width:1650px; font-size:13px}
+  table.grid th{
+    background:var(--surface2); color:var(--ink-soft); font-weight:600; font-size:11px;
+    letter-spacing:.03em; text-transform:uppercase; text-align:left; padding:9px 9px;
+    border-bottom:1px solid var(--border-strong); position:sticky; top:0; z-index:3; white-space:nowrap;
+  }
+  table.grid th .u{display:block; font-size:9px; color:var(--ink-mute); font-weight:500; letter-spacing:.02em; text-transform:none}
+  table.grid th.grp{background:var(--primary-soft); color:var(--primary-d); text-align:center}
+  table.grid td{padding:3px 5px; border-bottom:1px solid var(--surface2); vertical-align:middle; white-space:nowrap}
+  table.grid tr:hover td{background:#FEFCF8}
+  table.grid td.calc{background:var(--surface2); font-variant-numeric:tabular-nums; text-align:right; padding-right:11px; color:var(--ink)}
+  table.grid tr:hover td.calc{background:#F5F0E5}
+  table.grid input,table.grid select{
+    width:100%; border:1px solid transparent; background:transparent; border-radius:6px;
+    padding:5px 6px; outline:none; transition:.12s;
+  }
+  table.grid input:hover,table.grid select:hover{background:var(--surface2)}
+  table.grid input:focus,table.grid select:focus{background:var(--surface); border-color:var(--primary); box-shadow:0 0 0 2px var(--primary-soft)}
+  table.grid input.n{text-align:right; font-variant-numeric:tabular-nums}
+  td.rownum{color:var(--ink-mute); text-align:center; font-size:12px; font-variant-numeric:tabular-nums; width:34px}
+  .w-id input{min-width:78px}
+  .w-desc input{min-width:150px}
+  .w-cls select{min-width:210px; font-size:12px}
+  .w-m select{min-width:64px}
+  .w-date input{min-width:104px}
+  .w-amt input{min-width:96px}
+  .w-pct input{min-width:56px}
+  .w-life input{min-width:56px}
+  .w-sh input{min-width:52px}
+  td.status{text-align:center; width:78px}
+  .chip{display:inline-flex; align-items:center; gap:4px; font-size:11px; font-weight:600; padding:2px 8px; border-radius:20px; border:1px solid}
+  .chip.ok{background:var(--ok-bg); color:var(--ok); border-color:var(--ok-bd)}
+  .chip.warn{background:var(--warn-bg); color:var(--warn); border-color:var(--warn-bd)}
+  .chip.err{background:var(--err-bg); color:var(--err); border-color:var(--err-bd)}
+  .chip.idle{background:var(--surface2); color:var(--ink-mute); border-color:var(--border)}
+  .delbtn{border:none; background:transparent; color:var(--ink-mute); cursor:pointer; padding:4px 6px; border-radius:6px; line-height:0}
+  .delbtn:hover{background:var(--err-bg); color:var(--err)}
+  .var-pos{color:var(--warn)} .var-neg{color:var(--err)} .var-zero{color:var(--ok)}
+  tfoot td{background:var(--bg2); font-weight:600; border-top:2px solid var(--border-strong); padding:9px; font-variant-numeric:tabular-nums; text-align:right}
+  tfoot td.lbl{text-align:left; color:var(--ink-soft); text-transform:uppercase; font-size:11px; letter-spacing:.05em}
+  /* multi-select */
+  th.selcol, td.selcol{width:34px; text-align:center; padding:6px 4px}
+  td.selcol input, th.selcol input{cursor:pointer; width:15px; height:15px; accent-color:var(--primary)}
+  tr.rowsel td{background:var(--primary-soft)}
+  .bulkbar{display:none; flex-wrap:wrap; align-items:center; gap:10px; margin:10px 0 2px; padding:9px 13px;
+    background:var(--surface); border:1px solid var(--border-strong); border-radius:11px; box-shadow:0 1px 2px rgba(0,0,0,.04)}
+  .bulkbar.show{display:flex}
+  .bulkbar .bcount{font-weight:700; color:var(--primary-d); font-size:13px}
+  .bulkbar .sep{width:1px; align-self:stretch; background:var(--border); margin:0 2px}
+  .bulkbar label{font-size:12px; color:var(--ink-soft); display:flex; align-items:center; gap:5px}
+  .bulkbar select, .bulkbar input{background:var(--surface2); border:1px solid var(--border-strong); border-radius:7px; padding:5px 8px; font-size:12px; outline:none}
+  .bulkbar input{width:78px}
+  .bulkbar .btn{padding:5px 11px}
+  .bulkbar .btn.danger{color:var(--err); border-color:var(--err-bd)}
+  .bulkbar .btn.danger:hover{background:var(--err-bg)}
+
+  /* exceptions */
+  .exc{display:flex; gap:11px; padding:11px 13px; border:1px solid var(--border); border-radius:10px; margin-bottom:9px; background:var(--surface)}
+  .exc .ico{flex:none; width:26px; height:26px; border-radius:7px; display:grid; place-items:center}
+  .exc.err .ico{background:var(--err-bg); color:var(--err)} 
+  .exc.warn .ico{background:var(--warn-bg); color:var(--warn)}
+  .exc.info .ico{background:var(--info-bg); color:var(--info)}
+  .exc .who{font-weight:600; font-size:13px}
+  .exc .why{color:var(--ink-soft); font-size:12.5px; margin-top:2px}
+  .empty{color:var(--ink-mute); font-size:13px; padding:8px 2px}
+
+  .note{background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:15px 18px; margin:16px 0; box-shadow:var(--shadow); font-size:12.5px; color:var(--ink-soft)}
+  .note b{color:var(--ink)}
+  .note ul{margin:8px 0 0; padding-left:18px} .note li{margin:3px 0}
+  .disclaimer{font-size:11.5px; color:var(--ink-mute); text-align:center; margin:22px 0 0; line-height:1.7}
+  .toast{position:fixed; bottom:22px; left:50%; transform:translateX(-50%) translateY(20px); opacity:0;
+    background:var(--ink); color:#fff; padding:10px 18px; border-radius:10px; font-size:13px; box-shadow:0 8px 30px rgba(0,0,0,.2);
+    transition:.25s; pointer-events:none; z-index:100}
+  .toast.show{opacity:1; transform:translateX(-50%) translateY(0)}
+  .modehint{display:inline-flex; gap:6px; align-items:center; background:var(--info-bg); color:var(--info);
+    border:1px solid var(--info-bd); padding:5px 11px; border-radius:20px; font-size:12px; font-weight:500}
+  @media (max-width:720px){
+    .settings{margin-left:0; width:100%}
+    header{padding:16px}
+    main{padding:0 12px}
+  }
+  .filedrop{border:1px dashed var(--border-strong); border-radius:10px; padding:14px; text-align:center; color:var(--ink-mute);
+    font-size:12.5px; margin:2px 0 4px; background:var(--surface2)}
+  .filedrop.drag{border-color:var(--primary); background:var(--primary-soft); color:var(--primary-d)}
+
+/* ===== branding: screen-hidden, appears only in print / PDF export ===== */
+.pdfbrand{display:none}
+@media print{
+  .pdfbrand{
+    display:flex!important;align-items:center;gap:12px;
+    padding:0 0 9px;margin:0 0 14px;border-bottom:1.5px solid #25487D;
+  }
+  .pdfbrand__m{flex:none}
+  .pdfbrand__t b{display:block;font-family:'Newsreader',Georgia,serif;font-weight:600;font-size:13pt;color:#14213D;letter-spacing:-.01em;line-height:1.15}
+  .pdfbrand__t span{display:block;font-family:'IBM Plex Mono',monospace;font-size:7pt;letter-spacing:.14em;text-transform:uppercase;color:#7D6028;margin-top:2px}
+  .pdfbrand__tool{margin-left:auto;text-align:right;font-family:'IBM Plex Mono',monospace;font-size:7.5pt;letter-spacing:.1em;text-transform:uppercase;color:#4A5775}
+}
+
+/* ===== shared tool topbar (house style) ===== */
+.topbar{background:#14213D;color:#F2EEE4;display:flex;align-items:center;gap:12px;
+  padding:0 16px;height:58px;flex-shrink:0;box-shadow:0 2px 12px rgba(20,33,61,.22);z-index:20}
+.tb-title{font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:.64rem;letter-spacing:.12em;
+  text-transform:uppercase;color:#F2EEE4}
+.tb-stat{font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:.6rem;letter-spacing:.08em;
+  color:#A9B6CB;white-space:nowrap;margin-left:auto}
+@media print{.topbar{display:none!important}}
+
+/* ===== house consistency layer (shared by every tool) ===== */
+body{font-size:14px}
+.topbar > .tb-title:first-child,.topbar > .topbar-title:first-child{border-left:0;padding-left:0;margin-left:0}
+
+/* one radius scale, matching the reference tools and the website */
+.card,.panel,.box,.sec,.sec-card,.step,.btn,.tbtn,button,input,select,textarea,
+.pill,.chip,.tab,.seg,.seg>*,.kpi,.note,.tablewrap,footer{border-radius:3px!important}
+
+/* topbar brand lock-up */
+.tb-name{font-family:'Newsreader',Georgia,serif;font-size:.95rem;line-height:1.15;color:#F2EEE4}
+.tb-sub{font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:.56rem;letter-spacing:.14em;
+  text-transform:uppercase;color:#A9B6CB;margin-top:2px}
+.topbar > .tb-title{border-left:1px solid #33425E;padding-left:12px;margin-left:4px}
+
+@media(max-width:640px){
+  .topbar{height:auto;min-height:52px;flex-wrap:wrap;padding:8px 12px;gap:8px}
+  .topbar > .tb-title{border-left:0;padding-left:0;margin-left:0}
+  .topbar .tb-stat{display:none}
+}
+</style>
+</head>
+<body>
+<!-- branding for printed / exported copies only -->
+<div class="pdfbrand">
+  <svg class="pdfbrand__m" width="40" height="40" viewBox="30 30 140 140" aria-hidden="true">
+        <defs><linearGradient id="vbPrint" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#F7E6AE"/><stop offset="0.5" stop-color="#D7B165"/><stop offset="1" stop-color="#A47A2C"/></linearGradient></defs>
+        <circle cx="100" cy="100" r="68" fill="#25487D" stroke="url(#vbPrint)" stroke-width="2.4"/>
+        <circle cx="100" cy="100" r="61" fill="none" stroke="#D7B165" stroke-width="0.8" stroke-dasharray="1.5 3.5"/>
+        <path d="M70.8115 125.495 64.5415 75.5H75.4315L79.5895 115.826L102.9865 75.5H103.1515L74.17750000000001 125.495ZM59.9215 75.632V75.5H83.0215V75.632ZM94.9015 75.632V75.5H109.42150000000001V75.632Z M99.6535 125.0V124.868H105.6265L117.1105 75.632H111.2035V75.5H131.6635Q140.1445 75.5 144.154 77.8925Q148.1635 80.285 148.1635 85.72999999999999Q148.1635 88.6835 146.6125 91.10075Q145.0615 93.518 142.405 95.30825Q139.7485 97.0985 136.37425000000002 98.17099999999999Q133.0 99.2435 129.3535 99.557Q133.66 99.689 137.10025000000002 100.7615Q140.5405 101.834 142.537 104.03675Q144.5335 106.23949999999999 144.5335 109.82Q144.5335 113.516 142.69375 116.35400000000001Q140.85399999999998 119.19200000000001 137.67775 121.1225Q134.5015 123.053 130.4755 124.0265Q126.4495 125.0 122.0935 125.0ZM115.8565 124.868H122.0935Q124.4695 124.868 126.50725 123.515Q128.54500000000002 122.162 130.07125000000002 119.79425Q131.5975 117.4265 132.4555 114.3575Q133.3135 111.2885 133.3135 107.84Q133.3135 104.90299999999999 132.505 103.1045Q131.69650000000001 101.306 130.162 100.481Q128.6275 99.656 126.4495 99.656H119.5525L119.5855 99.524H126.7135Q128.5945 99.524 130.50850000000003 98.36075Q132.4225 97.19749999999999 134.0395 95.07724999999999Q135.6565 92.957 136.63 90.07775Q137.6035 87.1985 137.6035 83.75Q137.6035 81.638 136.98475 79.78175Q136.36599999999999 77.9255 135.02125 76.77875Q133.6765 75.632 131.4985 75.632H127.34049999999999Z" fill="url(#vbPrint)"/>
+      </svg>
+  <div class="pdfbrand__t"><b>CA Vishal Bhandari</b><span>Chartered Accountant &middot; Hyderabad</span></div>
+  <span class="pdfbrand__tool">Schedule II Depreciation</span>
+</div>
+<div class="topbar">
+  <svg width="34" height="34" viewBox="30 30 140 140" aria-hidden="true">
+        <defs><linearGradient id="vbg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#F7E6AE"/><stop offset="0.5" stop-color="#D7B165"/><stop offset="1" stop-color="#A47A2C"/></linearGradient></defs>
+        <circle cx="100" cy="100" r="68" fill="#25487D" stroke="url(#vbg)" stroke-width="2.4"/>
+        <circle cx="100" cy="100" r="61" fill="none" stroke="#D7B165" stroke-width="0.8" stroke-dasharray="1.5 3.5"/>
+        <path d="M70.8115 125.495 64.5415 75.5H75.4315L79.5895 115.826L102.9865 75.5H103.1515L74.17750000000001 125.495ZM59.9215 75.632V75.5H83.0215V75.632ZM94.9015 75.632V75.5H109.42150000000001V75.632Z M99.6535 125.0V124.868H105.6265L117.1105 75.632H111.2035V75.5H131.6635Q140.1445 75.5 144.154 77.8925Q148.1635 80.285 148.1635 85.72999999999999Q148.1635 88.6835 146.6125 91.10075Q145.0615 93.518 142.405 95.30825Q139.7485 97.0985 136.37425000000002 98.17099999999999Q133.0 99.2435 129.3535 99.557Q133.66 99.689 137.10025000000002 100.7615Q140.5405 101.834 142.537 104.03675Q144.5335 106.23949999999999 144.5335 109.82Q144.5335 113.516 142.69375 116.35400000000001Q140.85399999999998 119.19200000000001 137.67775 121.1225Q134.5015 123.053 130.4755 124.0265Q126.4495 125.0 122.0935 125.0ZM115.8565 124.868H122.0935Q124.4695 124.868 126.50725 123.515Q128.54500000000002 122.162 130.07125000000002 119.79425Q131.5975 117.4265 132.4555 114.3575Q133.3135 111.2885 133.3135 107.84Q133.3135 104.90299999999999 132.505 103.1045Q131.69650000000001 101.306 130.162 100.481Q128.6275 99.656 126.4495 99.656H119.5525L119.5855 99.524H126.7135Q128.5945 99.524 130.50850000000003 98.36075Q132.4225 97.19749999999999 134.0395 95.07724999999999Q135.6565 92.957 136.63 90.07775Q137.6035 87.1985 137.6035 83.75Q137.6035 81.638 136.98475 79.78175Q136.36599999999999 77.9255 135.02125 76.77875Q133.6765 75.632 131.4985 75.632H127.34049999999999Z" fill="url(#vbg)"/>
+      </svg>
+  <div><div class="tb-name">CA Vishal Bhandari</div><div class="tb-sub">Chartered Accountant &middot; Hyderabad</div></div>
+  <span class="tb-title">Schedule II Depreciation</span>
+  <span class="tb-stat">Companies Act, 2013</span>
+</div>
+
+
+<header>
+  <div class="hwrap">
+    <div class="brand">
+      <div class="mark">
+        <div>
+          
+          <div class="sub">Calculator &amp; audit tool — Companies Act, 2013 · SLM / WDV · component &amp; shift ready</div>
+        </div>
+      </div>
+    </div>
+    <div class="settings">
+      <div class="field"><label>Financial year</label>
+        <select id="fyPick"></select>
+      </div>
+      <div class="field"><label>Period start</label><input type="date" id="fyStart"></div>
+      <div class="field"><label>Period end</label><input type="date" id="fyEnd"></div>
+      <div class="field"><label>Default method</label>
+        <select id="defMethod"><option value="WDV">WDV</option><option value="SLM">SLM</option></select>
+      </div>
+      <div class="field"><label>Default residual&nbsp;%</label><input type="number" id="defResidual" value="5" step="0.5" min="0" max="100" style="min-width:70px"></div>
+      <div class="field"><label>Variance tol. (₹)</label><input type="number" id="tol" value="1" step="1" min="0" style="min-width:78px"></div>
+    </div>
+  </div>
+</header>
+
+<main>
+  <div class="toolbar">
+    <button class="btn primary" id="addRow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>Add asset</button>
+    <button class="btn" id="recalcBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 4v6h-6M1 20v-6h6"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>Recalculate</button>
+    <label class="btn" for="fileInput"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>Import FAR</label>
+    <input type="file" id="fileInput" accept=".csv,.xlsx,.xls" style="display:none">
+    <button class="btn" id="tplBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M9 15h6"/></svg>Template</button>
+    <button class="btn" id="sampleBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>Load sample</button>
+    <div class="spacer"></div>
+    <span class="modehint" id="modehint">Auditing: computed vs books</span>
+    <button class="btn" id="exportBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"/></svg>Export</button>
+    <button class="btn ghost" id="clearBtn">Clear all</button>
+  </div>
+
+  <div class="bulkbar" id="bulkbar">
+    <span class="bcount" id="bulkCount">0 selected</span>
+    <span class="sep"></span>
+    <label>Method
+      <select id="bulkMethod"><option value="">— keep —</option><option value="WDV">WDV</option><option value="SLM">SLM</option><option value="__def">Use default</option></select>
+    </label>
+    <label>Residual %<input type="number" id="bulkRes" step="0.5" min="0" max="100" placeholder="—"></label>
+    <label>Life (yrs)<input type="number" id="bulkLife" step="1" min="0" placeholder="—"></label>
+    <button class="btn" id="bulkApply">Apply to selected</button>
+    <button class="btn" id="bulkClearLife" title="Blank the life so Schedule II life is used">Reset life to Sch II</button>
+    <span class="sep"></span>
+    <button class="btn danger" id="bulkDelete">Delete selected</button>
+    <button class="btn ghost" id="bulkDeselect">Clear selection</button>
+  </div>
+
+  <div class="strip" id="strip"></div>
+
+  <!-- Schedule II reference -->
+  <div class="panel">
+    <div class="panel-h" data-toggle="refBody">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2zM22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+      <h2>Schedule II — useful lives (Part C)</h2>
+      <span class="count" id="refCount"></span>
+      <svg class="chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 18l6-6-6-6"/></svg>
+    </div>
+    <div class="panel-b" id="refBody">
+      <div class="reftools">
+        <input type="text" id="refSearch" placeholder="Search asset class (e.g. computer, motor car, factory, plant)…">
+        <span class="hint">Tap a key to copy — paste into the Class Key column when importing.</span>
+      </div>
+      <div class="refscroll"><table class="reftable"><thead><tr><th style="width:90px">Key</th><th>Nature of asset</th><th style="width:90px">Useful life</th><th style="width:70px">Shift</th></tr></thead><tbody id="refRows"></tbody></table></div>
+    </div>
+  </div>
+
+  <!-- Grid -->
+  <div class="gridwrap">
+    <table class="grid" id="grid">
+      <thead>
+        <tr id="headRow"></tr>
+      </thead>
+      <tbody id="rows"></tbody>
+      <tfoot id="foot"></tfoot>
+    </table>
+  </div>
+  <div class="hint" style="margin:8px 2px">Editable grid — every change recomputes instantly. Grey columns are computed. Leave <b>Useful life</b> blank to use the Schedule II life for the chosen class.</div>
+
+  <!-- Exceptions -->
+  <div class="panel">
+    <div class="panel-h open" data-toggle="excBody">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--warn)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><path d="M12 9v4M12 17h.01"/></svg>
+      <h2>Audit exceptions</h2>
+      <span class="count" id="excCount"></span>
+      <svg class="chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 18l6-6-6-6"/></svg>
+    </div>
+    <div class="panel-b open" id="excBody"><div id="excList"></div></div>
+  </div>
+
+  <div class="note">
+    <b>How this tool computes depreciation (Schedule II, Companies Act 2013)</b>
+    <ul>
+      <li><b>SLM</b>: annual charge = (Cost − Residual) ÷ Useful life, charged pro-rata on a <b>day basis</b> from the date the asset is put to use (Note 2 to Schedule II).</li>
+      <li><b>WDV</b>: rate r = 1 − (Residual ÷ Cost)^(1 ÷ Life); charge = Opening WDV × r, pro-rated on days. Depreciation is capped so WDV never falls below residual value.</li>
+      <li><b>Residual value</b> is capped at 5% of cost unless justified (Para 3, Part A). A higher figure is flagged.</li>
+      <li><b>Useful life</b> for "other companies" must not exceed Part C; a longer life is flagged. A shorter life is permitted with disclosure &amp; technical justification.</li>
+      <li><b>Extra shift</b> (Note 6): for eligible (non-NESD) plant &amp; machinery, depreciation on double-shift days is +50% and triple-shift days +100%. NESD items get no extra-shift loading.</li>
+      <li><b>Disposals</b> are depreciated up to the disposal date; profit/(loss) on sale = Sale value − closing WDV.</li>
+      <li><b>Transition</b> (Note 7): where remaining life is nil, the carrying amount (net of residual) is flagged for write-off against retained earnings.</li>
+    </ul>
+  </div>
+
+  <p class="disclaimer">
+    All computation runs entirely in your browser — no asset data leaves this device. Useful lives are as per Schedule II, Companies Act 2013 (incl. amendments to 2016).<br>
+    A working aid for professional review, not a substitute for the bare Act or the ICAI Application Guide on Schedule II. Verify results before relying on them.
+  </p>
+</main>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ============================================================
+   SCHEDULE II — PART C USEFUL LIVES  (Companies Act 2013)
+   life in years; nesd = No Extra Shift Depreciation
+   ============================================================ */
+const SCHED2 = [
+ {g:"I. Buildings"},
+ {k:"I-a",  n:"Buildings (other than factory) — RCC frame structure", life:60, nesd:true},
+ {k:"I-b",  n:"Buildings (other than factory) — other than RCC frame", life:30, nesd:true},
+ {k:"I-c",  n:"Factory building", life:30, nesd:true},
+ {k:"I-d",  n:"Fences, wells, tube wells", life:5, nesd:true},
+ {k:"I-e",  n:"Others (incl. temporary structure, etc.)", life:3, nesd:true},
+
+ {g:"II. Bridges, culverts, bunders"},
+ {k:"II",   n:"Bridges, culverts, bunders, etc.", life:30, nesd:true},
+
+ {g:"III. Roads"},
+ {k:"III-a-i",  n:"Carpeted roads — RCC", life:10, nesd:true},
+ {k:"III-a-ii", n:"Carpeted roads — other than RCC", life:5, nesd:true},
+ {k:"III-b",    n:"Non-carpeted roads", life:3, nesd:true},
+
+ {g:"IV. Plant & Machinery — General"},
+ {k:"IV-i-a", n:"P&M — general (not continuous process / not special)", life:15, nesd:false},
+ {k:"IV-i-b", n:"Continuous process plant (no special rate)", life:25, nesd:true},
+
+ {g:"IV. Special P&M — Motion pictures"},
+ {k:"IV-ii-a-1", n:"Cinematograph films — production/exhibition machinery", life:13, nesd:false},
+ {k:"IV-ii-a-2", n:"Projecting equipment for exhibition of films", life:13, nesd:false},
+
+ {g:"IV. Special P&M — Glass manufacturing"},
+ {k:"IV-ii-b-1", n:"Glass — recuperative & regenerative melting furnaces", life:13, nesd:false},
+ {k:"IV-ii-b-2", n:"Glass — moulds", life:8, nesd:true},
+ {k:"IV-ii-b-3", n:"Float glass melting furnaces", life:10, nesd:true},
+
+ {g:"IV. Special P&M — Mines & quarries"},
+ {k:"IV-ii-c", n:"Portable underground / open-cast earth-moving machinery", life:8, nesd:true},
+
+ {g:"IV. Special P&M — Telecommunications"},
+ {k:"IV-ii-d-1", n:"Telecom — towers", life:18, nesd:true},
+ {k:"IV-ii-d-2", n:"Telecom — transceivers, switching, transmission & network equip.", life:13, nesd:true},
+ {k:"IV-ii-d-3", n:"Telecom — ducts, cables & optical fibre", life:18, nesd:true},
+ {k:"IV-ii-d-4", n:"Telecom — satellites", life:18, nesd:true},
+
+ {g:"IV. Special P&M — Oil & gas"},
+ {k:"IV-ii-e-1", n:"Refineries", life:25, nesd:true},
+ {k:"IV-ii-e-2", n:"Oil & gas assets (incl. wells), processing plant", life:25, nesd:true},
+ {k:"IV-ii-e-3", n:"Petrochemical plant", life:25, nesd:true},
+ {k:"IV-ii-e-4", n:"Storage tanks & related equipment", life:25, nesd:true},
+ {k:"IV-ii-e-5", n:"Pipelines", life:30, nesd:true},
+ {k:"IV-ii-e-6", n:"Drilling rig", life:30, nesd:true},
+ {k:"IV-ii-e-7", n:"Field operations (above ground) — portable boilers, tools", life:8, nesd:true},
+ {k:"IV-ii-e-8", n:"Loggers", life:8, nesd:true},
+
+ {g:"IV. Special P&M — Power (gen/trans/dist)"},
+ {k:"IV-ii-f-1", n:"Thermal / gas / combined cycle power generation plant", life:40, nesd:true},
+ {k:"IV-ii-f-2", n:"Hydro power generation plant", life:40, nesd:true},
+ {k:"IV-ii-f-3", n:"Nuclear power generation plant", life:40, nesd:true},
+ {k:"IV-ii-f-4", n:"Transmission lines, cables & other network assets", life:40, nesd:true},
+ {k:"IV-ii-f-5", n:"Wind power generation plant", life:22, nesd:true},
+ {k:"IV-ii-f-6", n:"Electric distribution plant", life:35, nesd:true},
+ {k:"IV-ii-f-7", n:"Gas storage & distribution plant", life:30, nesd:true},
+ {k:"IV-ii-f-8", n:"Water distribution plant incl. pipelines", life:30, nesd:true},
+
+ {g:"IV. Special P&M — Steel"},
+ {k:"IV-ii-g-1", n:"Sinter plant", life:20, nesd:false},
+ {k:"IV-ii-g-2", n:"Blast furnace", life:20, nesd:false},
+ {k:"IV-ii-g-3", n:"Coke ovens", life:20, nesd:false},
+ {k:"IV-ii-g-4", n:"Rolling mill in steel plant", life:20, nesd:false},
+ {k:"IV-ii-g-5", n:"Basic oxygen furnace converter", life:25, nesd:false},
+
+ {g:"IV. Special P&M — Non-ferrous metals"},
+ {k:"IV-ii-h-1",  n:"Metal pot line", life:40, nesd:true},
+ {k:"IV-ii-h-2",  n:"Bauxite crushing & grinding section", life:40, nesd:true},
+ {k:"IV-ii-h-3",  n:"Digester section", life:40, nesd:true},
+ {k:"IV-ii-h-4",  n:"Turbine", life:40, nesd:true},
+ {k:"IV-ii-h-5",  n:"Equipment for calcination", life:40, nesd:true},
+ {k:"IV-ii-h-6",  n:"Copper smelter", life:40, nesd:true},
+ {k:"IV-ii-h-7",  n:"Roll grinder", life:40, nesd:false},
+ {k:"IV-ii-h-8",  n:"Soaking pit", life:30, nesd:false},
+ {k:"IV-ii-h-9",  n:"Annealing furnace", life:30, nesd:false},
+ {k:"IV-ii-h-10", n:"Rolling mills (non-ferrous)", life:30, nesd:false},
+ {k:"IV-ii-h-11", n:"Equipment for scalping, slitting, etc.", life:30, nesd:true},
+ {k:"IV-ii-h-12", n:"Surface miner, ripper dozer, etc. used in mines", life:25, nesd:false},
+ {k:"IV-ii-h-13", n:"Copper refining plant", life:25, nesd:true},
+
+ {g:"IV. Special P&M — Medical & surgical"},
+ {k:"IV-ii-i-1", n:"X-ray, electrotherapeutic, CAT-scan, ultrasound, ECG, etc.", life:13, nesd:true},
+ {k:"IV-ii-i-2", n:"Other medical equipment", life:15, nesd:true},
+
+ {g:"IV. Special P&M — Pharma & chemicals"},
+ {k:"IV-ii-j-1", n:"Reactors", life:20, nesd:true},
+ {k:"IV-ii-j-2", n:"Distillation columns", life:20, nesd:true},
+ {k:"IV-ii-j-3", n:"Drying equipment / centrifuges / decanters", life:20, nesd:true},
+ {k:"IV-ii-j-4", n:"Vessels / storage tanks", life:20, nesd:true},
+
+ {g:"IV. Special P&M — Civil construction"},
+ {k:"IV-ii-k-1",  n:"Concreting, crushing, piling & road-making equipment", life:12, nesd:false},
+ {k:"IV-ii-k-2a", n:"Heavy lift — cranes with capacity > 100 tons", life:20, nesd:false},
+ {k:"IV-ii-k-2b", n:"Heavy lift — cranes with capacity < 100 tons", life:15, nesd:false},
+ {k:"IV-ii-k-3",  n:"Transmission line, tunnelling equipment", life:10, nesd:true},
+ {k:"IV-ii-k-4",  n:"Earth-moving equipment", life:9, nesd:false},
+ {k:"IV-ii-k-5",  n:"Others — material handling / pipeline / welding equip.", life:12, nesd:true},
+
+ {g:"IV. Special P&M — Salt works"},
+ {k:"IV-ii-l", n:"Plant & machinery used in salt works", life:15, nesd:true},
+
+ {g:"V. Furniture & fittings"},
+ {k:"V-i",  n:"General furniture & fittings", life:10, nesd:true},
+ {k:"V-ii", n:"Furniture & fittings — hotels, restaurants, educational, etc.", life:8, nesd:true},
+
+ {g:"VI. Motor vehicles"},
+ {k:"VI-1", n:"Motor cycles, scooters & other mopeds", life:10, nesd:true},
+ {k:"VI-2", n:"Motor buses/lorries/cars/taxis used in business of running on hire", life:6, nesd:true},
+ {k:"VI-3", n:"Motor buses/lorries/cars — other than on hire", life:8, nesd:true},
+ {k:"VI-4", n:"Motor tractors, harvesting combines & heavy vehicles", life:8, nesd:true},
+ {k:"VI-5", n:"Electrically operated / battery / fuel-cell vehicles", life:8, nesd:true},
+
+ {g:"VII. Ships"},
+ {k:"VII-1-i",    n:"Ocean-going — bulk carriers & liner vessels", life:25, nesd:true},
+ {k:"VII-1-ii",   n:"Ocean-going — crude/product/chemical carriers", life:20, nesd:true},
+ {k:"VII-1-iii-a",n:"Chemicals & acid carriers — stainless steel tanks", life:25, nesd:true},
+ {k:"VII-1-iii-b",n:"Chemicals & acid carriers — other tanks", life:20, nesd:true},
+ {k:"VII-1-iv",   n:"Liquefied gas carriers", life:30, nesd:true},
+ {k:"VII-1-v",    n:"Large passenger / cruise vessels", life:30, nesd:true},
+ {k:"VII-1-vi",   n:"Coastal service ships — all categories", life:30, nesd:true},
+ {k:"VII-1-vii",  n:"Offshore supply & support vessels", life:20, nesd:true},
+ {k:"VII-1-viii", n:"Catamarans & high-speed passenger craft", life:20, nesd:true},
+ {k:"VII-1-ix",   n:"Drill ships", life:25, nesd:true},
+ {k:"VII-1-x",    n:"Hovercrafts", life:15, nesd:true},
+ {k:"VII-1-xi",   n:"Fishing vessels with wooden hull", life:10, nesd:true},
+ {k:"VII-1-xii",  n:"Dredgers, tugs, barges, survey launches", life:14, nesd:true},
+ {k:"VII-2-i",    n:"Inland waters — speed boats", life:13, nesd:true},
+ {k:"VII-2-ii",   n:"Inland waters — other vessels", life:28, nesd:true},
+
+ {g:"VIII–XV. Other assets"},
+ {k:"VIII", n:"Aircrafts or helicopters", life:20, nesd:true},
+ {k:"IX",   n:"Railway sidings, locomotives, rolling stock, tramways", life:15, nesd:true},
+ {k:"X",    n:"Ropeway structures", life:15, nesd:true},
+ {k:"XI",   n:"Office equipment", life:5, nesd:true},
+ {k:"XII-i", n:"Computers — servers & networks", life:6, nesd:true},
+ {k:"XII-ii",n:"Computers — end-user devices (desktops, laptops)", life:3, nesd:true},
+ {k:"XIII-i", n:"Laboratory equipment — general", life:10, nesd:true},
+ {k:"XIII-ii",n:"Laboratory equipment — educational institutions", life:5, nesd:true},
+ {k:"XIV",  n:"Electrical installations & equipment", life:10, nesd:true},
+ {k:"XV",   n:"Hydraulic works, pipelines & sluices", life:15, nesd:true},
+];
+const CLASSMAP = {}; SCHED2.forEach(r=>{ if(r.k) CLASSMAP[r.k]=r; });
+
+/* ---------- helpers ---------- */
+const $ = id => document.getElementById(id);
+const inr = new Intl.NumberFormat('en-IN',{minimumFractionDigits:2,maximumFractionDigits:2});
+const inr0 = new Intl.NumberFormat('en-IN',{maximumFractionDigits:0});
+function fmt(x){ return (x==null||isNaN(x))?'—':inr.format(x); }
+function toast(msg){ const t=$('toast'); t.textContent=msg; t.classList.add('show'); clearTimeout(t._t); t._t=setTimeout(()=>t.classList.remove('show'),1900); }
+
+function parseDate(s){
+  if(!s) return null;
+  if(s instanceof Date) return isNaN(s)?null:s;
+  s=String(s).trim(); if(!s) return null;
+  // Excel serial
+  if(/^\d+(\.\d+)?$/.test(s) && Number(s)>20000 && Number(s)<80000){
+    const d=new Date(Date.UTC(1899,11,30)+Number(s)*864e5); return isNaN(d)?null:new Date(d.getFullYear(),d.getMonth(),d.getDate());
+  }
+  let m;
+  if(m=s.match(/^(\d{4})[-\/](\d{1,2})[-\/](\d{1,2})$/)) return new Date(+m[1],+m[2]-1,+m[3]);
+  if(m=s.match(/^(\d{1,2})[-\/](\d{1,2})[-\/](\d{2,4})$/)){ let y=+m[3]; if(y<100)y+=2000; return new Date(y,+m[2]-1,+m[1]); }
+  if(m=s.match(/^(\d{1,2})[-\s]([A-Za-z]{3,})[-\s](\d{2,4})$/)){
+    const mo=['jan','feb','mar','apr','may','jun','jul','aug','sep','oct','nov','dec'].indexOf(m[2].slice(0,3).toLowerCase());
+    if(mo>=0){ let y=+m[3]; if(y<100)y+=2000; return new Date(y,mo,+m[1]); }
+  }
+  const d=new Date(s); return isNaN(d)?null:d;
+}
+function fmtDateISO(d){ if(!d)return''; const p=n=>String(n).padStart(2,'0'); return d.getFullYear()+'-'+p(d.getMonth()+1)+'-'+p(d.getDate()); }
+function daysInclusive(a,b){ return Math.round((b-a)/864e5)+1; }
+function num(v){ if(v===''||v==null)return null; const n=Number(String(v).replace(/[, ₹]/g,'')); return isNaN(n)?null:n; }
+
+/* ---------- state ---------- */
+let rows = [];   // each: object of raw string values
+let uid = 1;
+let selection = new Set();   // uids of rows checked for bulk actions
+function blankRow(){ return {uid:uid++, id:'', desc:'', cls:'', method:'', put:'', cost:'', accum:'', res:'', life:'', disp:'', sale:'', dsh:'', tsh:'', books:''}; }
+
+/* ---------- core computation ---------- */
+function computeRow(r, fyStart, fyEnd, defMethod, defRes, tol){
+  const out = {flags:[], status:'idle'};
+  const cm = CLASSMAP[r.cls] || null;
+  const cost = num(r.cost);
+  const accum = num(r.accum) || 0;
+  const put = parseDate(r.put);
+  const disp = parseDate(r.disp);
+  const sale = num(r.sale);
+  const method = (r.method || defMethod || 'WDV').toUpperCase();
+  const resPct = (r.res===''||r.res==null) ? (num(defRes)??5) : num(r.res);
+  const schedLife = cm ? cm.life : null;
+  const life = (r.life===''||r.life==null) ? schedLife : num(r.life);
+  const nesd = cm ? cm.nesd : true;
+  const diy = daysInclusive(fyStart, fyEnd);
+  const dispInYear = disp && fyStart && fyEnd && disp>=fyStart && disp<=fyEnd;
+
+  out.method=method; out.life=life; out.schedLife=schedLife; out.nesd=nesd; out.resPct=resPct;
+  out.cost=cost; out.accum=accum;
+
+  // validation gates
+  if(cost==null || cost<=0){ out.flags.push({lvl:'info', msg:'No / invalid cost — row skipped in totals.'}); out.status='idle'; return out; }
+  const residual = cost * (resPct||0)/100;
+  out.residual = residual;
+  const openWDV = cost - accum;
+  out.openWDV = openWDV;
+
+  if(!cm){ out.flags.push({lvl:'err', msg:'Asset class not mapped to Schedule II — pick a class so its useful life can be verified.'}); }
+  if(!life || life<=0){ out.flags.push({lvl:'err', msg:'Useful life is missing — cannot compute depreciation.'}); out.status='err'; out.dep=null; out.closeWDV=openWDV; return out; }
+  if(!put){ out.flags.push({lvl:'err', msg:'Date put to use is missing / invalid.'}); out.status='err'; out.dep=null; out.closeWDV=openWDV; return out; }
+
+  // residual & life audit
+  if(resPct>5.0001) out.flags.push({lvl:'warn', msg:`Residual value ${resPct}% exceeds the 5% Schedule II cap — needs justification & disclosure (Para 3, Part A).`});
+  if(schedLife!=null && life>schedLife+1e-9) out.flags.push({lvl:'err', msg:`Useful life ${life}y exceeds Schedule II life of ${schedLife}y — not permitted for other than AS-compliant companies without regulatory basis.`});
+  if(schedLife!=null && life<schedLife-1e-9) out.flags.push({lvl:'warn', msg:`Useful life ${life}y is shorter than Schedule II (${schedLife}y) — permitted, but disclose justification with technical advice.`});
+  if(accum > cost - residual + 0.5) out.flags.push({lvl:'err', msg:'Opening accumulated depreciation exceeds depreciable amount (cost − residual) — asset is over-depreciated.'});
+
+  // active window in FY
+  const activeStart = put > fyStart ? put : fyStart;
+  const activeEnd   = (disp && disp < fyEnd) ? disp : fyEnd;
+
+  // asset not in service this FY
+  if(put > fyEnd){ out.flags.push({lvl:'info', msg:'Asset put to use after period end — no depreciation this year.'}); out.dep=0; out.closeWDV=openWDV; out.status='ok'; }
+  else if(disp && disp < fyStart){ out.flags.push({lvl:'info', msg:'Asset disposed before period start — no depreciation this year.'}); out.dep=0; out.closeWDV=openWDV; out.status='ok'; }
+  else if(disp && put && disp < put){ out.flags.push({lvl:'err', msg:'Disposal date is before date put to use.'}); out.status='err'; out.dep=null; out.closeWDV=openWDV; return out; }
+  else {
+    const activeDays = Math.max(0, daysInclusive(activeStart, activeEnd));
+    // shift days (only meaningful for non-NESD)
+    let dsh = num(r.dsh)||0, tsh = num(r.tsh)||0;
+    if(nesd && (dsh>0||tsh>0)){ out.flags.push({lvl:'warn', msg:'This class is marked NESD — extra-shift depreciation is not permitted; shift days ignored.'}); dsh=0; tsh=0; }
+    if(dsh+tsh > activeDays+0.5){ out.flags.push({lvl:'warn', msg:`Double + triple shift days (${dsh+tsh}) exceed active days (${activeDays}) — capped.`}); const ex=dsh+tsh-activeDays; if(tsh>=ex){tsh-=ex;} else {dsh-=(ex-tsh); tsh=0;} }
+    const single = Math.max(0, activeDays - dsh - tsh);
+    const weightedDays = single + 1.5*dsh + 2.0*tsh;
+
+    // annual (single-shift, full year) charge
+    let annual;
+    if(method==='SLM'){ annual = (cost - residual)/life; }
+    else { const r_ = 1 - Math.pow(Math.max(residual,1e-9)/cost, 1/life); out.wdvRate=r_; annual = openWDV * r_; }
+    const daily = annual / diy;
+    let dep = daily * weightedDays;
+
+    // remaining depreciable cap
+    const remaining = method==='SLM' ? Math.max(0, (cost - residual) - accum) : Math.max(0, openWDV - residual);
+    if(dep > remaining){ dep = remaining; if(remaining<=0.5) out.flags.push({lvl:'info', msg:'Book value already at residual — nil depreciation.'}); else out.flags.push({lvl:'info', msg:'Depreciation restricted so book value does not fall below residual value.'}); }
+
+    // useful life elapsed check
+    if(life!=null && put < fyStart && !dispInYear){
+      const elapsedY = daysInclusive(put, fyStart)/365.25;
+      const material = Math.max(1000, cost*0.01);
+      if(elapsedY >= life - 1e-9 && remaining > material){
+        if(put < new Date(2014,3,1))
+          out.flags.push({lvl:'warn', msg:`In use since before 01-04-2014 with useful life now nil — carrying amount net of residual (₹${inr.format(remaining)}) is to be adjusted against opening retained earnings (Note 7, Schedule II).`});
+        else
+          out.flags.push({lvl:'warn', msg:`Useful life (${life}y) has elapsed but ₹${inr.format(remaining)} above residual is still un-depreciated — verify the charge; the asset should be written down to residual value.`});
+      }
+    }
+
+    out.dep = dep;
+    out.activeDays = activeDays;
+    out.weightedDays = weightedDays;
+    out.closeWDV = openWDV - dep;
+    out.status = 'ok';
+  }
+
+  // disposal P/L
+  if(disp && disp>=fyStart && disp<=fyEnd){
+    out.disposed=true;
+    const wdvAtDisp = out.closeWDV;
+    if(sale!=null){ out.pl = sale - wdvAtDisp; }
+    out.flags.push({lvl:'info', msg:`Disposed on ${fmtDateISO(disp)}. WDV on disposal ₹${inr.format(Math.max(0,wdvAtDisp))}${sale!=null?`, ${out.pl>=0?'profit':'loss'} on sale ₹${inr.format(Math.abs(out.pl))}`:''}.`});
+    out.closeWDV = 0;
+  }
+
+  // books variance (audit)
+  const books = num(r.books);
+  if(books!=null && out.dep!=null){
+    out.books=books; out.variance = books - out.dep;
+    if(Math.abs(out.variance) > (num(tol)??1)){
+      out.flags.push({lvl:'err', msg:`Depreciation per books ₹${inr.format(books)} differs from computed ₹${inr.format(out.dep)} by ₹${inr.format(out.variance)}.`});
+    }
+  }
+
+  // roll up status
+  if(out.flags.some(f=>f.lvl==='err')) out.status='err';
+  else if(out.flags.some(f=>f.lvl==='warn')) out.status='warn';
+  else if(out.status!=='idle') out.status='ok';
+  return out;
+}
+
+/* ---------- rendering ---------- */
+const COLS = [
+  {key:'id',   h:'Asset ID', cls:'w-id'},
+  {key:'desc', h:'Description', cls:'w-desc'},
+  {key:'cls',  h:'Schedule II class', cls:'w-cls', type:'sel'},
+  {key:'method',h:'Method', cls:'w-m', type:'method'},
+  {key:'put',  h:'Put to use', u:'date', cls:'w-date', type:'date'},
+  {key:'cost', h:'Cost', u:'₹', cls:'w-amt', n:true},
+  {key:'accum',h:'Op. accum. dep', u:'₹', cls:'w-amt', n:true},
+  {key:'res',  h:'Resid.', u:'%', cls:'w-pct', n:true},
+  {key:'life', h:'Life', u:'yrs · blank=Sch II', cls:'w-life', n:true},
+  {key:'dsh',  h:'2-shift', u:'days', cls:'w-sh', n:true},
+  {key:'tsh',  h:'3-shift', u:'days', cls:'w-sh', n:true},
+  {key:'disp', h:'Disposal', u:'date', cls:'w-date', type:'date'},
+  {key:'sale', h:'Sale value', u:'₹', cls:'w-amt', n:true},
+  {key:'books',h:'Dep per books', u:'₹ · audit', cls:'w-amt', n:true},
+];
+const CALCCOLS = [
+  {h:'Opening WDV'},{h:'Dep for year'},{h:'Closing WDV'},{h:'Variance'},
+];
+
+function buildHead(){
+  const tr = $('headRow'); tr.innerHTML='';
+  const selTh=el('th',{class:'selcol'});
+  const selAll=document.createElement('input'); selAll.type='checkbox'; selAll.id='selAll'; selAll.title='Select all rows';
+  selAll.addEventListener('change',e=>{ if(e.target.checked) rows.forEach(r=>selection.add(r.uid)); else selection.clear(); render(); });
+  selTh.appendChild(selAll); tr.appendChild(selTh);
+  tr.appendChild(el('th',{},'#'));
+  COLS.forEach(c=>{ const th=el('th'); th.innerHTML=c.h+(c.u?`<span class="u">${c.u}</span>`:''); tr.appendChild(th); });
+  CALCCOLS.forEach(c=>{ const th=el('th',{class:'grp'}); th.textContent=c.h; tr.appendChild(th); });
+  tr.appendChild(el('th',{class:'grp'},'Status'));
+  tr.appendChild(el('th',{},''));
+}
+function el(t,attrs,txt){ const e=document.createElement(t); if(attrs)for(const k in attrs)e.setAttribute(k,attrs[k]); if(txt!=null)e.textContent=txt; return e; }
+
+let SEL_HTML='';
+function classSelectHTML(sel){
+  if(!SEL_HTML){
+    let h='<option value="">— select —</option>';
+    let open=false;
+    SCHED2.forEach(r=>{
+      if(r.g){ if(open)h+='</optgroup>'; h+=`<optgroup label="${r.g}">`; open=true; }
+      else h+=`<option value="${r.k}">${r.n} · ${r.life}y${r.nesd?' · NESD':''}</option>`;
+    });
+    if(open)h+='</optgroup>';
+    SEL_HTML=h;
+  }
+  return SEL_HTML.replace(`value="${sel}"`, `value="${sel}" selected`);
+}
+
+function render(){
+  const fyStart=parseDate($('fyStart').value), fyEnd=parseDate($('fyEnd').value);
+  const defMethod=$('defMethod').value, defRes=$('defResidual').value, tol=$('tol').value;
+  const tb=$('rows'); tb.innerHTML='';
+  const live=new Set(rows.map(r=>r.uid)); [...selection].forEach(u=>{ if(!live.has(u)) selection.delete(u); });
+  let tCost=0,tOpen=0,tDep=0,tClose=0,tBooks=0,tVar=0, nErr=0,nWarn=0, hasBooks=false;
+  const excs=[];
+
+  rows.forEach((r,i)=>{
+    const c = (fyStart&&fyEnd) ? computeRow(r,fyStart,fyEnd,defMethod,defRes,tol) : {flags:[],status:'idle'};
+    const tr=el('tr'); tr.dataset.uid=r.uid;
+    if(selection.has(r.uid)) tr.classList.add('rowsel');
+    const selTd=el('td',{class:'selcol'});
+    const cb=document.createElement('input'); cb.type='checkbox'; cb.checked=selection.has(r.uid);
+    cb.addEventListener('change',e=>{ if(e.target.checked) selection.add(r.uid); else selection.delete(r.uid); tr.classList.toggle('rowsel',e.target.checked); updateBulk(); syncSelAll(); });
+    selTd.appendChild(cb); tr.appendChild(selTd);
+    tr.appendChild(el('td',{class:'rownum'},String(i+1)));
+    COLS.forEach(col=>{
+      const td=el('td',{class:col.cls});
+      if(col.type==='sel'){
+        const s=document.createElement('select'); s.innerHTML=classSelectHTML(r.cls); s.value=r.cls;
+        s.addEventListener('change',e=>{ r.cls=e.target.value; render(); });
+        td.appendChild(s);
+      } else if(col.type==='method'){
+        const s=document.createElement('select'); s.innerHTML=`<option value="">${defMethod}*</option><option>WDV</option><option>SLM</option>`; s.value=r.method;
+        s.addEventListener('change',e=>{ r.method=e.target.value; render(); });
+        td.appendChild(s);
+      } else {
+        const inp=document.createElement('input');
+        if(col.type==='date') inp.type='date'; else inp.type='text';
+        if(col.n) inp.className='n';
+        inp.value = col.type==='date' ? (parseDate(r[col.key])?fmtDateISO(parseDate(r[col.key])):'') : (r[col.key]||'');
+        inp.addEventListener('change',e=>{ r[col.key]=e.target.value; render(); });
+        td.appendChild(inp);
+      }
+      tr.appendChild(td);
+    });
+    // calc cells
+    tr.appendChild(calcCell(c.openWDV));
+    tr.appendChild(calcCell(c.dep));
+    tr.appendChild(calcCell(c.closeWDV));
+    const vtd=el('td',{class:'calc'});
+    if(c.variance!=null){ vtd.textContent=fmt(c.variance); vtd.classList.add(Math.abs(c.variance)<= (num(tol)??1)?'var-zero':(c.variance>0?'var-pos':'var-neg')); }
+    else vtd.textContent='—';
+    tr.appendChild(vtd);
+    // status
+    const std=el('td',{class:'status'});
+    const chip=el('span',{class:'chip '+(c.status||'idle')});
+    chip.textContent = c.status==='err'?'Error':c.status==='warn'?'Review':c.status==='ok'?'OK':'—';
+    std.appendChild(chip); tr.appendChild(std);
+    // delete
+    const dtd=el('td');
+    const db=el('button',{class:'delbtn',title:'Remove'}); db.innerHTML='<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2m2 0v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/></svg>';
+    db.addEventListener('click',()=>{ rows=rows.filter(x=>x.uid!==r.uid); selection.delete(r.uid); render(); });
+    dtd.appendChild(db); tr.appendChild(dtd);
+    tb.appendChild(tr);
+
+    // totals
+    if(c.cost){ tCost+=c.cost; tOpen+=c.openWDV||0; tDep+=c.dep||0; tClose+=(c.closeWDV!=null?c.closeWDV:c.openWDV)||0; }
+    if(c.books!=null){ hasBooks=true; tBooks+=c.books; tVar+=(c.variance||0); }
+    if(c.status==='err')nErr++; else if(c.status==='warn')nWarn++;
+    const label=(r.id||r.desc||('Row '+(i+1)));
+    c.flags.forEach(f=>{ if(f.lvl==='err'||f.lvl==='warn') excs.push({lvl:f.lvl,who:label,why:f.msg}); });
+  });
+
+  // footer
+  const foot=$('foot'); foot.innerHTML='';
+  const ftr=el('tr');
+  // Columns: [sel][#][id][desc][cls][method][put] | cost | accum res life 2sh 3sh disp sale books | openWDV dep closeWDV var | status del
+  ftr.appendChild(el('td',{class:'lbl',colspan:'7'},'Totals ('+rows.filter(r=>num(r.cost)).length+' assets)')); // sel..put
+  ftr.appendChild(el('td',{style:'text-align:right;padding-right:11px'},inr0.format(tCost)));   // cost
+  for(let i=0;i<8;i++) ftr.appendChild(el('td'));                                                // accum..books
+  ftr.appendChild(el('td',{style:'text-align:right;padding-right:11px'},inr0.format(tOpen)));   // opening WDV
+  ftr.appendChild(el('td',{style:'text-align:right;padding-right:11px'},inr0.format(tDep)));    // dep
+  ftr.appendChild(el('td',{style:'text-align:right;padding-right:11px'},inr0.format(tClose)));  // closing WDV
+  ftr.appendChild(el('td',{style:'text-align:right;padding-right:11px'},hasBooks?inr0.format(tVar):'—')); // variance
+  ftr.appendChild(el('td')); ftr.appendChild(el('td'));                                          // status, delete
+  foot.appendChild(ftr);
+
+  // strip
+  const clean = (nErr+nWarn)===0 && rows.some(r=>num(r.cost));
+  $('strip').innerHTML = `
+    <div class="cell"><div class="k">Assets</div><div class="v num">${rows.filter(r=>num(r.cost)).length}</div></div>
+    <div class="cell"><div class="k">Gross cost</div><div class="v num">₹ ${inr0.format(tCost)}</div></div>
+    <div class="cell"><div class="k">Opening WDV</div><div class="v num">₹ ${inr0.format(tOpen)}</div></div>
+    <div class="cell"><div class="k">Depreciation (year)</div><div class="v num">₹ ${inr0.format(tDep)}</div></div>
+    <div class="cell"><div class="k">Closing WDV</div><div class="v num">₹ ${inr0.format(tClose)}</div></div>
+    <div class="cell flagcell ${clean?'clean':''}"><div class="k">Exceptions</div><div class="v num">${nErr+nWarn}${(nErr+nWarn)?` <small>${nErr} err · ${nWarn} review</small>`:' <small>clean</small>'}</div></div>`;
+
+  // exceptions list
+  const list=$('excList'); list.innerHTML='';
+  if(!excs.length){ list.innerHTML='<div class="empty">No exceptions. Add assets or import a register to begin auditing.</div>'; }
+  else {
+    const order={err:0,warn:1}; excs.sort((a,b)=>order[a.lvl]-order[b.lvl]);
+    excs.forEach(e=>{
+      const d=el('div',{class:'exc '+e.lvl});
+      const ico=el('div',{class:'ico'});
+      ico.innerHTML = e.lvl==='err'
+        ? '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>'
+        : '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 9v4M12 17h.01M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/></svg>';
+      d.appendChild(ico);
+      const body=el('div'); body.innerHTML=`<div class="who">${escapeHtml(e.who)}</div><div class="why">${escapeHtml(e.why)}</div>`;
+      d.appendChild(body); list.appendChild(d);
+    });
+  }
+  $('excCount').textContent = excs.length ? `${excs.length} to review` : 'clean';
+  syncSelAll(); updateBulk();
+  window._lastCompute = {fyStart,fyEnd,defMethod,defRes,tol};
+}
+function syncSelAll(){ const sa=$('selAll'); if(!sa) return; const n=rows.length, s=rows.filter(r=>selection.has(r.uid)).length; sa.checked=n>0&&s===n; sa.indeterminate=s>0&&s<n; }
+function updateBulk(){ const bar=$('bulkbar'); if(!bar) return; const s=selection.size; bar.classList.toggle('show',s>0); const c=$('bulkCount'); if(c) c.textContent=s+' selected'; }
+function calcCell(v){ const td=el('td',{class:'calc'}); td.textContent = v==null?'—':fmt(v); return td; }
+function escapeHtml(s){ return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+
+/* ---------- Schedule II reference render ---------- */
+function renderRef(filter){
+  const tb=$('refRows'); tb.innerHTML=''; let count=0; let f=(filter||'').toLowerCase().trim();
+  SCHED2.forEach(r=>{
+    if(r.g){ const tr=el('tr',{class:'grouprow'}); const td=el('td',{colspan:'4'},r.g); tr.appendChild(td); tb.appendChild(tr._pending=tr); tr._grp=true; return; }
+    if(f && !(r.n.toLowerCase().includes(f)||r.k.toLowerCase().includes(f))) return;
+    const tr=el('tr');
+    const kc=el('td',{class:'keycell',title:'Click to copy key'},r.k); kc.addEventListener('click',()=>{navigator.clipboard&&navigator.clipboard.writeText(r.k); toast('Copied key: '+r.k);});
+    tr.appendChild(kc);
+    tr.appendChild(el('td',{},r.n));
+    tr.appendChild(el('td',{class:'num'},r.life+' yrs'));
+    const st=el('td'); st.innerHTML = r.nesd?'<span class="tag nesd">NESD</span>':'<span class="hint">Shift OK</span>'; tr.appendChild(st);
+    tb.appendChild(tr); count++;
+  });
+  // drop empty group headers when filtering
+  if(f){ [...tb.querySelectorAll('tr.grouprow')].forEach(g=>{ let nx=g.nextElementSibling; if(!nx||nx.classList.contains('grouprow'))g.remove(); }); }
+  $('refCount').textContent = f ? `${count} match${count!==1?'es':''}` : `${Object.keys(CLASSMAP).length} classes`;
+}
+
+/* ---------- CSV / Excel ---------- */
+const IMPORT_FIELDS = ['id','desc','cls','method','put','cost','accum','res','life','disp','sale','dsh','tsh','books'];
+const HEADERS = ['Asset ID','Description','Schedule II Class Key','Method','Date Put to Use','Cost','Opening Accumulated Depreciation','Residual %','Useful Life Override','Disposal Date','Sale Value','Double Shift Days','Triple Shift Days','Depreciation as per Books'];
+
+function downloadTemplate(){
+  // Build a real .xlsx (hand-rolled zip, fully offline) so the Category column carries a dropdown list.
+  // Labels are prefixed with the Schedule II reference key and kept in schedule order
+  // (Part I buildings → II bridges → III roads → IV plant & machinery → …) so the
+  // dropdown reads and groups exactly like Schedule II.
+  const CATLABELS = SCHED2.filter(r=>r.k).map(r=>r.k+' · '+r.n);
+  const lab = k => { const r = SCHED2.find(x=>x.k===k); return r ? (r.k+' · '+r.n) : ''; };
+  const heads = HEADERS.slice(); heads[2] = 'Schedule II Category';
+  const samples = [
+    ['FA-001','Dell Latitude laptop',lab('XII-ii'),'WDV','15-06-2023',65000,0,5,'','','','','',''],
+    ['FA-002','Factory shed',lab('I-c'),'SLM','01-04-2019',4000000,0,5,'','','','','','']
+  ];
+  // helpers
+  const esc = s => String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  const colL = n => { let s=''; n++; while(n){ const m=(n-1)%26; s=String.fromCharCode(65+m)+s; n=(n-m-1)/26; } return s; };
+  const tCell = (r,c,v)=>`<c r="${colL(c)}${r}" t="inlineStr"><is><t xml:space="preserve">${esc(v)}</t></is></c>`;
+  const nCell = (r,c,v)=>`<c r="${colL(c)}${r}"><v>${v}</v></c>`;
+  // FAR sheet
+  let body = `<row r="1">`+heads.map((h,i)=>tCell(1,i,h)).join('')+`</row>`;
+  samples.forEach((s,ri)=>{ const r=ri+2; body += `<row r="${r}">`+s.map((v,i)=> v===''?'' : (typeof v==='number'?nCell(r,i,v):tCell(r,i,v))).join('')+`</row>`; });
+  const dv = `<dataValidations count="1"><dataValidation type="list" allowBlank="1" showInputMessage="1" showErrorMessage="0" sqref="C2:C2000"><formula1>Categories!$A$1:$A$${CATLABELS.length}</formula1></dataValidation></dataValidations>`;
+  const sheet1 = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n<worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><sheetViews><sheetView tabSelected="1" workbookViewId="0"/></sheetViews><cols><col min="1" max="14" width="22"/></cols><sheetData>${body}</sheetData>${dv}</worksheet>`;
+  const listRows = CATLABELS.map((n,i)=>`<row r="${i+1}">`+tCell(i+1,0,n)+`</row>`).join('');
+  const sheet2 = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n<worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><sheetData>${listRows}</sheetData></worksheet>`;
+  const wb = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n<workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"><sheets><sheet name="Fixed Asset Register" sheetId="1" r:id="rId1"/><sheet name="Categories" sheetId="2" r:id="rId2"/></sheets></workbook>`;
+  const wbRels = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet1.xml"/><Relationship Id="rId2" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet2.xml"/></Relationships>`;
+  const rels = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="xl/workbook.xml"/></Relationships>`;
+  const ct = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/><Override PartName="/xl/worksheets/sheet1.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/><Override PartName="/xl/worksheets/sheet2.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/></Types>`;
+  const enc = s => new TextEncoder().encode(s);
+  const files = [
+    {name:'[Content_Types].xml', data:enc(ct)},
+    {name:'_rels/.rels', data:enc(rels)},
+    {name:'xl/workbook.xml', data:enc(wb)},
+    {name:'xl/_rels/workbook.xml.rels', data:enc(wbRels)},
+    {name:'xl/worksheets/sheet1.xml', data:enc(sheet1)},
+    {name:'xl/worksheets/sheet2.xml', data:enc(sheet2)}
+  ];
+  // minimal store-only ZIP writer
+  const crc32 = buf => { let c=0xFFFFFFFF; for(let i=0;i<buf.length;i++){ c^=buf[i]; for(let j=0;j<8;j++) c=(c>>>1)^(0xEDB88320&-(c&1)); } return (c^0xFFFFFFFF)>>>0; };
+  const u16 = n => [n&255,(n>>>8)&255];
+  const u32 = n => [n&255,(n>>>8)&255,(n>>>16)&255,(n>>>24)&255];
+  let chunks=[], cd=[], offset=0;
+  for(const f of files){
+    const name=new TextEncoder().encode(f.name), data=f.data, crc=crc32(data);
+    const lh=[].concat(u32(0x04034b50),u16(20),u16(0),u16(0),u16(0),u16(0),u32(crc),u32(data.length),u32(data.length),u16(name.length),u16(0));
+    const local=new Uint8Array(lh.length+name.length+data.length); local.set(lh,0); local.set(name,lh.length); local.set(data,lh.length+name.length); chunks.push(local);
+    const ch=[].concat(u32(0x02014b50),u16(20),u16(20),u16(0),u16(0),u16(0),u16(0),u32(crc),u32(data.length),u32(data.length),u16(name.length),u16(0),u16(0),u16(0),u16(0),u32(0),u32(offset));
+    const cdrec=new Uint8Array(ch.length+name.length); cdrec.set(ch,0); cdrec.set(name,ch.length); cd.push(cdrec); offset+=local.length;
+  }
+  const cdSize=cd.reduce((a,b)=>a+b.length,0);
+  const eocd=new Uint8Array([].concat(u32(0x06054b50),u16(0),u16(0),u16(files.length),u16(files.length),u32(cdSize),u32(offset),u16(0)));
+  const outBuf=new Uint8Array(offset+cdSize+eocd.length); let p=0;
+  for(const c of chunks){ outBuf.set(c,p); p+=c.length; }
+  for(const c of cd){ outBuf.set(c,p); p+=c.length; }
+  outBuf.set(eocd,p);
+  const blob=new Blob([outBuf],{type:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a'); a.href=url; a.download='Schedule-II-FAR-template.xlsx'; a.click();
+  setTimeout(()=>URL.revokeObjectURL(url),1500);
+  toast('Excel template downloaded — pick the category from the dropdown');
+}
+function dl(name,href){ const a=document.createElement('a'); a.href=href; a.download=name; a.click(); }
+
+function parseCSV(text){
+  const out=[]; let row=[],cur='',q=false;
+  for(let i=0;i<text.length;i++){ const ch=text[i];
+    if(q){ if(ch==='"'){ if(text[i+1]==='"'){cur+='"';i++;} else q=false; } else cur+=ch; }
+    else{ if(ch==='"')q=true; else if(ch===','){row.push(cur);cur='';} else if(ch==='\n'){row.push(cur);out.push(row);row=[];cur='';} else if(ch==='\r'){} else cur+=ch; }
+  }
+  if(cur!==''||row.length){ row.push(cur); out.push(row); }
+  return out.filter(r=>r.some(c=>String(c).trim()!==''));
+}
+function ingestMatrix(mat){
+  if(!mat.length){ toast('Empty file'); return; }
+  // detect header row
+  const head = mat[0].map(x=>String(x).toLowerCase());
+  const looksHeader = head.some(h=>/asset|descr|class|method|cost|deprec|life|residual|shift|dispos|sale/.test(h));
+  const map = {};
+  if(looksHeader){
+    head.forEach((h,i)=>{
+      if(/asset\s*id|^id|code|tag/.test(h)) map.id=i;
+      else if(/descr|name|particular/.test(h)) map.desc=i;
+      else if(/class\s*key|sched|block|category/.test(h)) map.cls=i;
+      else if(/method|slm|wdv/.test(h)) map.method=i;
+      else if(/put.*use|acqui|purchase|addition|date.*use|capitali/.test(h)) map.put=i;
+      else if(/gross|^cost|original|actual cost|w\.d\.v.*open|value/.test(h) && map.cost==null) map.cost=i;
+      else if(/accum|op.*dep|opening.*deprec|dep.*upto|dep.*till/.test(h)) map.accum=i;
+      else if(/residual|scrap|salvage/.test(h)) map.res=i;
+      else if(/life/.test(h)) map.life=i;
+      else if(/dispos|sold|discard|deletion/.test(h)) map.disp=i;
+      else if(/sale|realis|proceeds/.test(h)) map.sale=i;
+      else if(/double|2.?shift/.test(h)) map.dsh=i;
+      else if(/triple|3.?shift/.test(h)) map.tsh=i;
+      else if(/book|per\s*books|charged|dep.*year|deprec.*fy/.test(h)) map.books=i;
+    });
+  }
+  const body = looksHeader ? mat.slice(1) : mat;
+  const positional = !looksHeader || Object.keys(map).length<3;
+  let added=0;
+  body.forEach(cells=>{
+    const r=blankRow();
+    if(positional){ IMPORT_FIELDS.forEach((f,i)=>{ r[f]=cells[i]!=null?String(cells[i]).trim():''; }); }
+    else { IMPORT_FIELDS.forEach(f=>{ if(map[f]!=null) r[f]=cells[map[f]]!=null?String(cells[map[f]]).trim():''; }); }
+    // normalise class: accept "key · name" dropdown labels, bare keys, or a plain name
+    if(r.cls && !CLASSMAP[r.cls]){
+      const raw=String(r.cls);
+      const keyPart=raw.split(' · ')[0].trim();      // "IV-i-a · Plant & machinery…" → "IV-i-a"
+      if(CLASSMAP[keyPart]){ r.cls=keyPart; }
+      else{
+        const lc=raw.toLowerCase();
+        const hit=SCHED2.find(x=>x.k && x.n.toLowerCase()===lc) || SCHED2.find(x=>x.k && x.n.toLowerCase().includes(lc)&&lc.length>4);
+        if(hit) r.cls=hit.k;
+      }
+    }
+    if(Object.values(r).some((v,i)=>i>0 && String(v).trim()!=='')) { rows.push(r); added++; }
+  });
+  render();
+  toast(`Imported ${added} asset${added!==1?'s':''}${positional?' (positional)':''}`);
+}
+function handleFile(file){
+  const name=file.name.toLowerCase();
+  const reader=new FileReader();
+  if(name.endsWith('.csv')){
+    reader.onload=e=>ingestMatrix(parseCSV(e.target.result)); reader.readAsText(file);
+  } else {
+    if(typeof XLSX==='undefined'){ toast('Excel library not loaded — save your file as CSV and import that (works fully offline).'); return; }
+    reader.onload=e=>{ try{
+      const wb=XLSX.read(new Uint8Array(e.target.result),{type:'array',cellDates:true});
+      const ws=wb.Sheets[wb.SheetNames[0]];
+      const mat=XLSX.utils.sheet_to_json(ws,{header:1,raw:true,defval:''});
+      ingestMatrix(mat.filter(r=>r.some(c=>String(c).trim()!=='')));
+    }catch(err){ toast('Could not read Excel file: '+err.message); } };
+    reader.readAsArrayBuffer(file);
+  }
+}
+
+/* ---------- export ---------- */
+function exportResults(){
+  const {fyStart,fyEnd,defMethod,defRes,tol}=window._lastCompute||{};
+  if(!fyStart){ toast('Set the financial year first'); return; }
+  const H=['Asset ID','Description','Class Key','Class (Schedule II)','Method','Sch II Life','Life Used','NESD','Put to Use','Cost','Op. Accum Dep','Residual %','Residual ₹','Opening WDV','WDV Rate %','Active Days','Weighted Days','Depreciation','Closing WDV','Disposal','Sale','Profit/(Loss)','Dep per Books','Variance','Status','Remarks'];
+  const lines=[
+    ['CA Vishal Bhandari — Chartered Accountant · Hyderabad'],
+    ['Schedule II Depreciation — Companies Act, 2013'],
+    [],
+    H];
+  rows.forEach(r=>{
+    const c=computeRow(r,fyStart,fyEnd,defMethod,defRes,tol);
+    const cm=CLASSMAP[r.cls];
+    lines.push([
+      r.id||'', r.desc||'', r.cls||'', cm?cm.n:'', c.method||'', c.schedLife??'', c.life??'', c.nesd?'Yes':'No',
+      r.put?fmtDateISO(parseDate(r.put)):'', c.cost??'', c.accum??'', c.resPct??'', c.residual!=null?round2(c.residual):'',
+      c.openWDV!=null?round2(c.openWDV):'', c.wdvRate!=null?round2(c.wdvRate*100):'', c.activeDays??'', c.weightedDays!=null?round2(c.weightedDays):'',
+      c.dep!=null?round2(c.dep):'', c.closeWDV!=null?round2(c.closeWDV):'', r.disp?fmtDateISO(parseDate(r.disp)):'',
+      r.sale||'', c.pl!=null?round2(c.pl):'', c.books??'', c.variance!=null?round2(c.variance):'',
+      c.status==='err'?'Error':c.status==='warn'?'Review':c.status==='ok'?'OK':'—',
+      c.flags.map(f=>f.msg).join(' | ')
+    ]);
+  });
+  if(typeof XLSX!=='undefined'){
+    const ws=XLSX.utils.aoa_to_sheet(lines); const wb=XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb,ws,'Depreciation'); XLSX.writeFile(wb,'Schedule-II-depreciation.xlsx'); toast('Exported to Excel');
+  } else {
+    const csv=lines.map(r=>r.map(csvCell).join(',')).join('\n');
+    dl('Schedule-II-depreciation.csv','data:text/csv;charset=utf-8,'+encodeURIComponent(csv)); toast('Exported to CSV');
+  }
+}
+function round2(x){ return Math.round(x*100)/100; }
+function csvCell(v){ v=String(v==null?'':v); return /[",\n]/.test(v)?'"'+v.replace(/"/g,'""')+'"':v; }
+
+/* ---------- sample ---------- */
+function loadSample(){
+  rows=[];
+  // FY pinned to 2025-26 so every figure ties out
+  $('fyPick').value='2025'; $('fyStart').value='2025-04-01'; $('fyEnd').value='2026-03-31';
+  // id, desc, cls, method, put, cost, accum, res, life, disp, sale, dsh, tsh, books
+  const s=[
+    ['FA-101','Factory building','I-c','SLM','01-04-2016','12000000','3420000','5','','','','','','380000'],
+    ['FA-210','CNC lathe (general P&M) — 2nd shift','IV-i-a','WDV','12-08-2021','2500000','1284813.02','5','','','','100','',''],
+    ['FA-305','Dell laptops (12 nos)','XII-ii','WDV','15-06-2023','780000','636946.69','5','','','','','','90352.02'],
+    ['FA-402','Delivery van (own use)','VI-3','WDV','20-11-2020','900000','721486.09','5','','','','','',''],
+    ['FA-510','Office furniture','V-i','SLM','01-04-2018','350000','232750','5','','','','','','30000'],
+    ['FA-611','Air conditioners (disposed)','XI','WDV','05-09-2019','240000','228000','5','','30-09-2025','15000','','',''],
+    ['FA-720','Legacy server (under-depreciated)','XII-i','WDV','01-04-2017','500000','300000','5','','','','','',''],
+    ['FA-815','Illuminated signage','XI','WDV','01-04-2024','100000','0','10','','','','','',''],
+    ['FA-816','Laptop with 5-yr policy','XII-ii','WDV','01-04-2024','150000','0','5','5','','','','',''],
+  ];
+  s.forEach(a=>{ const r=blankRow(); IMPORT_FIELDS.forEach((f,i)=>r[f]=a[i]||''); rows.push(r); });
+  render(); toast('Loaded 9 sample assets · FY 2025-26');
+}
+
+/* ---------- FY setup ---------- */
+function setupFY(){
+  const sel=$('fyPick'); const now=new Date(); const curFY = now.getMonth()>=3?now.getFullYear():now.getFullYear()-1;
+  let html='';
+  for(let y=curFY+1;y>=2014;y--){ html+=`<option value="${y}">FY ${y}-${String((y+1)%100).padStart(2,'0')}</option>`; }
+  sel.innerHTML=html; sel.value=curFY;
+  applyFY();
+  sel.addEventListener('change',applyFY);
+}
+function applyFY(){
+  const y=+$('fyPick').value;
+  $('fyStart').value=`${y}-04-01`; $('fyEnd').value=`${y+1}-03-31`;
+  render();
+}
+
+/* ---------- wire up ---------- */
+function init(){
+  buildHead(); setupFY(); renderRef('');
+  rows=[blankRow(),blankRow()]; render();
+
+  $('addRow').addEventListener('click',()=>{ rows.push(blankRow()); render(); });
+  $('recalcBtn').addEventListener('click',()=>{ render(); toast('Recalculated'); });
+  $('sampleBtn').addEventListener('click',loadSample);
+  // ---- bulk actions ----
+  $('bulkDeselect').addEventListener('click',()=>{ selection.clear(); render(); });
+  $('bulkDelete').addEventListener('click',()=>{ if(!selection.size) return; if(confirm('Delete '+selection.size+' selected asset(s)?')){ rows=rows.filter(r=>!selection.has(r.uid)); selection.clear(); if(!rows.length) rows=[blankRow()]; render(); } });
+  $('bulkClearLife').addEventListener('click',()=>{ if(!selection.size) return; let n=0; rows.forEach(r=>{ if(selection.has(r.uid)){ r.life=''; n++; } }); render(); toast('Life reset to Schedule II for '+n+' row(s)'); });
+  $('bulkApply').addEventListener('click',()=>{
+    if(!selection.size){ toast('Select one or more rows first'); return; }
+    const m=$('bulkMethod').value, res=$('bulkRes').value.trim(), life=$('bulkLife').value.trim();
+    if(m==='' && res==='' && life===''){ toast('Nothing to apply — set a method, residual % or life'); return; }
+    let n=0;
+    rows.forEach(r=>{ if(!selection.has(r.uid)) return; n++;
+      if(m==='__def') r.method=''; else if(m) r.method=m;
+      if(res!=='') r.res=res;
+      if(life!=='') r.life=life;
+    });
+    render(); toast('Applied to '+n+' row(s)');
+  });
+  $('tplBtn').addEventListener('click',downloadTemplate);
+  $('exportBtn').addEventListener('click',exportResults);
+  $('clearBtn').addEventListener('click',()=>{ if(confirm('Clear all assets?')){ rows=[blankRow()]; render(); } });
+  $('fileInput').addEventListener('change',e=>{ if(e.target.files[0]) handleFile(e.target.files[0]); e.target.value=''; });
+  ['fyStart','fyEnd','defMethod','defResidual','tol'].forEach(id=>$(id).addEventListener('change',render));
+  $('refSearch').addEventListener('input',e=>renderRef(e.target.value));
+  document.querySelectorAll('[data-toggle]').forEach(h=>h.addEventListener('click',()=>{
+    const b=$(h.dataset.toggle); h.classList.toggle('open'); b.classList.toggle('open');
+  }));
+  // open reference by default? keep closed; exceptions open.
+  // drag-drop import
+  const drop=document.body;
+  ['dragover','dragenter'].forEach(ev=>drop.addEventListener(ev,e=>{e.preventDefault();}));
+  drop.addEventListener('drop',e=>{ e.preventDefault(); if(e.dataTransfer.files[0]) handleFile(e.dataTransfer.files[0]); });
+}
+init();
+</script>
+</body>
+</html>

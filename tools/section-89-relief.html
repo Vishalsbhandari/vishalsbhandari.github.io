@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='30' fill='%2325487D' stroke='%23D7B165' stroke-width='3'/%3E%3Ctext x='32' y='43' font-family='Georgia,serif' font-style='italic' font-weight='bold' font-size='28' fill='%23D7B165' text-anchor='middle'%3EVB%3C/text%3E%3C/svg%3E">
+<title>Section 89(1) Relief Calculator — relief on salary arrears</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600&family=Archivo:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<style>
+  :root{
+    --ink:#14213D; --muted:#5A6680; --lav:#25487D; --lav2:#3F66A0;
+    --gold:#D7B165; --gold-text:#7D6028; --gold-soft:#F7EFDC; --blue-soft:#E8EFF8;
+    --card:#ffffff; --line:#E8E0D0; --pale:#FAF7F0; --yellow:#FBF3E0;
+    --shadow:0 10px 30px -12px rgba(20,33,61,.18);
+    --radius:16px;
+  }
+  *{box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%}
+  body{
+    margin:0; color:var(--ink);
+    font-family:'Archivo',system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+    background:linear-gradient(165deg,#FAF7F0 0%,#F5F0E5 48%,#F2EDE2 100%);
+    background-attachment:fixed; line-height:1.5; padding:0 0 60px;
+  }
+/* keep every control and code span on the site's own fonts */
+button,input,select,textarea{font-family:inherit}
+code,kbd,samp,pre{font-family:'IBM Plex Mono',ui-monospace,monospace}
+
+  .wrap{max-width:1000px;margin:0 auto;padding:24px 20px 0}
+  /* header */
+  header{display:flex;align-items:center;gap:16px;padding:10px 0 22px;flex-wrap:wrap}
+  .mark{width:56px;height:56px;flex:none;border-radius:50%;box-shadow:var(--shadow)}
+  .htext h1{font-family:'Newsreader',Georgia,serif;font-weight:600;font-size:clamp(21px,4.4vw,29px);margin:0;letter-spacing:.2px}
+  .htext p{margin:3px 0 0;color:var(--muted);font-size:13.5px;font-weight:500}
+  .brand{margin-left:auto;text-align:right;font-size:12px;color:var(--muted);line-height:1.35}
+  .brand b{display:block;color:var(--lav);font-family:'Newsreader',Georgia,serif;font-weight:600;font-size:13.5px;letter-spacing:.2px}
+
+  .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:22px 22px;margin-bottom:20px}
+  .eyebrow{display:flex;align-items:center;gap:9px;font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:11px;font-weight:500;letter-spacing:1.3px;text-transform:uppercase;color:var(--gold-text);margin:0 0 14px}
+  .eyebrow .dot{width:7px;height:7px;border-radius:50%;background:var(--gold)}
+  h2{font-family:'Newsreader',Georgia,serif;font-weight:600;font-size:19px;margin:0 0 4px}
+
+  /* toolbar */
+  .toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:20px}
+  .btn{border:0;cursor:pointer;font-family:inherit;font-weight:600;font-size:14px;
+    padding:11px 18px;border-radius:12px;transition:.18s transform,.18s box-shadow;display:inline-flex;gap:8px;align-items:center}
+  .btn:active{transform:translateY(1px)}
+  .btn-primary{background:linear-gradient(150deg,var(--lav),var(--lav2));color:#fff;box-shadow:0 8px 20px -8px rgba(37,72,125,.55)}
+  .btn-ghost{background:var(--pale);color:var(--ink);border:1px solid var(--line)}
+  .btn-mint{background:linear-gradient(150deg,var(--lav2),var(--lav));color:#fff;box-shadow:0 8px 20px -8px rgba(37,72,125,.55)}
+  .btn-soft{background:var(--blue-soft);color:#25487D;border:1px solid #D3DEEE}
+  .btn:disabled{opacity:.5;cursor:not-allowed}
+
+  /* mode switch */
+  .switch{display:inline-flex;background:var(--pale);border:1px solid var(--line);border-radius:12px;padding:4px;gap:4px}
+  .switch label{cursor:pointer;padding:7px 14px;border-radius:9px;font-size:13px;font-weight:600;color:var(--muted)}
+  .switch input{position:absolute;opacity:0;pointer-events:none}
+  .switch input:checked + span{background:#fff;color:var(--lav);box-shadow:0 2px 8px -3px rgba(20,33,61,.3);display:inline-block;padding:7px 14px;border-radius:9px;margin:-7px -14px}
+  .switch label span{display:inline-block}
+
+  /* fields */
+  .grid{display:grid;gap:14px 16px;grid-template-columns:repeat(auto-fit,minmax(180px,1fr))}
+  .fld{display:flex;flex-direction:column;gap:6px;min-width:0}
+  .fld label{font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:11px;font-weight:500;letter-spacing:.6px;text-transform:uppercase;color:var(--muted)}
+  input,select{font-family:inherit;font-size:14px;color:var(--ink);background:var(--pale);
+    border:1px solid var(--line);border-radius:10px;padding:10px 12px;width:100%;transition:.15s}
+  input:focus,select:focus{outline:none;border-color:var(--lav2);background:#fff;box-shadow:0 0 0 3px rgba(63,102,160,.18)}
+  input[type=number]{text-align:right;font-variant-numeric:tabular-nums}
+
+  /* arrears rows */
+  .rows{display:flex;flex-direction:column;gap:14px}
+  .arow{position:relative;background:var(--pale);border:1px solid var(--line);border-radius:14px;padding:16px 44px 16px 16px}
+  .arow .idx{position:absolute;top:-9px;left:14px;background:#fff;border:1px solid var(--line);color:var(--lav);font-size:11px;font-weight:700;padding:2px 9px;border-radius:20px}
+  .rm{position:absolute;top:12px;right:12px;width:28px;height:28px;border-radius:8px;border:1px solid var(--line);background:#fff;color:#A6465E;font-size:17px;line-height:1;cursor:pointer;display:grid;place-items:center}
+  .rm:hover{background:#FAEEF0}
+  .addwrap{margin-top:14px}
+
+  /* mode column hiding */
+  body.mode-auto .col-manual{display:none}
+  body.mode-manual .col-regime,body.mode-manual .col-cat{display:none}
+  .col-manual label{color:var(--gold-text)}
+  .col-manual input{background:var(--yellow);border-color:#E3D2A8}
+
+  /* results */
+  #results{display:none}
+  .relief-hero{display:flex;flex-wrap:wrap;align-items:center;gap:8px 26px;padding:20px 22px;border-radius:14px;
+    background:linear-gradient(150deg,var(--gold-soft),#F3EADA);border:1px solid #E6D9B8;margin-bottom:20px}
+  .relief-hero .lbl{font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:11.5px;font-weight:500;letter-spacing:1.1px;text-transform:uppercase;color:var(--gold-text)}
+  .relief-hero .amt{font-family:'Newsreader',Georgia,serif;font-weight:600;font-size:clamp(28px,6vw,40px);color:var(--lav);line-height:1;margin-top:2px}
+  .relief-hero .side{font-size:12.5px;color:var(--muted);max-width:320px}
+  .relief-zero .relief-hero{background:linear-gradient(150deg,#F6F3EC,#F2EDE2);border-color:var(--line)}
+  .relief-zero .amt{color:var(--muted)}
+  .relief-zero .lbl{color:var(--muted)}
+
+  .tblwrap{overflow-x:auto;border:1px solid var(--line);border-radius:12px;margin:6px 0 4px}
+  table{border-collapse:collapse;width:100%;font-size:13px;min-width:640px}
+  th,td{padding:10px 12px;text-align:right;border-bottom:1px solid var(--line);white-space:nowrap;font-variant-numeric:tabular-nums}
+  th{background:var(--pale);font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:500;color:var(--muted);font-size:11px;letter-spacing:.5px;text-transform:uppercase;text-align:right}
+  th:first-child,td:first-child{text-align:left}
+  tbody tr:last-child td{border-bottom:0}
+  tr.total td{background:#F2EDE2;font-weight:700;color:var(--ink);border-top:2px solid var(--line)}
+  .cap{font-size:12px;color:var(--muted);margin:8px 2px 20px}
+
+  .steps{display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));margin-top:6px}
+  .stepbox{background:var(--pale);border:1px solid var(--line);border-radius:12px;padding:14px}
+  .stepbox .k{font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:10.5px;letter-spacing:.5px;text-transform:uppercase;color:var(--muted);font-weight:500}
+  .stepbox .v{font-family:'Newsreader',Georgia,serif;font-weight:600;font-size:19px;margin-top:4px}
+  .stepbox.eq{background:linear-gradient(150deg,#F7EFDC,#EFEADF);border-color:#E6D9B8}
+
+  .warn{background:#FDF4E3;border:1px solid #E8D29B;color:#7A5410;border-radius:12px;padding:12px 14px;font-size:13px;margin-bottom:16px}
+  .warn b{color:#5E400B}
+
+  /* reference / disclaimer */
+  details{border:1px solid var(--line);border-radius:12px;background:var(--card);margin-bottom:14px;overflow:hidden}
+  summary{cursor:pointer;padding:15px 18px;font-weight:600;font-size:14.5px;list-style:none;display:flex;align-items:center;gap:10px}
+  summary::-webkit-details-marker{display:none}
+  summary .chev{margin-left:auto;transition:.2s;color:var(--gold-text)}
+  details[open] .chev{transform:rotate(90deg)}
+  .refbody{padding:2px 18px 18px;font-size:13.5px;color:#4A5775}
+  .refbody p{margin:0 0 10px}
+  .refbody ul{margin:0 0 10px;padding-left:20px}
+  .refbody li{margin-bottom:6px}
+  .refbody code{background:var(--pale);border:1px solid var(--line);border-radius:6px;padding:1px 6px;font-size:12.5px}
+  .refbody h4{margin:14px 0 6px;font-size:13.5px;color:var(--lav);font-family:'Newsreader',Georgia,serif;font-weight:600}
+
+  .disclaimer{font-size:12px;color:var(--muted);line-height:1.6;background:rgba(255,255,255,.6);border:1px dashed var(--line);border-radius:14px;padding:16px 18px}
+  .disclaimer b{color:var(--ink)}
+  footer{text-align:center;color:var(--muted);font-size:12px;margin-top:22px}
+  footer b{color:var(--lav);font-family:'Newsreader',Georgia,serif;font-weight:600}
+
+  @media(max-width:560px){
+    .card{padding:18px 15px}
+    .brand{margin-left:0;text-align:left;width:100%}
+    header{gap:12px}
+  }
+
+/* ===== branding: screen-hidden, appears only in print / PDF export ===== */
+.pdfbrand{display:none}
+@media print{
+  .pdfbrand{
+    display:flex!important;align-items:center;gap:12px;
+    padding:0 0 9px;margin:0 0 14px;border-bottom:1.5px solid #25487D;
+  }
+  .pdfbrand__m{flex:none}
+  .pdfbrand__t b{display:block;font-family:'Newsreader',Georgia,serif;font-weight:600;font-size:13pt;color:#14213D;letter-spacing:-.01em;line-height:1.15}
+  .pdfbrand__t span{display:block;font-family:'IBM Plex Mono',monospace;font-size:7pt;letter-spacing:.14em;text-transform:uppercase;color:#7D6028;margin-top:2px}
+  .pdfbrand__tool{margin-left:auto;text-align:right;font-family:'IBM Plex Mono',monospace;font-size:7.5pt;letter-spacing:.1em;text-transform:uppercase;color:#4A5775}
+}
+
+/* ===== shared tool topbar (house style) ===== */
+.topbar{background:#14213D;color:#F2EEE4;display:flex;align-items:center;gap:12px;
+  padding:0 16px;height:58px;flex-shrink:0;box-shadow:0 2px 12px rgba(20,33,61,.22);z-index:20}
+.tb-title{font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:.64rem;letter-spacing:.12em;
+  text-transform:uppercase;color:#F2EEE4}
+.tb-stat{font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:.6rem;letter-spacing:.08em;
+  color:#A9B6CB;white-space:nowrap;margin-left:auto}
+@media print{.topbar{display:none!important}}
+
+/* ===== house consistency layer (shared by every tool) ===== */
+body{font-size:14px}
+.topbar > .tb-title:first-child,.topbar > .topbar-title:first-child{border-left:0;padding-left:0;margin-left:0}
+
+/* one radius scale, matching the reference tools and the website */
+.card,.panel,.box,.sec,.sec-card,.step,.btn,.tbtn,button,input,select,textarea,
+.pill,.chip,.tab,.seg,.seg>*,.kpi,.note,.tablewrap,footer{border-radius:3px!important}
+
+/* the hidden mode radios were stretching to full page width and forcing sideways scroll */
+.switch label{position:relative}
+.switch input{width:1px!important;height:1px!important;left:0;top:0;margin:0;padding:0}
+
+/* topbar brand lock-up */
+.tb-name{font-family:'Newsreader',Georgia,serif;font-size:.95rem;line-height:1.15;color:#F2EEE4}
+.tb-sub{font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:.56rem;letter-spacing:.14em;
+  text-transform:uppercase;color:#A9B6CB;margin-top:2px}
+.topbar > .tb-title{border-left:1px solid #33425E;padding-left:12px;margin-left:4px}
+
+@media(max-width:640px){
+  .topbar{height:auto;min-height:52px;flex-wrap:wrap;padding:8px 12px;gap:8px}
+  .topbar > .tb-title{border-left:0;padding-left:0;margin-left:0}
+  .topbar .tb-stat{display:none}
+}
+</style>
+</head>
+<body class="mode-auto">
+<!-- branding for printed / exported copies only -->
+<div class="pdfbrand">
+  <svg class="pdfbrand__m" width="40" height="40" viewBox="30 30 140 140" aria-hidden="true">
+        <defs><linearGradient id="vbPrint" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#F7E6AE"/><stop offset="0.5" stop-color="#D7B165"/><stop offset="1" stop-color="#A47A2C"/></linearGradient></defs>
+        <circle cx="100" cy="100" r="68" fill="#25487D" stroke="url(#vbPrint)" stroke-width="2.4"/>
+        <circle cx="100" cy="100" r="61" fill="none" stroke="#D7B165" stroke-width="0.8" stroke-dasharray="1.5 3.5"/>
+        <path d="M70.8115 125.495 64.5415 75.5H75.4315L79.5895 115.826L102.9865 75.5H103.1515L74.17750000000001 125.495ZM59.9215 75.632V75.5H83.0215V75.632ZM94.9015 75.632V75.5H109.42150000000001V75.632Z M99.6535 125.0V124.868H105.6265L117.1105 75.632H111.2035V75.5H131.6635Q140.1445 75.5 144.154 77.8925Q148.1635 80.285 148.1635 85.72999999999999Q148.1635 88.6835 146.6125 91.10075Q145.0615 93.518 142.405 95.30825Q139.7485 97.0985 136.37425000000002 98.17099999999999Q133.0 99.2435 129.3535 99.557Q133.66 99.689 137.10025000000002 100.7615Q140.5405 101.834 142.537 104.03675Q144.5335 106.23949999999999 144.5335 109.82Q144.5335 113.516 142.69375 116.35400000000001Q140.85399999999998 119.19200000000001 137.67775 121.1225Q134.5015 123.053 130.4755 124.0265Q126.4495 125.0 122.0935 125.0ZM115.8565 124.868H122.0935Q124.4695 124.868 126.50725 123.515Q128.54500000000002 122.162 130.07125000000002 119.79425Q131.5975 117.4265 132.4555 114.3575Q133.3135 111.2885 133.3135 107.84Q133.3135 104.90299999999999 132.505 103.1045Q131.69650000000001 101.306 130.162 100.481Q128.6275 99.656 126.4495 99.656H119.5525L119.5855 99.524H126.7135Q128.5945 99.524 130.50850000000003 98.36075Q132.4225 97.19749999999999 134.0395 95.07724999999999Q135.6565 92.957 136.63 90.07775Q137.6035 87.1985 137.6035 83.75Q137.6035 81.638 136.98475 79.78175Q136.36599999999999 77.9255 135.02125 76.77875Q133.6765 75.632 131.4985 75.632H127.34049999999999Z" fill="url(#vbPrint)"/>
+      </svg>
+  <div class="pdfbrand__t"><b>CA Vishal Bhandari</b><span>Chartered Accountant &middot; Hyderabad</span></div>
+  <span class="pdfbrand__tool">Relief on Salary Arrears</span>
+</div>
+<div class="topbar">
+  <svg width="34" height="34" viewBox="30 30 140 140" aria-hidden="true">
+        <defs><linearGradient id="vbg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#F7E6AE"/><stop offset="0.5" stop-color="#D7B165"/><stop offset="1" stop-color="#A47A2C"/></linearGradient></defs>
+        <circle cx="100" cy="100" r="68" fill="#25487D" stroke="url(#vbg)" stroke-width="2.4"/>
+        <circle cx="100" cy="100" r="61" fill="none" stroke="#D7B165" stroke-width="0.8" stroke-dasharray="1.5 3.5"/>
+        <path d="M70.8115 125.495 64.5415 75.5H75.4315L79.5895 115.826L102.9865 75.5H103.1515L74.17750000000001 125.495ZM59.9215 75.632V75.5H83.0215V75.632ZM94.9015 75.632V75.5H109.42150000000001V75.632Z M99.6535 125.0V124.868H105.6265L117.1105 75.632H111.2035V75.5H131.6635Q140.1445 75.5 144.154 77.8925Q148.1635 80.285 148.1635 85.72999999999999Q148.1635 88.6835 146.6125 91.10075Q145.0615 93.518 142.405 95.30825Q139.7485 97.0985 136.37425000000002 98.17099999999999Q133.0 99.2435 129.3535 99.557Q133.66 99.689 137.10025000000002 100.7615Q140.5405 101.834 142.537 104.03675Q144.5335 106.23949999999999 144.5335 109.82Q144.5335 113.516 142.69375 116.35400000000001Q140.85399999999998 119.19200000000001 137.67775 121.1225Q134.5015 123.053 130.4755 124.0265Q126.4495 125.0 122.0935 125.0ZM115.8565 124.868H122.0935Q124.4695 124.868 126.50725 123.515Q128.54500000000002 122.162 130.07125000000002 119.79425Q131.5975 117.4265 132.4555 114.3575Q133.3135 111.2885 133.3135 107.84Q133.3135 104.90299999999999 132.505 103.1045Q131.69650000000001 101.306 130.162 100.481Q128.6275 99.656 126.4495 99.656H119.5525L119.5855 99.524H126.7135Q128.5945 99.524 130.50850000000003 98.36075Q132.4225 97.19749999999999 134.0395 95.07724999999999Q135.6565 92.957 136.63 90.07775Q137.6035 87.1985 137.6035 83.75Q137.6035 81.638 136.98475 79.78175Q136.36599999999999 77.9255 135.02125 76.77875Q133.6765 75.632 131.4985 75.632H127.34049999999999Z" fill="url(#vbg)"/>
+      </svg>
+  <div><div class="tb-name">CA Vishal Bhandari</div><div class="tb-sub">Chartered Accountant &middot; Hyderabad</div></div>
+  <span class="tb-title">Relief on Salary Arrears</span>
+  <span class="tb-stat">Relief on arrears or advance of salary</span>
+</div>
+
+
+<div class="wrap">
+
+  <header>
+    
+    <div class="htext">
+      
+      <p>Relief on arrears / advance of salary &middot; Income-tax Act, 1961 r/w Rule 21A &middot; Form&nbsp;10E</p>
+    </div>
+  </header>
+
+  <!-- toolbar -->
+  <div class="toolbar">
+    <div class="switch" role="radiogroup" aria-label="Tax computation mode">
+      <label><input type="radio" name="mode" value="auto" checked><span>Auto (slabs)</span></label>
+      <label><input type="radio" name="mode" value="manual"><span>Manual tax</span></label>
+    </div>
+    <button class="btn btn-soft" id="importBtn">&#128229; Import Excel</button>
+    <button class="btn btn-ghost" id="templateBtn">&#128190; Download template</button>
+    <input type="file" id="fileInput" accept=".xlsx,.xls" hidden>
+  </div>
+
+  <!-- STEP 1 : receipt year -->
+  <section class="card">
+    <div class="eyebrow"><span class="dot"></span>Step 1 &nbsp;&bull;&nbsp; Year of receipt</div>
+    <h2>The year the arrears / advance were actually received</h2>
+    <p class="cap">Enter the total income of that year <b>including</b> the arrears. Income excluding arrears is worked out automatically.</p>
+    <div class="grid" style="margin-top:14px">
+      <div class="fld"><label>Financial year of receipt</label><select id="rFy"></select></div>
+      <div class="fld col-regime"><label>Tax regime</label><select id="rRegime"><option>New</option><option>Old</option></select></div>
+      <div class="fld col-cat"><label>Category</label><select id="rCat"><option value="General">General (&lt;60)</option><option value="Senior">Senior (60–80)</option><option value="SuperSenior">Super senior (80+)</option></select></div>
+      <div class="fld"><label>Total income incl. arrears (₹)</label><input type="number" id="rIncome" placeholder="e.g. 1500000" min="0"></div>
+      <div class="fld col-manual"><label>Tax on income WITH arrears (₹)</label><input type="number" id="rTaxIncl" min="0"></div>
+      <div class="fld col-manual"><label>Tax on income WITHOUT arrears (₹)</label><input type="number" id="rTaxExcl" min="0"></div>
+    </div>
+  </section>
+
+  <!-- STEP 2 : arrears break-up -->
+  <section class="card">
+    <div class="eyebrow"><span class="dot"></span>Step 2 &nbsp;&bull;&nbsp; Arrears break-up</div>
+    <h2>Each relevant past year the arrears relate to</h2>
+    <p class="cap">Add one row per year — its originally assessed income (excluding arrears) and the arrears pertaining to that year.</p>
+    <div class="rows" id="rowsBody"></div>
+    <div class="addwrap"><button class="btn btn-ghost" id="addRow">＋ Add a year</button></div>
+  </section>
+
+  <div class="toolbar" style="margin-bottom:22px">
+    <button class="btn btn-primary" id="computeBtn">Calculate relief</button>
+    <button class="btn btn-ghost" id="resetBtn">Reset</button>
+  </div>
+
+  <!-- RESULTS -->
+  <section id="results">
+    <div id="warnBox"></div>
+    <section class="card" style="padding:0;overflow:hidden">
+      <div class="relief-hero" id="reliefHero">
+        <div>
+          <div class="lbl">Relief under Section 89(1)</div>
+          <div class="amt" id="reliefAmt">₹0</div>
+        </div>
+        <div class="side" id="reliefNote"></div>
+      </div>
+      <div style="padding:20px 22px 22px">
+        <div class="steps">
+          <div class="stepbox"><div class="k">Tax on arrears — in year of receipt</div><div class="v" id="sReceipt">₹0</div></div>
+          <div class="stepbox"><div class="k">Tax on arrears — spread over relevant years</div><div class="v" id="sSpread">₹0</div></div>
+          <div class="stepbox eq"><div class="k">Relief = receipt − spread (if positive)</div><div class="v" id="sRelief">₹0</div></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="card">
+      <div class="eyebrow"><span class="dot"></span>Form 10E &nbsp;&bull;&nbsp; Annexure I, Table A</div>
+      <h2>Arrears / advance apportioned to relevant years</h2>
+      <div class="tblwrap" style="margin-top:12px">
+        <table id="tableA">
+          <thead><tr>
+            <th>Previous year</th>
+            <th>Total income (excl. arrears)</th>
+            <th>Arrears of the year</th>
+            <th>Total income (incl. arrears)</th>
+            <th>Tax on col&nbsp;2</th>
+            <th>Tax on col&nbsp;4</th>
+            <th>Difference (6−5)</th>
+          </tr></thead>
+          <tbody id="tableABody"></tbody>
+        </table>
+      </div>
+      <p class="cap">Column 7 total is the tax attributable to the arrears had they been taxed in the respective years.</p>
+
+      <h2 style="margin-top:18px">Year of receipt</h2>
+      <div class="tblwrap" style="margin-top:12px">
+        <table id="tableR">
+          <thead><tr><th>Financial year</th><th>Total income incl. arrears</th><th>Total income excl. arrears</th><th>Tax incl. arrears</th><th>Tax excl. arrears</th><th>Tax on arrears</th></tr></thead>
+          <tbody id="tableRBody"></tbody>
+        </table>
+      </div>
+    </section>
+  </section>
+
+  <!-- REFERENCE -->
+  <details>
+    <summary>&#128218; The law — Section 89(1) &amp; Rule 21A <span class="chev">›</span></summary>
+    <div class="refbody">
+      <h4>Section 89, Income-tax Act, 1961</h4>
+      <p>Where an assessee receives salary in <b>arrears or in advance</b>, or receives in one financial year salary for more than twelve months, or a profit in lieu of salary, and is consequently assessed at a higher rate than would otherwise have applied, the Assessing Officer shall grant <b>relief</b> as prescribed. The relief is computed under <b>Rule 21A</b> of the Income-tax Rules, 1962.</p>
+      <h4>Rule 21A(2) — arrears / advance of salary</h4>
+      <ul>
+        <li>Find the tax on the total income of the year of receipt, <b>including</b> the arrears — and again <b>excluding</b> the arrears. The difference is the tax on the arrears in the year of receipt.</li>
+        <li>For each relevant earlier year, find the tax on that year's total income <b>including</b> the portion of arrears relating to it, and <b>excluding</b> it. The aggregate of these differences is the tax on the arrears had they been taxed year-wise.</li>
+        <li><b>Relief = (tax on arrears in year of receipt) − (tax on arrears if taxed year-wise).</b> If the second figure is higher, no relief is available.</li>
+      </ul>
+      <h4>Form 10E — mandatory</h4>
+      <p>Relief under Section 89(1) is allowed only if <b>Form 10E is filed electronically on the income-tax portal before filing the return</b>. Omitting it commonly leads to the relief being disallowed and an intimation raised. Details of the arrears go in <b>Annexure I, Table A</b>.</p>
+      <p>Other limbs of Rule 21A cover gratuity (21A(3)/(4)), compensation on termination (21A(5)) and commuted pension (21A(6)); this tool computes the arrears/advance-salary limb.</p>
+    </div>
+  </details>
+
+  <!-- HOW IT WORKS -->
+  <details>
+    <summary>&#9881;&#65039; Modes, coverage &amp; the Excel import <span class="chev">›</span></summary>
+    <div class="refbody">
+      <p><b>Auto (slabs)</b> computes tax from the income you enter using built-in slab rates, the section 87A rebate, surcharge and cess for the chosen year, regime and category.</p>
+      <ul>
+        <li><b>Old regime:</b> financial years <code>2012-13</code> to <code>2025-26</code> (General / Senior / Super-senior).</li>
+        <li><b>New regime (115BAC):</b> financial years <code>2020-21</code> to <code>2025-26</code>.</li>
+      </ul>
+      <p><b>Manual tax</b> lets you type the tax figures directly for the receipt year and each row — use it for any year, regime or special situation outside the auto range, or wherever you have already computed the tax.</p>
+      <p><b>Excel import:</b> download the template, fill Step 1 and Step 2, then import. Fields load automatically and the relief is computed.</p>
+    </div>
+  </details>
+
+  <!-- DISCLAIMER -->
+  <div class="disclaimer">
+    <b>Disclaimer.</b> This calculator is a computational aid for relief under Section 89(1) of the Income-tax Act, 1961 read with Rule 21A, and is <b>not a substitute for professional advice or for the statutory provisions</b>. Auto-computed tax uses slab, rebate, surcharge and cess rules for the years and regimes stated above; <b>surcharge marginal-relief and section 87A marginal-relief are computed on a standard approximation and should be verified near threshold incomes</b>. Figures such as deductions, exemptions and the taxpayer's total income must be determined independently. Relief must be claimed by filing <b>Form 10E</b> before the return. Please verify every figure against the Act, the Rules and the taxpayer's assessed particulars before relying on it. No liability is accepted for any decision taken on the basis of this tool.
+  </div>
+
+  <footer>Section 89(1) Relief Calculator</footer>
+</div>
+
+<script>
+/* ============================================================
+   TAX ENGINE  (verified in Node before embedding)
+   ============================================================ */
+const OLD = {
+ '2012-13':{gen:200000,sr:300000,ssr:500000,low:10,cess:3,rl:0,rm:0,sc:[]},
+ '2013-14':{gen:200000,sr:300000,ssr:500000,low:10,cess:3,rl:500000,rm:2000,sc:[{l:1e7,r:10}]},
+ '2014-15':{gen:250000,sr:300000,ssr:500000,low:10,cess:3,rl:500000,rm:2000,sc:[{l:1e7,r:10}]},
+ '2015-16':{gen:250000,sr:300000,ssr:500000,low:10,cess:3,rl:500000,rm:2000,sc:[{l:1e7,r:10}]},
+ '2016-17':{gen:250000,sr:300000,ssr:500000,low:10,cess:3,rl:500000,rm:5000,sc:[{l:1e7,r:15}]},
+ '2017-18':{gen:250000,sr:300000,ssr:500000,low:5,cess:3,rl:350000,rm:2500,sc:[{l:5e6,r:10},{l:1e7,r:15}]},
+ '2018-19':{gen:250000,sr:300000,ssr:500000,low:5,cess:4,rl:350000,rm:2500,sc:[{l:5e6,r:10},{l:1e7,r:15}]},
+ '2019-20':{gen:250000,sr:300000,ssr:500000,low:5,cess:4,rl:500000,rm:12500,sc:[{l:5e6,r:10},{l:1e7,r:15},{l:2e7,r:25},{l:5e7,r:37}]},
+};
+['2020-21','2021-22','2022-23','2023-24','2024-25','2025-26'].forEach(fy=>{
+  OLD[fy]={gen:250000,sr:300000,ssr:500000,low:5,cess:4,rl:500000,rm:12500,sc:[{l:5e6,r:10},{l:1e7,r:15},{l:2e7,r:25},{l:5e7,r:37}]};
+});
+const NEW = {};
+['2020-21','2021-22','2022-23'].forEach(fy=>{
+  NEW[fy]={slabs:[[250000,0],[500000,5],[750000,10],[1000000,15],[1250000,20],[1500000,25],[Infinity,30]],cess:4,reb:{l:500000,m:12500,marg:false},sc:[{l:5e6,r:10},{l:1e7,r:15},{l:2e7,r:25},{l:5e7,r:37}]};
+});
+NEW['2023-24']={slabs:[[300000,0],[600000,5],[900000,10],[1200000,15],[1500000,20],[Infinity,30]],cess:4,reb:{l:700000,m:25000,marg:true},sc:[{l:5e6,r:10},{l:1e7,r:15},{l:2e7,r:25}]};
+NEW['2024-25']={slabs:[[300000,0],[700000,5],[1000000,10],[1200000,15],[1500000,20],[Infinity,30]],cess:4,reb:{l:700000,m:25000,marg:true},sc:[{l:5e6,r:10},{l:1e7,r:15},{l:2e7,r:25}]};
+NEW['2025-26']={slabs:[[400000,0],[800000,5],[1200000,10],[1600000,15],[2000000,20],[2400000,25],[Infinity,30]],cess:4,reb:{l:1200000,m:60000,marg:true},sc:[{l:5e6,r:10},{l:1e7,r:15},{l:2e7,r:25}]};
+
+function makeSlabs(ex,low){const s=[[ex,0]];if(ex<500000)s.push([500000,low]);s.push([1000000,20]);s.push([Infinity,30]);return s;}
+function slabTax(inc,slabs){let t=0,prev=0;for(const[u,r]of slabs){if(inc>u){t+=(u-prev)*r/100;prev=u;}else{t+=(inc-prev)*r/100;break;}}return t;}
+function surcharge(base,inc,bands,baseAtFn){
+  let rate=0,prevRate=0,thr=0;
+  for(const b of bands){if(inc>b.l){prevRate=rate;rate=b.r;thr=b.l;}}
+  if(rate===0)return 0;
+  let sc=base*rate/100;
+  const cap=baseAtFn(thr)*(1+prevRate/100)+(inc-thr);
+  if(base+sc>cap)sc=Math.max(0,cap-base);
+  return sc;
+}
+// returns rounded tax, or null if year/regime not in auto coverage
+function computeTax(fy,regime,cat,income){
+  income=Math.max(0,Math.round(income||0));
+  if(regime==='Old'){
+    const c=OLD[fy];if(!c)return null;
+    const ex=cat==='Senior'?c.sr:cat==='SuperSenior'?c.ssr:c.gen;
+    const slabs=makeSlabs(ex,c.low);
+    let base=slabTax(income,slabs);
+    if(income<=c.rl)base=Math.max(0,base-Math.min(c.rm,base));
+    const sc=surcharge(base,income,c.sc,x=>slabTax(x,slabs));
+    return Math.round((base+sc)*(1+c.cess/100));
+  }else{
+    const c=NEW[fy];if(!c)return null;
+    let base=slabTax(income,c.slabs);
+    if(income<=c.reb.l)base=Math.max(0,base-Math.min(c.reb.m,base));
+    else if(c.reb.marg)base=Math.min(base,income-c.reb.l);
+    const sc=surcharge(base,income,c.sc,x=>slabTax(x,c.slabs));
+    return Math.round((base+sc)*(1+c.cess/100));
+  }
+}
+
+/* ============================================================
+   UI helpers
+   ============================================================ */
+const $=s=>document.querySelector(s);
+const FYS=(()=>{const a=[];for(let y=2009;y<=2026;y++)a.push(y+'-'+String(y+1).slice(2));return a;})();
+function fyOptions(sel){return FYS.map(f=>`<option value="${f}"${f===sel?' selected':''}>${f}</option>`).join('');}
+function inr(n){
+  n=Math.round(n||0);const neg=n<0;n=Math.abs(n);
+  let s=String(n),last3=s.slice(-3),rest=s.slice(0,-3);
+  if(rest)last3=','+last3;
+  rest=rest.replace(/\B(?=(\d{2})+(?!\d))/g,',');
+  return '₹'+(neg?'-':'')+rest+last3;
+}
+function num(v){if(typeof v==='number')return v;const s=String(v||'').replace(/[^0-9.\-]/g,'');return s===''?0:parseFloat(s);}
+function normRegime(v){return /new/i.test(v||'')?'New':/old/i.test(v||'')?'Old':'New';}
+function normCat(v){v=String(v||'');if(/super/i.test(v))return'SuperSenior';if(/senior/i.test(v))return'Senior';return'General';}
+
+/* ----- receipt FY select ----- */
+$('#rFy').innerHTML=fyOptions('2024-25');
+
+/* ----- arrears rows ----- */
+const rowsBody=$('#rowsBody');
+function rowTpl(d={}){
+  const div=document.createElement('div');
+  div.className='arow';
+  div.innerHTML=`
+    <span class="idx"></span>
+    <button class="rm" title="Remove">&times;</button>
+    <div class="grid">
+      <div class="fld"><label>Relevant FY</label><select class="fy">${fyOptions(d.fy||'2022-23')}</select></div>
+      <div class="fld col-regime"><label>Regime</label><select class="regime"><option${normRegime(d.regime)==='New'?' selected':''}>New</option><option${normRegime(d.regime)==='Old'?' selected':''}>Old</option></select></div>
+      <div class="fld col-cat"><label>Category</label><select class="cat">
+        <option value="General"${normCat(d.category)==='General'?' selected':''}>General (&lt;60)</option>
+        <option value="Senior"${normCat(d.category)==='Senior'?' selected':''}>Senior (60–80)</option>
+        <option value="SuperSenior"${normCat(d.category)==='SuperSenior'?' selected':''}>Super senior (80+)</option></select></div>
+      <div class="fld"><label>Total income (excl. arrears) ₹</label><input type="number" class="income" min="0" value="${d.income!=null?d.income:''}"></div>
+      <div class="fld"><label>Arrears of this year ₹</label><input type="number" class="arrears" min="0" value="${d.arrears!=null?d.arrears:''}"></div>
+      <div class="fld col-manual"><label>Tax WITHOUT arrears ₹</label><input type="number" class="taxwo" min="0" value="${d.taxwo!=null?d.taxwo:''}"></div>
+      <div class="fld col-manual"><label>Tax WITH arrears ₹</label><input type="number" class="taxw" min="0" value="${d.taxw!=null?d.taxw:''}"></div>
+    </div>`;
+  div.querySelector('.rm').onclick=()=>{div.remove();renumber();autoRecalc();};
+  rowsBody.appendChild(div);
+  renumber();
+  return div;
+}
+function renumber(){[...rowsBody.children].forEach((r,i)=>r.querySelector('.idx').textContent='Year '+(i+1));}
+function readRows(){
+  return [...rowsBody.children].map(r=>({
+    fy:r.querySelector('.fy').value,
+    regime:r.querySelector('.regime').value,
+    category:r.querySelector('.cat').value,
+    income:num(r.querySelector('.income').value),
+    arrears:num(r.querySelector('.arrears').value),
+    taxwo:r.querySelector('.taxwo').value,
+    taxw:r.querySelector('.taxw').value
+  }));
+}
+/* two starter rows */
+rowTpl({fy:'2020-21'});rowTpl({fy:'2021-22'});
+
+/* ----- mode switch ----- */
+document.querySelectorAll('input[name=mode]').forEach(r=>{
+  r.onchange=()=>{document.body.className=r.value==='manual'?'mode-manual':'mode-auto';autoRecalc();};
+});
+
+/* ============================================================
+   CALCULATE
+   ============================================================ */
+function calc(){
+  const manual=document.body.classList.contains('mode-manual');
+  const rFy=$('#rFy').value, rRegime=$('#rRegime').value, rCat=$('#rCat').value;
+  const rIncl=num($('#rIncome').value);
+  const rows=readRows();
+  const sumArr=rows.reduce((a,b)=>a+b.arrears,0);
+  const rExcl=Math.max(0,rIncl-sumArr);
+  const warns=[];
+
+  // receipt-year tax
+  let taxIncl,taxExcl;
+  if(manual){
+    taxIncl=num($('#rTaxIncl').value); taxExcl=num($('#rTaxExcl').value);
+  }else{
+    taxIncl=computeTax(rFy,rRegime,rCat,rIncl);
+    taxExcl=computeTax(rFy,rRegime,rCat,rExcl);
+    if(taxIncl===null||taxExcl===null)warns.push(`Auto slabs are not available for the receipt year <b>${rFy}</b> under the <b>${rRegime}</b> regime. Switch to <b>Manual tax</b> and enter the tax for the receipt year.`);
+  }
+  const receiptAdd=(taxIncl||0)-(taxExcl||0);
+
+  // per-year
+  let spread=0; const tableRows=[];
+  rows.forEach(r=>{
+    const incl=r.income+r.arrears;
+    let tWo,tW;
+    if(manual){ tWo=num(r.taxwo); tW=num(r.taxw); }
+    else{
+      tWo=computeTax(r.fy,r.regime,r.category,r.income);
+      tW=computeTax(r.fy,r.regime,r.category,incl);
+      if(tWo===null||tW===null)warns.push(`Auto slabs are not available for <b>${r.fy}</b> under the <b>${r.regime}</b> regime. Use Manual tax for this year.`);
+    }
+    const diff=(tW||0)-(tWo||0);
+    spread+=diff;
+    tableRows.push({fy:r.fy,excl:r.income,arr:r.arrears,incl,tWo:tWo||0,tW:tW||0,diff});
+  });
+
+  const relief=Math.max(0,receiptAdd-spread);
+  return {rFy,rIncl,rExcl,taxIncl:taxIncl||0,taxExcl:taxExcl||0,receiptAdd,spread,relief,tableRows,warns,sumArr};
+}
+
+function render(){
+  const R=calc();
+  // warnings
+  const wb=$('#warnBox');
+  wb.innerHTML = R.warns.length ? `<div class="warn"><b>Heads up.</b> ${[...new Set(R.warns)].join('<br>')}</div>` : '';
+
+  // hero
+  const zero=R.relief<=0;
+  document.getElementById('results').classList.toggle('relief-zero',zero);
+  $('#reliefAmt').textContent=inr(R.relief);
+  $('#reliefNote').innerHTML = zero
+    ? 'No relief arises — taxing the arrears in the earlier years would not have resulted in lower tax, so Section 89(1) gives nil relief.'
+    : 'This amount is deductible from the tax payable for the year of receipt. Claim it by filing Form 10E before the return.';
+
+  $('#sReceipt').textContent=inr(R.receiptAdd);
+  $('#sSpread').textContent=inr(R.spread);
+  $('#sRelief').textContent=inr(R.relief);
+
+  // Table A
+  const tb=$('#tableABody'); tb.innerHTML='';
+  R.tableRows.forEach(r=>{
+    tb.insertAdjacentHTML('beforeend',
+      `<tr><td>${r.fy}</td><td>${inr(r.excl)}</td><td>${inr(r.arr)}</td><td>${inr(r.incl)}</td><td>${inr(r.tWo)}</td><td>${inr(r.tW)}</td><td>${inr(r.diff)}</td></tr>`);
+  });
+  const tExcl=R.tableRows.reduce((a,b)=>a+b.excl,0), tArr=R.tableRows.reduce((a,b)=>a+b.arr,0);
+  tb.insertAdjacentHTML('beforeend',
+    `<tr class="total"><td>Total</td><td>${inr(tExcl)}</td><td>${inr(tArr)}</td><td>${inr(tExcl+tArr)}</td><td></td><td></td><td>${inr(R.spread)}</td></tr>`);
+
+  // Receipt table
+  $('#tableRBody').innerHTML=
+    `<tr><td>${R.rFy}</td><td>${inr(R.rIncl)}</td><td>${inr(R.rExcl)}</td><td>${inr(R.taxIncl)}</td><td>${inr(R.taxExcl)}</td><td>${inr(R.receiptAdd)}</td></tr>`;
+
+  document.getElementById('results').style.display='block';
+}
+let shown=false;
+function autoRecalc(){ if(shown) render(); }
+$('#computeBtn').onclick=()=>{shown=true;render();document.getElementById('results').scrollIntoView({behavior:'smooth',block:'start'});};
+$('#addRow').onclick=()=>{rowTpl({});autoRecalc();};
+document.addEventListener('input',e=>{if(e.target.closest('.wrap'))autoRecalc();});
+document.addEventListener('change',e=>{if(e.target.matches('select'))autoRecalc();});
+$('#resetBtn').onclick=()=>{
+  $('#rIncome').value='';$('#rTaxIncl').value='';$('#rTaxExcl').value='';
+  rowsBody.innerHTML='';rowTpl({fy:'2020-21'});rowTpl({fy:'2021-22'});
+  document.getElementById('results').style.display='none';shown=false;
+  window.scrollTo({top:0,behavior:'smooth'});
+};
+
+/* ============================================================
+   EXCEL  —  download template + import
+   ============================================================ */
+$('#templateBtn').onclick=()=>{
+  const aoa=[
+    ['Section 89(1) Relief Calculator — Data Import Template'],
+    ['Sec. 89(1), Income-tax Act 1961 r/w Rule 21A  •  Designed by CA Vishal Bhandari'],
+    [],
+    ['STEP 1 — YEAR OF RECEIPT (year in which arrears / advance were received)'],
+    ['Financial Year of receipt (arrears received in)',''],
+    ['Total income of receipt year INCLUDING arrears (Rs.)',''],
+    ['Regime for receipt year (Old / New)',''],
+    ['Category for receipt year (General / Senior / SuperSenior)',''],
+    [],
+    ['STEP 2 — ARREARS BREAK-UP (one row per relevant past year)'],
+    ['Relevant Financial Year','Total Income (excluding arrears) Rs.','Arrears relating to this year Rs.','Regime (Old / New)','Category'],
+    ['','','','',''],['','','','',''],['','','','',''],['','','','',''],['','','','','']
+  ];
+  const ws=XLSX.utils.aoa_to_sheet(aoa);
+  ws['!cols']=[{wch:50},{wch:26},{wch:30},{wch:16},{wch:18}];
+  ws['!merges']=[{s:{r:0,c:0},e:{r:0,c:4}},{s:{r:1,c:0},e:{r:1,c:4}},{s:{r:3,c:0},e:{r:3,c:4}},{s:{r:9,c:0},e:{r:9,c:4}}];
+  const wb=XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb,ws,'Section 89(1) Input');
+  XLSX.writeFile(wb,'Section_89_Relief_Template.xlsx');
+};
+
+$('#importBtn').onclick=()=>$('#fileInput').click();
+$('#fileInput').onchange=e=>{
+  const f=e.target.files[0]; if(!f)return;
+  const rd=new FileReader();
+  rd.onload=ev=>{
+    try{
+      const wb=XLSX.read(ev.target.result,{type:'array'});
+      const name=wb.SheetNames.find(n=>/input/i.test(n))||wb.SheetNames[0];
+      const grid=XLSX.utils.sheet_to_json(wb.Sheets[name],{header:1,defval:''});
+      const A=r=>String(grid[r]&&grid[r][0]||'');
+      let rFy='',rInc='',rReg='',rCat='',hdr=-1;
+      grid.forEach((row,i)=>{
+        const a=String(row[0]||'');
+        if(/Financial Year of receipt/i.test(a))rFy=row[1];
+        else if(/INCLUDING arrears/i.test(a))rInc=row[1];
+        else if(/Regime for receipt/i.test(a))rReg=row[1];
+        else if(/Category for receipt/i.test(a))rCat=row[1];
+        else if(/Relevant Financial Year/i.test(a))hdr=i;
+      });
+      if(rFy){const v=String(rFy).trim();if([...$('#rFy').options].some(o=>o.value===v))$('#rFy').value=v;}
+      if(rInc!=='')$('#rIncome').value=num(rInc);
+      if(rReg)$('#rRegime').value=normRegime(rReg);
+      if(rCat)$('#rCat').value=normCat(rCat);
+
+      const parsed=[];
+      if(hdr>=0){
+        for(let i=hdr+1;i<grid.length;i++){
+          const a=String(grid[i][0]||'').trim();
+          if(/^\d{4}-\d{2}$/.test(a)){
+            parsed.push({fy:a,income:num(grid[i][1]),arrears:num(grid[i][2]),regime:grid[i][3],category:grid[i][4]});
+          }
+        }
+      }
+      if(parsed.length){
+        rowsBody.innerHTML='';
+        parsed.forEach(p=>rowTpl(p));
+      }
+      shown=true;render();
+      document.getElementById('results').scrollIntoView({behavior:'smooth'});
+    }catch(err){
+      $('#warnBox').innerHTML=`<div class="warn"><b>Could not read that file.</b> Please use the downloaded template layout, or enter figures directly. (${err.message})</div>`;
+      document.getElementById('results').style.display='block';
+    }
+  };
+  rd.readAsArrayBuffer(f);
+  e.target.value='';
+};
+</script>
+</body>
+</html>
